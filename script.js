@@ -1,21 +1,43 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js'
+const token = "DEIN_TOKEN"
+const owner = "DEIN_GITHUB_NAME"
+const repo = "DEIN_REPO"
 
-const supabaseUrl = 'HIER_URL'
-const supabaseKey = 'HIER_KEY'
+async function saveData(text) {
 
-const supabase = createClient(supabaseUrl, supabaseKey)
+  // Datei laden
+  const response = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/contents/data.json`,
+    {
+      headers: {
+        Authorization: `token ${token}`
+      }
+    }
+  )
 
-window.save = async function () {
-  const text = document.getElementById('msg').value
+  const file = await response.json()
 
-  const { error } = await supabase
-    .from('messages')
-    .insert([{ text }])
+  // Alte Daten lesen
+  const content = JSON.parse(atob(file.content))
 
-  if (error) {
-    alert("Fehler")
-    console.log(error)
-  } else {
-    alert("Gespeichert")
-  }
+  // Neue Daten hinzufügen
+  content.push({ text })
+
+  // Neue Datei hochladen
+  await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/contents/data.json`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `token ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: "update data",
+        content: btoa(JSON.stringify(content, null, 2)),
+        sha: file.sha
+      })
+    }
+  )
+
+  alert("Gespeichert")
 }
