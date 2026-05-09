@@ -1,17 +1,124 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>Meine Website</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Schülerverwaltung</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <header class="app-header">
+    <div>
+      <h1>Schülerverwaltung</h1>
+      <p>Gürtelgrad, Geburtstag und Prüfungen online in GitHub speichern</p>
+    </div>
+    <button id="openSettingsBtn" class="secondary-btn">GitHub Einstellungen</button>
+  </header>
 
-<h1>Meine GitHub Website</h1>
+  <main class="layout">
+    <section class="card">
+      <h2>Schüler hinzufügen / bearbeiten</h2>
 
-<input type="text" id="msg">
-<button onclick="save()">Speichern</button>
+      <form id="studentForm">
+        <input type="hidden" id="studentId" />
 
-<script type="module" src="script.js"></script>
+        <label>
+          Name
+          <input id="name" type="text" placeholder="Max Mustermann" required />
+        </label>
 
+        <label>
+          Geburtstag
+          <input id="birthday" type="date" required />
+        </label>
+
+        <label>
+          Aktueller Gürtelgrad
+          <select id="belt" required>
+            <option value="">Bitte auswählen</option>
+            <option>Weißgurt</option>
+            <option>Weiß-Gelb</option>
+            <option>Gelbgurt</option>
+            <option>Gelb-Orange</option>
+            <option>Orangegurt</option>
+            <option>Orange-Grün</option>
+            <option>Grüngurt</option>
+            <option>Blaugurt</option>
+            <option>Braungurt</option>
+            <option>Schwarzgurt 1. Dan</option>
+            <option>Schwarzgurt 2. Dan</option>
+            <option>Schwarzgurt 3. Dan</option>
+            <option>Schwarzgurt 4. Dan</option>
+          </select>
+        </label>
+
+        <label>
+          Letzte Prüfung
+          <input id="examDate" type="date" />
+        </label>
+
+        <label>
+          Notizen
+          <textarea id="notes" rows="4" placeholder="Zum Beispiel: Nächste Prüfung möglich, Trainingshinweise ..."></textarea>
+        </label>
+
+        <div class="button-row">
+          <button type="submit" class="primary-btn">Speichern</button>
+          <button type="button" id="resetBtn" class="secondary-btn">Zurücksetzen</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <div class="list-header">
+        <div>
+          <h2>Schülerliste</h2>
+          <p id="statusText">Noch nicht verbunden</p>
+        </div>
+        <button id="loadBtn" class="secondary-btn">Daten laden</button>
+      </div>
+
+      <input id="searchInput" class="search" type="search" placeholder="Schüler suchen ..." />
+
+      <div id="studentsList" class="students-list"></div>
+    </section>
+  </main>
+
+  <dialog id="settingsDialog">
+    <form method="dialog" class="settings-box">
+      <h2>GitHub Einstellungen</h2>
+
+      <p class="hint">
+        Diese Daten werden nur in deinem Browser gespeichert. Der Token wird nicht in die Dateien geschrieben.
+      </p>
+
+      <label>
+        GitHub Benutzername
+        <input id="ownerInput" type="text" placeholder="dein-github-name" />
+      </label>
+
+      <label>
+        Repository Name
+        <input id="repoInput" type="text" placeholder="meine-website" />
+      </label>
+
+      <label>
+        Branch
+        <input id="branchInput" type="text" value="main" />
+      </label>
+
+      <label>
+        GitHub Token
+        <input id="tokenInput" type="password" placeholder="github_pat_..." />
+      </label>
+
+      <div class="button-row">
+        <button id="saveSettingsBtn" type="button" class="primary-btn">Einstellungen speichern</button>
+        <button type="submit" class="secondary-btn">Schließen</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="script.js"></script>
 </body>
 </html>
