@@ -7,118 +7,89 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header class="app-header">
-    <div>
-      <h1>Schülerverwaltung</h1>
-      <p>Gürtelgrad, Geburtstag und Prüfungen online in GitHub speichern</p>
-    </div>
-    <button id="openSettingsBtn" class="secondary-btn">GitHub Einstellungen</button>
-  </header>
 
-  <main class="layout">
-    <section class="card">
-      <h2>Schüler hinzufügen / bearbeiten</h2>
+<header class="app-header">
+  <div>
+    <h1>Schülerverwaltung</h1>
+    <p>Gürtelgrade und Prüfungsverlauf</p>
+  </div>
+</header>
 
-      <form id="studentForm">
-        <input type="hidden" id="studentId" />
+<main class="layout">
 
-        <label>
-          Name
-          <input id="name" type="text" placeholder="Max Mustermann" required />
-        </label>
+<section class="card">
 
-        <label>
-          Geburtstag
-          <input id="birthday" type="date" required />
-        </label>
+<h2>Schüler hinzufügen</h2>
 
-        <label>
-          Aktueller Gürtelgrad
-          <select id="belt" required>
-            <option value="">Bitte auswählen</option>
-            <option>Weißgurt</option>
-            <option>Weiß-Gelb</option>
-            <option>Gelbgurt</option>
-            <option>Gelb-Orange</option>
-            <option>Orangegurt</option>
-            <option>Orange-Grün</option>
-            <option>Grüngurt</option>
-            <option>Blaugurt</option>
-            <option>Braungurt</option>
-            <option>Schwarzgurt 1. Dan</option>
-            <option>Schwarzgurt 2. Dan</option>
-            <option>Schwarzgurt 3. Dan</option>
-            <option>Schwarzgurt 4. Dan</option>
-          </select>
-        </label>
+<form id="studentForm">
 
-        <label>
-          Letzte Prüfung
-          <input id="examDate" type="date" />
-        </label>
+<input type="hidden" id="studentId">
 
-        <label>
-          Notizen
-          <textarea id="notes" rows="4" placeholder="Zum Beispiel: Nächste Prüfung möglich, Trainingshinweise ..."></textarea>
-        </label>
+<div class="two-cols">
 
-        <div class="button-row">
-          <button type="submit" class="primary-btn">Speichern</button>
-          <button type="button" id="resetBtn" class="secondary-btn">Zurücksetzen</button>
-        </div>
-      </form>
-    </section>
+<label>
+Vorname
+<input id="firstName" required>
+</label>
 
-    <section class="card">
-      <div class="list-header">
-        <div>
-          <h2>Schülerliste</h2>
-          <p id="statusText">Noch nicht verbunden</p>
-        </div>
-        <button id="loadBtn" class="secondary-btn">Daten laden</button>
-      </div>
+<label>
+Nachname
+<input id="lastName" required>
+</label>
 
-      <input id="searchInput" class="search" type="search" placeholder="Schüler suchen ..." />
+</div>
 
-      <div id="studentsList" class="students-list"></div>
-    </section>
-  </main>
+<label>
+Geburtstag
+<input type="date" id="birthday">
+</label>
 
-  <dialog id="settingsDialog">
-    <form method="dialog" class="settings-box">
-      <h2>GitHub Einstellungen</h2>
+<label>
+Aktueller Gürtelgrad
+<input id="belt">
+</label>
 
-      <p class="hint">
-        Diese Daten werden nur in deinem Browser gespeichert. Der Token wird nicht in die Dateien geschrieben.
-      </p>
+<div class="two-cols">
 
-      <label>
-        GitHub Benutzername
-        <input id="ownerInput" type="text" placeholder="dein-github-name" />
-      </label>
+<label>
+Jahressichtmarke
+<select id="annualStamp">
+<option value="ja">Ja</option>
+<option value="nein">Nein</option>
+</select>
+</label>
 
-      <label>
-        Repository Name
-        <input id="repoInput" type="text" placeholder="meine-website" />
-      </label>
+<label>
+Jahr
+<input type="number" id="annualStampYear">
+</label>
 
-      <label>
-        Branch
-        <input id="branchInput" type="text" value="main" />
-      </label>
+</div>
 
-      <label>
-        GitHub Token
-        <input id="tokenInput" type="password" placeholder="github_pat_..." />
-      </label>
+<label>
+Notizen
+<textarea id="notes"></textarea>
+</label>
 
-      <div class="button-row">
-        <button id="saveSettingsBtn" type="button" class="primary-btn">Einstellungen speichern</button>
-        <button type="submit" class="secondary-btn">Schließen</button>
-      </div>
-    </form>
-  </dialog>
+<button type="submit">Speichern</button>
 
-  <script src="script.js"></script>
+</form>
+
+</section>
+
+<section class="card">
+
+<h2>Schülerliste</h2>
+
+<input id="searchInput" placeholder="Suchen">
+
+<div id="studentsList"></div>
+
+</section>
+
+</main>
+
+<script src="script.js"></script>
+
 </body>
 </html>
