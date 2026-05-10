@@ -1172,10 +1172,37 @@ function exportPlanningExcel() {
       `;
     }).join("");
 
-    const html = `
-      <html>
+    const workbook = `
+      <html xmlns:o="urn:schemas-microsoft-com:office:office"
+            xmlns:x="urn:schemas-microsoft-com:office:excel"
+            xmlns="http://www.w3.org/TR/REC-html40">
+
         <head>
           <meta charset="UTF-8">
+
+          <!--[if gte mso 9]>
+          <xml>
+            <x:ExcelWorkbook>
+              <x:ExcelWorksheets>
+
+                <x:ExcelWorksheet>
+                  <x:Name>Prüfliste</x:Name>
+                  <x:WorksheetOptions>
+                    <x:DisplayGridlines/>
+                  </x:WorksheetOptions>
+                </x:ExcelWorksheet>
+
+                <x:ExcelWorksheet>
+                  <x:Name>Bestellung</x:Name>
+                  <x:WorksheetOptions>
+                    <x:DisplayGridlines/>
+                  </x:WorksheetOptions>
+                </x:ExcelWorksheet>
+
+              </x:ExcelWorksheets>
+            </x:ExcelWorkbook>
+          </xml>
+          <![endif]-->
 
           <style>
             body {
@@ -1208,51 +1235,65 @@ function exportPlanningExcel() {
               background: #f3f4f6;
               font-weight: 900;
             }
+
+            .sheet-break {
+              page-break-before: always;
+            }
           </style>
         </head>
 
         <body>
 
-          <h3>Prüfungsliste</h3>
+          <div id="Mappe1">
 
-          <table>
-            <thead>
-              <tr>
-                <th>Nachname</th>
-                <th>Vorname</th>
-                <th>Aktueller Gurt</th>
-                <th>Zielgurt</th>
-                <th>Alter</th>
-                <th>Gürtellänge</th>
-                <th>Jahressichtmarke</th>
-                <th>Anmeldung</th>
-                <th>Bezahlt in €</th>
-                <th>Zahlungsart</th>
-              </tr>
-            </thead>
+            <h3>Prüfungsliste</h3>
 
-            <tbody>
-              ${rowsHtml}
+            <table>
+              <thead>
+                <tr>
+                  <th>Nachname</th>
+                  <th>Vorname</th>
+                  <th>Aktueller Gurt</th>
+                  <th>Zielgurt</th>
+                  <th>Alter</th>
+                  <th>Gürtellänge</th>
+                  <th>Jahressichtmarke</th>
+                  <th>Anmeldung</th>
+                  <th>Bezahlt in €</th>
+                  <th>Zahlungsart</th>
+                </tr>
+              </thead>
 
-              <tr class="summary">
-                <td colspan="9">Gesamtzahl Prüflinge</td>
-                <td>${plannedStudents.length}</td>
-              </tr>
-            </tbody>
-          </table>
+              <tbody>
+                ${rowsHtml}
 
-          ${buildBeltOrderTableHtml(plannedStudents)}
+                <tr class="summary">
+                  <td colspan="9">Gesamtzahl Prüflinge</td>
+                  <td>${plannedStudents.length}</td>
+                </tr>
+              </tbody>
+            </table>
 
-          ${buildMedalOrderTableHtml(plannedStudents)}
+          </div>
 
-          ${buildMaterialSummaryHtml(plannedStudents)}
+          <div class="sheet-break"></div>
+
+          <div id="Mappe2">
+
+            ${buildBeltOrderTableHtml(plannedStudents)}
+
+            ${buildMedalOrderTableHtml(plannedStudents)}
+
+            ${buildMaterialSummaryHtml(plannedStudents)}
+
+          </div>
 
         </body>
       </html>
     `;
 
     const blob = new Blob(
-      ["\ufeff" + html],
+      ["\ufeff" + workbook],
       { type: "application/vnd.ms-excel;charset=utf-8;" }
     );
 
@@ -1296,20 +1337,8 @@ function renderStudents() {
       return matchesSearch && matchesBelt && matchesPlanning;
     })
     .sort((a, b) => {
-    
-      const beltCompare =
-        beltOrder(b.belt) - beltOrder(a.belt);
-    
-      if (beltCompare !== 0) {
-        return beltCompare;
-      }
-    
-      const nameA =
-        `${a.lastName} ${a.firstName}`.toLowerCase();
-    
-      const nameB =
-        `${b.lastName} ${b.firstName}`.toLowerCase();
-    
+      const nameA = `${a.lastName} ${a.firstName}`.toLowerCase();
+      const nameB = `${b.lastName} ${b.firstName}`.toLowerCase();
       return nameA.localeCompare(nameB, "de");
     });
 
