@@ -9,10 +9,10 @@
       "beltSize": "300 cm",
       "notes": "",
       "plannedExam": true,
-      "planningPaidAmount": "",
-      "planningRegistrationType": "",
-      "planningPaymentMethod": "",
-      "planningTargetBelt": "",
+      "planningPaidAmount": "75",
+      "planningRegistrationType": "Zettel",
+      "planningPaymentMethod": "Bar",
+      "planningTargetBelt": "2. Dan",
       "annualStamps": [
         {
           "year": "2024",
