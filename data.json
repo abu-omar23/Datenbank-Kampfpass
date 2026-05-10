@@ -5,14 +5,14 @@
       "firstName": "Halim",
       "lastName": "Brandt",
       "birthday": "2000-07-23",
-      "belt": "1. Dan",
+      "belt": "2. Dan",
       "beltSize": "300 cm",
       "notes": "",
-      "plannedExam": true,
-      "planningTargetBelt": "2. Dan",
-      "planningRegistrationType": "mündlich",
-      "planningPaidAmount": "75",
-      "planningPaymentMethod": "Bar",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
       "annualStamps": [
         {
           "year": "2024",
@@ -25,6 +25,12 @@
           "date": "2024-05-10",
           "belt": "1. Dan",
           "note": ""
+        },
+        {
+          "id": "8eed0174-7629-4890-812a-ba97beddbfcd",
+          "date": "09-05-2026",
+          "belt": "2. Dan",
+          "note": "Prüfung bestanden"
         }
       ]
     },
