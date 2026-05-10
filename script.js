@@ -965,137 +965,315 @@ async function applyPassedExam() {
 
 /* Export */
 
-function exportPlanningExcel() {
-  savePlanningTableValuesFromDom();
 
-  const now = new Date();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const year = now.getFullYear();
-  const fileName = `Gürtelprüfung (${month}.${year}).xls`;
 
-  const plannedStudents = data.students
-    .filter(student => student.plannedExam === true || student.plannedExam === "true" || student.plannedExam === 1)
-    .sort((a, b) => {
-      const ageA = calculateAge(a.birthday);
-      const ageB = calculateAge(b.birthday);
-      const targetA = a.planningTargetBelt || getNextBelt(a.belt, ageA);
-      const targetB = b.planningTargetBelt || getNextBelt(b.belt, ageB);
+function buildBeltOrderTableHtml(plannedStudents) {
+  const sizes = Array.from(new Set(
+    plannedStudents
+      .map(student => String(student.beltSize || "").trim())
+      .filter(Boolean)
+  )).sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
 
-      const targetCompare = beltOrder(targetA) - beltOrder(targetB);
+  const targetBelts = Array.from(new Set(
+    plannedStudents.map(student => {
+      const age = calculateAge(student.birthday);
+      return student.planningTargetBelt || getNextBelt(student.belt, age);
+    })
+  )).sort((a, b) => beltOrder(a) - beltOrder(b));
 
-      if (targetCompare !== 0) {
-        return targetCompare;
-      }
+  if (targetBelts.length === 0 || sizes.length === 0) {
+    return `
+      <h3>Gürtelbestellung</h3>
+      <table>
+        <tr><td>Keine Daten vorhanden.</td></tr>
+      </table>
+    `;
+  }
 
-      const nameA = `${a.lastName} ${a.firstName}`.toLowerCase();
-      const nameB = `${b.lastName} ${b.firstName}`.toLowerCase();
-      return nameA.localeCompare(nameB, "de");
-    });
+  let totalAll = 0;
 
-  const rowsHtml = plannedStudents.map(student => {
-    const age = calculateAge(student.birthday);
-    const targetBelt = student.planningTargetBelt || getNextBelt(student.belt, age);
+  const rows = targetBelts.map(targetBelt => {
+    let rowTotal = 0;
+
+    const cells = sizes.map(size => {
+      const count = plannedStudents.filter(student => {
+        const age = calculateAge(student.birthday);
+        const target = student.planningTargetBelt || getNextBelt(student.belt, age);
+
+        return target === targetBelt &&
+          String(student.beltSize || "").trim() === size;
+      }).length;
+
+      rowTotal += count;
+      totalAll += count;
+
+      return `<td>${count || ""}</td>`;
+    }).join("");
 
     return `
       <tr>
-        <td>${escapeHtml(student.lastName || "")}</td>
-        <td>${escapeHtml(student.firstName || "")}</td>
-        <td>${escapeHtml(student.belt || "")}</td>
-        <td>${escapeHtml(targetBelt || "")}</td>
-        <td>${age === null ? "" : age}</td>
-        <td>${escapeHtml(student.beltSize || "")}</td>
-        <td class="${getCurrentStampYears(student) !== "-" ? "neutral" : "bad"}">${escapeHtml(getCurrentStampYears(student))}</td>
-        <td>${escapeHtml(student.planningRegistrationType || "")}</td>
-        <td>${escapeHtml(student.planningPaidAmount || "")}</td>
-        <td>${escapeHtml(student.planningPaymentMethod || "")}</td>
+        <td>${escapeHtml(targetBelt)}</td>
+        ${cells}
+        <td><b>${rowTotal}</b></td>
       </tr>
     `;
   }).join("");
 
-  const html = `
-    <html>
-      <head>
-        <meta charset="UTF-8">
-        <style>
-          table {
-            border-collapse: collapse;
-            font-family: Arial, sans-serif;
-            width: 100%;
-          }
+  return `
+    <h3>Gürtelbestellung nach Zielgurt und Größe</h3>
 
-          th {
-            background: #f8fafc;
-            font-weight: 900;
-            text-align: center;
-            border: 1px solid #d1d5db;
-            padding: 8px;
-          }
+    <table>
+      <thead>
+        <tr>
+          <th>Zielgurt</th>
+          ${sizes.map(size => `<th>${escapeHtml(size)}</th>`).join("")}
+          <th>Gesamt</th>
+        </tr>
+      </thead>
 
-          td {
-            text-align: center;
-            border: 1px solid #d1d5db;
-            padding: 8px;
-          }
+      <tbody>
+        ${rows}
 
-          .bad {
-            background: #fee2e2;
-            color: #991b1b;
-            font-weight: 800;
-          }
+        <tr class="summary">
+          <td><b>Summe</b></td>
 
-          .neutral {
-            background: #eef2ff;
-            color: #1e3a8a;
-            font-weight: 800;
-          }
+          ${sizes.map(size => {
+            const count = plannedStudents.filter(student =>
+              String(student.beltSize || "").trim() === size
+            ).length;
 
-          .summary {
-            background: #f8fafc;
-            font-weight: 900;
-          }
-        </style>
-      </head>
-      <body>
-        <table>
-          <thead>
-            <tr>
-              <th>Nachname</th>
-              <th>Vorname</th>
-              <th>Aktueller Gurt</th>
-              <th>Zielgurt</th>
-              <th>Alter</th>
-              <th>Gürtellänge</th>
-              <th>Jahressichtmarke</th>
-              <th>Anmeldung</th>
-              <th>Bezahlt in €</th>
-              <th>Zahlungsart</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rowsHtml || `<tr><td colspan="10">Keine Schüler für die Prüfung eingeplant.</td></tr>`}
-            <tr class="summary">
-              <td colspan="9">Gesamtzahl Prüflinge</td>
-              <td>${plannedStudents.length}</td>
-            </tr>
-          </tbody>
-        </table>
-      </body>
-    </html>
+            return `<td><b>${count || ""}</b></td>`;
+          }).join("")}
+
+          <td><b>${totalAll}</b></td>
+        </tr>
+      </tbody>
+    </table>
   `;
-
-  const blob = new Blob(["\ufeff" + html], {
-    type: "application/vnd.ms-excel;charset=utf-8;"
-  });
-
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = fileName;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
 }
+
+function buildMedalOrderTableHtml(plannedStudents) {
+  const targetBelts = Array.from(new Set(
+    plannedStudents.map(student => {
+      const age = calculateAge(student.birthday);
+      return student.planningTargetBelt || getNextBelt(student.belt, age);
+    })
+  )).sort((a, b) => beltOrder(a) - beltOrder(b));
+
+  let total = 0;
+
+  const rows = targetBelts.map(targetBelt => {
+    const count = plannedStudents.filter(student => {
+      const age = calculateAge(student.birthday);
+      const target = student.planningTargetBelt || getNextBelt(student.belt, age);
+
+      return target === targetBelt;
+    }).length;
+
+    total += count;
+
+    return `
+      <tr>
+        <td>${escapeHtml(targetBelt)}</td>
+        <td><b>${count}</b></td>
+      </tr>
+    `;
+  }).join("");
+
+  return `
+    <h3>Medaillen / Aufkleber</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Farbe / Zielgurt</th>
+          <th>Anzahl</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        ${rows}
+
+        <tr class="summary">
+          <td><b>Gesamt</b></td>
+          <td><b>${total}</b></td>
+        </tr>
+      </tbody>
+    </table>
+  `;
+}
+
+function buildMaterialSummaryHtml(plannedStudents) {
+  const missingStamps = plannedStudents.filter(student => !hasCurrentStamp(student)).length;
+
+  return `
+    <h3>Zusatzmaterial</h3>
+
+    <table>
+      <tbody>
+        <tr>
+          <td>Urkunden</td>
+          <td><b>${plannedStudents.length}</b></td>
+        </tr>
+
+        <tr>
+          <td>Medaillen / Aufkleber</td>
+          <td><b>${plannedStudents.length}</b></td>
+        </tr>
+
+        <tr>
+          <td>Jahressichtmarken</td>
+          <td><b>${missingStamps}</b></td>
+        </tr>
+
+        <tr>
+          <td>Pässe</td>
+          <td>manuell prüfen</td>
+        </tr>
+      </tbody>
+    </table>
+  `;
+}
+
+
+function exportPlanningExcel() {
+  try {
+    savePlanningTableValuesFromDom();
+
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const year = now.getFullYear();
+    const fileName = `Gürtelprüfung (${month}.${year}).xls`;
+
+    const plannedStudents = data.students
+      .filter(student =>
+        student.plannedExam === true ||
+        student.plannedExam === "true" ||
+        student.plannedExam === 1
+      );
+
+    const rowsHtml = plannedStudents.map(student => {
+      const age = calculateAge(student.birthday);
+      const targetBelt = student.planningTargetBelt || getNextBelt(student.belt, age);
+
+      return `
+        <tr>
+          <td>${escapeHtml(student.lastName || "")}</td>
+          <td>${escapeHtml(student.firstName || "")}</td>
+          <td>${escapeHtml(student.belt || "")}</td>
+          <td>${escapeHtml(targetBelt || "")}</td>
+          <td>${age === null ? "" : age}</td>
+          <td>${escapeHtml(student.beltSize || "")}</td>
+          <td>${escapeHtml(getCurrentStampYears(student))}</td>
+          <td>${escapeHtml(student.planningRegistrationType || "")}</td>
+          <td>${escapeHtml(student.planningPaidAmount || "")}</td>
+          <td>${escapeHtml(student.planningPaymentMethod || "")}</td>
+        </tr>
+      `;
+    }).join("");
+
+    const html = `
+      <html>
+        <head>
+          <meta charset="UTF-8">
+
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+            }
+
+            table {
+              border-collapse: collapse;
+              margin-bottom: 28px;
+            }
+
+            th,
+            td {
+              border: 1px solid #000;
+              padding: 8px;
+              text-align: center;
+            }
+
+            th {
+              background: #f3f4f6;
+              font-weight: 900;
+            }
+
+            h3 {
+              margin-top: 28px;
+              margin-bottom: 10px;
+            }
+
+            .summary {
+              background: #f3f4f6;
+              font-weight: 900;
+            }
+          </style>
+        </head>
+
+        <body>
+
+          <h3>Prüfungsliste</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Nachname</th>
+                <th>Vorname</th>
+                <th>Aktueller Gurt</th>
+                <th>Zielgurt</th>
+                <th>Alter</th>
+                <th>Gürtellänge</th>
+                <th>Jahressichtmarke</th>
+                <th>Anmeldung</th>
+                <th>Bezahlt in €</th>
+                <th>Zahlungsart</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              ${rowsHtml}
+
+              <tr class="summary">
+                <td colspan="9">Gesamtzahl Prüflinge</td>
+                <td>${plannedStudents.length}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          ${buildBeltOrderTableHtml(plannedStudents)}
+
+          ${buildMedalOrderTableHtml(plannedStudents)}
+
+          ${buildMaterialSummaryHtml(plannedStudents)}
+
+        </body>
+      </html>
+    `;
+
+    const blob = new Blob(
+      ["\ufeff" + html],
+      { type: "application/vnd.ms-excel;charset=utf-8;" }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = fileName;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+
+  } catch (error) {
+    console.error(error);
+    alert("Excel Export Fehler: " + error.message);
+  }
+}
+
 
 /* Übersicht */
 
