@@ -1461,6 +1461,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "848fc157-ad8b-4613-9a9d-42df5cbc3d25",
+      "firstName": "Sercan",
+      "lastName": "Unlu",
+      "birthday": "2015-10-13",
+      "belt": "Gelb",
+      "beltSize": "260 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
