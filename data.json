@@ -809,7 +809,7 @@
       "firstName": "Adem",
       "lastName": "Chihani",
       "birthday": "2011-01-23",
-      "belt": "Weiß",
+      "belt": "Gelb",
       "beltSize": "300 cm",
       "notes": "",
       "plannedExam": false,
@@ -827,7 +827,14 @@
           "status": "ja"
         }
       ],
-      "exams": []
+      "exams": [
+        {
+          "id": "d4682841-561a-4a88-bf9b-14986ed82866",
+          "date": "2025-12-20",
+          "belt": "Gelb",
+          "note": ""
+        }
+      ]
     }
   ]
 }
