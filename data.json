@@ -112,7 +112,7 @@
       "belt": "Blau",
       "beltSize": "320 cm",
       "notes": "",
-      "plannedExam": false,
+      "plannedExam": true,
       "planningPaid": false,
       "planningPaymentMethod": "",
       "planningRegistrationSubmitted": false,
