@@ -1349,6 +1349,22 @@
           "note": "Marke fehlt im Pass 2026"
         }
       ]
+    },
+    {
+      "id": "48a2666f-ced3-4302-8a55-37fb3560e1ab",
+      "firstName": "Vukan",
+      "lastName": "Rajovic",
+      "birthday": "2014-11-18",
+      "belt": "Weiß",
+      "beltSize": "260 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
