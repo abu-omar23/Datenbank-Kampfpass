@@ -539,7 +539,7 @@
       "firstName": "Berken",
       "lastName": "Temel",
       "birthday": "2016-08-07",
-      "belt": "Gelb-Orange",
+      "belt": "Orange",
       "beltSize": "240 cm",
       "notes": "",
       "plannedExam": false,
@@ -562,6 +562,12 @@
         }
       ],
       "exams": [
+        {
+          "id": "4b56f386-0ba4-40cc-954f-cb86513cb58b",
+          "date": "2025-12-20",
+          "belt": "Orange",
+          "note": ""
+        },
         {
           "id": "ad2fe60f-7425-4726-b4ba-7bb7005a7a47",
           "date": "2025-05-24",
