@@ -9,10 +9,10 @@
       "beltSize": "300 cm",
       "notes": "",
       "plannedExam": true,
-      "planningPaidAmount": "",
-      "planningRegistrationType": "",
-      "planningPaymentMethod": "",
       "planningTargetBelt": "2. Dan",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
       "annualStamps": [
         {
           "year": "2024",
@@ -36,11 +36,11 @@
       "belt": "Blau",
       "beltSize": "260 cm",
       "notes": "",
-      "plannedExam": true,
-      "planningPaidAmount": "75",
-      "planningRegistrationType": "Zettel",
-      "planningPaymentMethod": "Bar",
+      "plannedExam": false,
       "planningTargetBelt": "Blau-Braun",
+      "planningRegistrationType": "Zettel",
+      "planningPaidAmount": "75",
+      "planningPaymentMethod": "Bar",
       "annualStamps": [
         {
           "year": "2026",
@@ -113,10 +113,10 @@
       "beltSize": "320 cm",
       "notes": "",
       "plannedExam": false,
-      "planningPaidAmount": "",
-      "planningRegistrationType": "",
-      "planningPaymentMethod": "",
       "planningTargetBelt": "Braun",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
       "annualStamps": [
         {
           "year": "2026",
@@ -183,10 +183,10 @@
       "beltSize": "260 cm",
       "notes": "",
       "plannedExam": false,
-      "planningPaidAmount": "",
-      "planningRegistrationType": "",
-      "planningPaymentMethod": "",
       "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
       "annualStamps": [
         {
           "year": "2026",
