@@ -15,6 +15,10 @@
       "planningPaymentMethod": "Bar",
       "annualStamps": [
         {
+          "year": "2025",
+          "status": "ja"
+        },
+        {
           "year": "2024",
           "status": "ja"
         }
