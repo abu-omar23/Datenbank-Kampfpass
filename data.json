@@ -42,7 +42,7 @@
       "belt": "Blau",
       "beltSize": "260 cm",
       "notes": "",
-      "plannedExam": false,
+      "plannedExam": true,
       "planningTargetBelt": "Blau-Braun",
       "planningRegistrationType": "Zettel",
       "planningPaidAmount": "75",
