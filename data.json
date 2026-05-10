@@ -44,9 +44,9 @@
       "notes": "",
       "plannedExam": true,
       "planningTargetBelt": "Blau-Braun",
-      "planningRegistrationType": "Zettel",
-      "planningPaidAmount": "75",
-      "planningPaymentMethod": "Bar",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
       "annualStamps": [
         {
           "year": "2026",
