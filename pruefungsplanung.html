@@ -26,6 +26,7 @@
 
 <section class="table-actions">
   <button class="primary-btn" onclick="savePlanningTable()">Tabelle speichern</button>
+  <button class="secondary-btn" onclick="exportPlanningExcel()">Excel Export</button>
   <button class="secondary-btn" onclick="loadStudents()">Neu laden</button>
   <button class="secondary-btn" onclick="window.print()">Drucken</button>
 </section>
@@ -40,15 +41,14 @@
           <th>Alter</th>
           <th>Gürtellänge</th>
           <th>Zielgurt</th>
-          <th>Bezahlt</th>
-          <th>Wie bezahlt?</th>
-          <th>Anmeldung abgegeben</th>
+          <th>Bezahlt in €</th>
+          <th>Anmeldung</th>
           <th>Aktion</th>
         </tr>
       </thead>
       <tbody id="planningTableBody">
         <tr>
-          <td colspan="9">Lade Daten...</td>
+          <td colspan="8">Lade Daten...</td>
         </tr>
       </tbody>
     </table>

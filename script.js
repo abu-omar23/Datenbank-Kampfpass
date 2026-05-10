@@ -136,9 +136,8 @@ function normalizeData(loadedData) {
       beltSize: student.beltSize || "",
       notes: student.notes || "",
       plannedExam: Boolean(student.plannedExam),
-      planningPaid: Boolean(student.planningPaid),
-      planningPaymentMethod: student.planningPaymentMethod || "",
-      planningRegistrationSubmitted: Boolean(student.planningRegistrationSubmitted),
+      planningPaidAmount: student.planningPaidAmount || "",
+      planningRegistrationType: student.planningRegistrationType || "",
       planningTargetBelt: student.planningTargetBelt || "",
       annualStamps: Array.isArray(student.annualStamps)
         ? student.annualStamps
@@ -358,9 +357,8 @@ if (studentForm) {
       beltSize: document.getElementById("beltSize").value,
       notes: document.getElementById("notes").value.trim(),
       plannedExam: document.getElementById("plannedExam").checked,
-      planningPaid: Boolean(oldStudent.planningPaid),
-      planningPaymentMethod: oldStudent.planningPaymentMethod || "",
-      planningRegistrationSubmitted: Boolean(oldStudent.planningRegistrationSubmitted),
+      planningPaidAmount: oldStudent.planningPaidAmount || "",
+      planningRegistrationType: oldStudent.planningRegistrationType || "",
       planningTargetBelt: oldStudent.planningTargetBelt || "",
       annualStamps: oldStudent.annualStamps || [],
       exams: oldStudent.exams || []
@@ -756,6 +754,16 @@ function renderPlanningTable() {
   const plannedStudents = data.students
     .filter(student => student.plannedExam)
     .sort((a, b) => {
+      const ageA = calculateAge(a.birthday);
+      const ageB = calculateAge(b.birthday);
+      const targetA = a.planningTargetBelt || getNextBelt(a.belt, ageA);
+      const targetB = b.planningTargetBelt || getNextBelt(b.belt, ageB);
+
+      const targetCompare = beltOrder(targetA) - beltOrder(targetB);
+      if (targetCompare !== 0) {
+        return targetCompare;
+      }
+
       const nameA = `${a.lastName} ${a.firstName}`.toLowerCase();
       const nameB = `${b.lastName} ${b.firstName}`.toLowerCase();
       return nameA.localeCompare(nameB, "de");
@@ -764,7 +772,7 @@ function renderPlanningTable() {
   if (plannedStudents.length === 0) {
     planningTableBody.innerHTML = `
       <tr>
-        <td colspan="9">Keine Schüler für die Prüfung eingeplant.</td>
+        <td colspan="8">Keine Schüler für die Prüfung eingeplant.</td>
       </tr>
     `;
     return;
@@ -796,19 +804,15 @@ function renderPlanningTable() {
         </td>
 
         <td>
-          <input class="table-checkbox" type="checkbox" data-field="planningPaid" ${student.planningPaid ? "checked" : ""}>
+          <input class="table-input euro-input" type="text" data-field="planningPaidAmount" value="${escapeHtml(student.planningPaidAmount || "")}" placeholder="z. B. 25 €">
         </td>
 
         <td>
-          <select class="table-select" data-field="planningPaymentMethod">
-            <option value="" ${!student.planningPaymentMethod ? "selected" : ""}>-</option>
-            <option value="Bar" ${student.planningPaymentMethod === "Bar" ? "selected" : ""}>Bar</option>
-            <option value="Überweisung" ${student.planningPaymentMethod === "Überweisung" ? "selected" : ""}>Überweisung</option>
+          <select class="table-select" data-field="planningRegistrationType">
+            <option value="" ${!student.planningRegistrationType ? "selected" : ""}>-</option>
+            <option value="mündlich" ${student.planningRegistrationType === "mündlich" ? "selected" : ""}>mündlich</option>
+            <option value="Zettel" ${student.planningRegistrationType === "Zettel" ? "selected" : ""}>Zettel</option>
           </select>
-        </td>
-
-        <td>
-          <input class="table-checkbox" type="checkbox" data-field="planningRegistrationSubmitted" ${student.planningRegistrationSubmitted ? "checked" : ""}>
         </td>
 
         <td>
@@ -834,14 +838,12 @@ async function savePlanningTable() {
     }
 
     const targetBelt = row.querySelector('[data-field="planningTargetBelt"]');
-    const paid = row.querySelector('[data-field="planningPaid"]');
-    const paymentMethod = row.querySelector('[data-field="planningPaymentMethod"]');
-    const registration = row.querySelector('[data-field="planningRegistrationSubmitted"]');
+    const paidAmount = row.querySelector('[data-field="planningPaidAmount"]');
+    const registrationType = row.querySelector('[data-field="planningRegistrationType"]');
 
     student.planningTargetBelt = targetBelt.value;
-    student.planningPaid = paid.checked;
-    student.planningPaymentMethod = paymentMethod.value;
-    student.planningRegistrationSubmitted = registration.checked;
+    student.planningPaidAmount = paidAmount.value.trim();
+    student.planningRegistrationType = registrationType.value;
   });
 
   try {
@@ -866,9 +868,8 @@ async function removeStudentFromPlanning(studentId) {
   }
 
   student.plannedExam = false;
-  student.planningPaid = false;
-  student.planningPaymentMethod = "";
-  student.planningRegistrationSubmitted = false;
+  student.planningPaidAmount = "";
+  student.planningRegistrationType = "";
 
   try {
     await saveStudents();
@@ -904,6 +905,110 @@ function isHalfBelt(belt) {
     "Blau-Braun",
     "Braun-Schwarz"
   ].includes(belt);
+}
+
+
+function beltOrder(belt) {
+  const index = GURTE.indexOf(belt);
+  return index === -1 ? 999 : index;
+}
+
+function exportPlanningExcel() {
+  savePlanningTableValuesFromDom();
+
+  const plannedStudents = data.students
+    .filter(student => student.plannedExam)
+    .sort((a, b) => {
+      const ageA = calculateAge(a.birthday);
+      const ageB = calculateAge(b.birthday);
+      const targetA = a.planningTargetBelt || getNextBelt(a.belt, ageA);
+      const targetB = b.planningTargetBelt || getNextBelt(b.belt, ageB);
+
+      const targetCompare = beltOrder(targetA) - beltOrder(targetB);
+      if (targetCompare !== 0) {
+        return targetCompare;
+      }
+
+      const nameA = `${a.lastName} ${a.firstName}`.toLowerCase();
+      const nameB = `${b.lastName} ${b.firstName}`.toLowerCase();
+      return nameA.localeCompare(nameB, "de");
+    });
+
+  const rows = [
+    [
+      "Nachname",
+      "Vorname",
+      "Aktueller Gurt",
+      "Alter",
+      "Gürtellänge",
+      "Zielgurt",
+      "Bezahlt in €",
+      "Anmeldung"
+    ]
+  ];
+
+  plannedStudents.forEach(student => {
+    const age = calculateAge(student.birthday);
+    rows.push([
+      student.lastName || "",
+      student.firstName || "",
+      student.belt || "",
+      age === null ? "" : String(age),
+      student.beltSize || "",
+      student.planningTargetBelt || getNextBelt(student.belt, age),
+      student.planningPaidAmount || "",
+      student.planningRegistrationType || ""
+    ]);
+  });
+
+  const csv = rows
+    .map(row => row.map(value => `"${String(value).replaceAll('"', '""')}"`).join(";"))
+    .join("\n");
+
+  const blob = new Blob(["\ufeff" + csv], {
+    type: "text/csv;charset=utf-8;"
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "pruefungsplanung-sortiert-nach-zielgurt.csv";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+function savePlanningTableValuesFromDom() {
+  if (!planningTableBody) {
+    return;
+  }
+
+  const rows = planningTableBody.querySelectorAll("tr[data-student-id]");
+
+  rows.forEach(row => {
+    const student = data.students.find(item => item.id === row.dataset.studentId);
+
+    if (!student) {
+      return;
+    }
+
+    const targetBelt = row.querySelector('[data-field="planningTargetBelt"]');
+    const paidAmount = row.querySelector('[data-field="planningPaidAmount"]');
+    const registrationType = row.querySelector('[data-field="planningRegistrationType"]');
+
+    if (targetBelt) {
+      student.planningTargetBelt = targetBelt.value;
+    }
+
+    if (paidAmount) {
+      student.planningPaidAmount = paidAmount.value.trim();
+    }
+
+    if (registrationType) {
+      student.planningRegistrationType = registrationType.value;
+    }
+  });
 }
 
 /* Übersicht */
