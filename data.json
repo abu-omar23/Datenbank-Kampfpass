@@ -1321,6 +1321,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "04bc497e-3836-4fae-83d8-8470ede78599",
+      "firstName": "Danilo",
+      "lastName": "Rajovic",
+      "birthday": "2010-12-27",
+      "belt": "Weiß",
+      "beltSize": "300 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
