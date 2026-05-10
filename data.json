@@ -313,6 +313,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "1042679c-6afb-4f45-8fa8-6778b7e7ddec",
+      "firstName": "Emma",
+      "lastName": "Rekar",
+      "birthday": "2016-09-11",
+      "belt": "Grün",
+      "beltSize": "240 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
