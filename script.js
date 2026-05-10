@@ -1136,6 +1136,202 @@ function buildMaterialSummaryHtml(plannedStudents) {
 }
 
 
+
+function csvEscape(value) {
+  return `"${String(value ?? "").replaceAll('"', '""')}"`;
+}
+
+function downloadCsv(fileName, rows) {
+  const csv = rows
+    .map(row => row.map(csvEscape).join(";"))
+    .join("\n");
+
+  const blob = new Blob(["\ufeff" + csv], {
+    type: "text/csv;charset=utf-8;"
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = fileName;
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  URL.revokeObjectURL(url);
+}
+
+function getPlannedStudentsForExport() {
+  return data.students
+    .filter(student =>
+      student.plannedExam === true ||
+      student.plannedExam === "true" ||
+      student.plannedExam === 1
+    )
+    .sort((a, b) => {
+      const ageA = calculateAge(a.birthday);
+      const ageB = calculateAge(b.birthday);
+      const targetA = a.planningTargetBelt || getNextBelt(a.belt, ageA);
+      const targetB = b.planningTargetBelt || getNextBelt(b.belt, ageB);
+
+      const targetCompare = beltOrder(targetA) - beltOrder(targetB);
+
+      if (targetCompare !== 0) {
+        return targetCompare;
+      }
+
+      const nameA = `${a.lastName} ${a.firstName}`.toLowerCase();
+      const nameB = `${b.lastName} ${b.firstName}`.toLowerCase();
+
+      return nameA.localeCompare(nameB, "de");
+    });
+}
+
+function exportExamListCsv() {
+  try {
+    savePlanningTableValuesFromDom();
+
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const year = now.getFullYear();
+
+    const plannedStudents = getPlannedStudentsForExport();
+
+    const rows = [
+      [
+        "Nachname",
+        "Vorname",
+        "Aktueller Gurt",
+        "Zielgurt",
+        "Alter",
+        "Gürtellänge",
+        "Jahressichtmarke",
+        "Anmeldung",
+        "Bezahlt in €",
+        "Zahlungsart"
+      ]
+    ];
+
+    plannedStudents.forEach(student => {
+      const age = calculateAge(student.birthday);
+      const targetBelt = student.planningTargetBelt || getNextBelt(student.belt, age);
+
+      rows.push([
+        student.lastName || "",
+        student.firstName || "",
+        student.belt || "",
+        targetBelt || "",
+        age === null ? "" : age,
+        student.beltSize || "",
+        getCurrentStampYears(student),
+        student.planningRegistrationType || "",
+        student.planningPaidAmount || "",
+        student.planningPaymentMethod || ""
+      ]);
+    });
+
+    rows.push([]);
+    rows.push(["Gesamtzahl Prüflinge", plannedStudents.length]);
+
+    downloadCsv(`Gürtelprüfung Prüfungsliste (${month}.${year}).csv`, rows);
+  } catch (error) {
+    console.error(error);
+    alert("CSV Export Fehler: " + error.message);
+  }
+}
+
+function exportMaterialCsv() {
+  try {
+    savePlanningTableValuesFromDom();
+
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const year = now.getFullYear();
+
+    const plannedStudents = getPlannedStudentsForExport();
+
+    const rows = [];
+
+    const sizes = Array.from(new Set(
+      plannedStudents
+        .map(student => String(student.beltSize || "").trim())
+        .filter(Boolean)
+    )).sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+
+    const targetBelts = Array.from(new Set(
+      plannedStudents.map(student => {
+        const age = calculateAge(student.birthday);
+        return student.planningTargetBelt || getNextBelt(student.belt, age);
+      })
+    )).sort((a, b) => beltOrder(a) - beltOrder(b));
+
+    rows.push(["Gürtelbestellung nach Zielgurt und Größe"]);
+    rows.push(["Zielgurt", ...sizes, "Gesamt"]);
+
+    targetBelts.forEach(targetBelt => {
+      let rowTotal = 0;
+
+      const counts = sizes.map(size => {
+        const count = plannedStudents.filter(student => {
+          const age = calculateAge(student.birthday);
+          const target = student.planningTargetBelt || getNextBelt(student.belt, age);
+
+          return target === targetBelt &&
+            String(student.beltSize || "").trim() === size;
+        }).length;
+
+        rowTotal += count;
+        return count || "";
+      });
+
+      rows.push([targetBelt, ...counts, rowTotal]);
+    });
+
+    const sizeTotals = sizes.map(size => {
+      return plannedStudents.filter(student =>
+        String(student.beltSize || "").trim() === size
+      ).length || "";
+    });
+
+    rows.push(["Summe", ...sizeTotals, plannedStudents.length]);
+
+    rows.push([]);
+    rows.push(["Medaillen / Aufkleber"]);
+    rows.push(["Farbe / Zielgurt", "Anzahl"]);
+
+    targetBelts.forEach(targetBelt => {
+      const count = plannedStudents.filter(student => {
+        const age = calculateAge(student.birthday);
+        const target = student.planningTargetBelt || getNextBelt(student.belt, age);
+        return target === targetBelt;
+      }).length;
+
+      rows.push([targetBelt, count]);
+    });
+
+    rows.push(["Gesamt", plannedStudents.length]);
+
+    rows.push([]);
+    rows.push(["Zusatzmaterial"]);
+    rows.push(["Material", "Anzahl"]);
+
+    const missingStamps = plannedStudents.filter(student => !hasCurrentStamp(student)).length;
+
+    rows.push(["Urkunden", plannedStudents.length]);
+    rows.push(["Medaillen / Aufkleber", plannedStudents.length]);
+    rows.push(["Jahressichtmarken aktuelles Jahr", missingStamps]);
+    rows.push(["Pässe", "manuell prüfen"]);
+
+    downloadCsv(`Gürtelprüfung Material (${month}.${year}).csv`, rows);
+  } catch (error) {
+    console.error(error);
+    alert("CSV Export Fehler: " + error.message);
+  }
+}
+
+
 function exportPlanningExcel() {
   try {
     savePlanningTableValuesFromDom();
