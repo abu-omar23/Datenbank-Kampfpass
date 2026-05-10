@@ -1439,7 +1439,7 @@
       "firstName": "Jan",
       "lastName": "Pontow",
       "birthday": "2017-08-12",
-      "belt": "Weiß",
+      "belt": "Gelb",
       "beltSize": "260 cm",
       "notes": "",
       "plannedExam": false,
@@ -1453,7 +1453,14 @@
           "status": "ja"
         }
       ],
-      "exams": []
+      "exams": [
+        {
+          "id": "e15f39b4-dec7-4f0d-8a01-85955ea9b67a",
+          "date": "2017-05-09",
+          "belt": "Gelb",
+          "note": ""
+        }
+      ]
     }
   ]
 }
