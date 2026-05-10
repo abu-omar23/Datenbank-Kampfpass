@@ -1187,7 +1187,7 @@
       "firstName": "Ari",
       "lastName": "Zukaj",
       "birthday": "2018-01-29",
-      "belt": "Weiß",
+      "belt": "Gelb",
       "beltSize": "260 cm",
       "notes": "",
       "plannedExam": false,
@@ -1201,7 +1201,14 @@
           "status": "ja"
         }
       ],
-      "exams": []
+      "exams": [
+        {
+          "id": "f3410763-4cd9-42b6-8a2d-caa7b798af02",
+          "date": "2026-05-09",
+          "belt": "Gelb",
+          "note": ""
+        }
+      ]
     }
   ]
 }
