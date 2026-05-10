@@ -772,7 +772,7 @@ function renderPlanningTable() {
   if (plannedStudents.length === 0) {
     planningTableBody.innerHTML = `
       <tr>
-        <td colspan="8">Keine Schüler für die Prüfung eingeplant.</td>
+        <td colspan="10">Keine Schüler für die Prüfung eingeplant.</td>
       </tr>
     `;
     return;
@@ -781,127 +781,73 @@ function renderPlanningTable() {
   planningTableBody.innerHTML = plannedStudents.map(student => {
     const age = calculateAge(student.birthday);
     const targetBelt = student.planningTargetBelt || getNextBelt(student.belt, age);
+    const stampOk = hasCurrentStamp(student);
+    const paidOk = Boolean(student.planningPaidAmount && student.planningPaidAmount.trim());
+    const registrationOk = Boolean(student.planningRegistrationType);
 
-   return `
-  <tr data-student-id="${student.id}">
+    return `
+      <tr data-student-id="${student.id}">
+        <td>
+          <strong>${escapeHtml(student.lastName)}, ${escapeHtml(student.firstName)}</strong>
+        </td>
 
-    <td class="student-cell">
-      <strong>
-        ${escapeHtml(student.lastName)},
-        ${escapeHtml(student.firstName)}
-      </strong>
-    </td>
+        <td>
+          <div class="belt-row center-belt">
+            <span class="belt-dot ${beltClass(student.belt)}"></span>
+            <span class="belt-text">${escapeHtml(student.belt)}</span>
+          </div>
+        </td>
 
-    <td>
-      <div class="belt-row center-belt">
-        <span class="belt-dot ${beltClass(student.belt)}"></span>
+        <td>
+          <select class="table-select" data-field="planningTargetBelt">
+            ${GURTE.map(belt => `<option value="${belt}" ${belt === targetBelt ? "selected" : ""}>${belt}</option>`).join("")}
+          </select>
+        </td>
 
-        <span class="belt-text">
-          ${escapeHtml(student.belt)}
-        </span>
-      </div>
-    </td>
+        <td>
+          <strong>${age === null ? "-" : age}</strong>
+        </td>
 
-    <td>
-      <select
-        class="table-select"
-        data-field="planningTargetBelt"
-      >
-        ${GURTE.map(belt => `
-          <option
-            value="${belt}"
-            ${belt === targetBelt ? "selected" : ""}
-          >
-            ${belt}
-          </option>
-        `).join("")}
-      </select>
-    </td>
+        <td>
+          <strong>${escapeHtml(student.beltSize || "-")}</strong>
+        </td>
 
-    <td class="big-value">
-      ${age === null ? "-" : age}
-    </td>
+        <td>
+          <span class="${stampOk ? "status-ok" : "status-bad"}">
+            ${stampOk ? "Vorhanden" : "Fehlt"}
+          </span>
+        </td>
 
-    <td class="big-value">
-      ${escapeHtml(student.beltSize || "-")}
-    </td>
+        <td>
+          <select class="table-select" data-field="planningRegistrationType">
+            <option value="" ${!student.planningRegistrationType ? "selected" : ""}>-</option>
+            <option value="mündlich" ${student.planningRegistrationType === "mündlich" ? "selected" : ""}>mündlich</option>
+            <option value="Zettel" ${student.planningRegistrationType === "Zettel" ? "selected" : ""}>Zettel</option>
+          </select>
+        </td>
 
-    <td>
-      <span class="${
-        hasCurrentStamp(student)
-          ? "status-ok"
-          : "status-bad"
-      }">
-        ${
-          hasCurrentStamp(student)
-            ? "Vorhanden"
-            : "Fehlt"
-        }
-      </span>
-    </td>
+        <td>
+          <input class="table-input euro-input" type="text" data-field="planningPaidAmount" value="${escapeHtml(student.planningPaidAmount || "")}" placeholder="25 €">
+        </td>
 
-    <td>
-      <select
-        class="table-select"
-        data-field="planningRegistrationType"
-      >
-        <option
-          value=""
-          ${!student.planningRegistrationType ? "selected" : ""}
-        >
-          -
-        </option>
+        <td>
+          <div class="status-column">
+            ${paidOk ? `<span class="status-ok">Bezahlt</span>` : `<span class="status-bad">Offen</span>`}
+            ${registrationOk ? `<span class="status-ok">Angemeldet</span>` : `<span class="status-bad">Keine Anmeldung</span>`}
+          </div>
+        </td>
 
-        <option
-          value="mündlich"
-          ${student.planningRegistrationType === "mündlich" ? "selected" : ""}
-        >
-          mündlich
-        </option>
-
-        <option
-          value="Zettel"
-          ${student.planningRegistrationType === "Zettel" ? "selected" : ""}
-        >
-          Zettel
-        </option>
-      </select>
-    </td>
-
-    <td>
-      <input
-        class="table-input euro-input"
-        type="text"
-        data-field="planningPaidAmount"
-        value="${escapeHtml(student.planningPaidAmount || "")}"
-        placeholder="25 €"
-      >
-    </td>
-
-    <td>
-      <div class="status-column">
-
-        ${
-          student.planningPaidAmount
-            ? `<span class="status-ok">Bezahlt</span>`
-            : `<span class="status-bad">Offen</span>`
-        }
-
-        ${
-          student.planningRegistrationType
-            ? `<span class="status-ok">Angemeldet</span>`
-            : `<span class="status-bad">Keine Anmeldung</span>`
-        }
-
-      </div>
-    </td>
-
-  </tr>
-`;
+        <td>
+          <button class="danger-btn" onclick="removeStudentFromPlanning('${student.id}')">Entfernen</button>
+        </td>
+      </tr>
+    `;
   }).join("");
 }
 
 async function savePlanningTable() {
+  savePlanningTableValuesFromDom();
+
   if (!planningTableBody) {
     return;
   }
@@ -1012,50 +958,106 @@ function exportPlanningExcel() {
       return nameA.localeCompare(nameB, "de");
     });
 
-  const rows = [
-    [
-      "Nachname",
-      "Vorname",
-      "Aktueller Gurt",
-      "Alter",
-      "Gürtellänge",
-      "Zielgurt",
-      "Bezahlt in €",
-      "Anmeldung"
-    ]
-  ];
-
-  plannedStudents.forEach(student => {
+  const rowsHtml = plannedStudents.map(student => {
     const age = calculateAge(student.birthday);
-    rows.push([
-      student.lastName || "",
-      student.firstName || "",
-      student.belt || "",
-      age === null ? "" : String(age),
-      student.beltSize || "",
-      student.planningTargetBelt || getNextBelt(student.belt, age),
-      student.planningPaidAmount || "",
-      student.planningRegistrationType || ""
-    ]);
-  });
+    const targetBelt = student.planningTargetBelt || getNextBelt(student.belt, age);
+    const stampOk = hasCurrentStamp(student);
+    const paidOk = Boolean(student.planningPaidAmount && student.planningPaidAmount.trim());
+    const registrationOk = Boolean(student.planningRegistrationType);
 
-  const csv = rows
-    .map(row => row.map(value => `"${String(value).replaceAll('"', '""')}"`).join(";"))
-    .join("\n");
+    return `
+      <tr>
+        <td><b>${escapeHtml(student.lastName)}, ${escapeHtml(student.firstName)}</b></td>
+        <td>${escapeHtml(student.belt || "")}</td>
+        <td>${escapeHtml(targetBelt || "")}</td>
+        <td>${age === null ? "" : age}</td>
+        <td>${escapeHtml(student.beltSize || "")}</td>
+        <td class="${stampOk ? "ok" : "bad"}">${stampOk ? "Vorhanden" : "Fehlt"}</td>
+        <td>${escapeHtml(student.planningRegistrationType || "")}</td>
+        <td>${escapeHtml(student.planningPaidAmount || "")}</td>
+        <td>
+          ${paidOk ? "Bezahlt" : "Offen"}
+          ${registrationOk ? " / Angemeldet" : " / Keine Anmeldung"}
+        </td>
+      </tr>
+    `;
+  }).join("");
 
-  const blob = new Blob(["\ufeff" + csv], {
-    type: "text/csv;charset=utf-8;"
+  const html = `
+    <html>
+      <head>
+        <meta charset="UTF-8">
+        <style>
+          table {
+            border-collapse: collapse;
+            font-family: Arial, sans-serif;
+            width: 100%;
+          }
+
+          th {
+            background: #f8fafc;
+            font-weight: 900;
+            text-align: center;
+            border: 1px solid #d1d5db;
+            padding: 8px;
+          }
+
+          td {
+            text-align: center;
+            border: 1px solid #d1d5db;
+            padding: 8px;
+          }
+
+          .ok {
+            background: #dcfce7;
+            color: #166534;
+            font-weight: 800;
+          }
+
+          .bad {
+            background: #fee2e2;
+            color: #991b1b;
+            font-weight: 800;
+          }
+        </style>
+      </head>
+      <body>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Aktueller Gurt</th>
+              <th>Zielgurt</th>
+              <th>Alter</th>
+              <th>Gürtellänge</th>
+              <th>Jahressichtmarke</th>
+              <th>Anmeldung</th>
+              <th>Bezahlt in €</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml || `<tr><td colspan="9">Keine Schüler für die Prüfung eingeplant.</td></tr>`}
+          </tbody>
+        </table>
+      </body>
+    </html>
+  `;
+
+  const blob = new Blob(["\ufeff" + html], {
+    type: "application/vnd.ms-excel;charset=utf-8;"
   });
 
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = "pruefungsplanung-sortiert-nach-zielgurt.csv";
+  link.download = "pruefungsplanung-sortiert-nach-zielgurt.xls";
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 }
+
 
 function savePlanningTableValuesFromDom() {
   if (!planningTableBody) {
@@ -1087,6 +1089,24 @@ function savePlanningTableValuesFromDom() {
       student.planningRegistrationType = registrationType.value;
     }
   });
+}
+
+
+function hasCurrentStamp(student) {
+  const currentYear = String(new Date().getFullYear());
+
+  return (student.annualStamps || []).some(stamp => {
+    return String(stamp.year) === currentYear && stamp.status === "ja";
+  });
+}
+
+function getCurrentStampText(student) {
+  return hasCurrentStamp(student) ? "Vorhanden" : "Fehlt";
+}
+
+function beltOrder(belt) {
+  const index = GURTE.indexOf(belt);
+  return index === -1 ? 999 : index;
 }
 
 /* Übersicht */
@@ -1238,100 +1258,6 @@ if (beltFilter) {
 
 if (planningFilter) {
   planningFilter.addEventListener("change", renderStudents);
-}
-
-function exportPlanningExcel() {
-  savePlanningTableValuesFromDom();
-
-  const plannedStudents = data.students
-    .filter(student => student.plannedExam)
-    .sort((a, b) => {
-      const ageA = calculateAge(a.birthday);
-      const ageB = calculateAge(b.birthday);
-
-      const targetA = a.planningTargetBelt || getNextBelt(a.belt, ageA);
-      const targetB = b.planningTargetBelt || getNextBelt(b.belt, ageB);
-
-      return beltOrder(targetA) - beltOrder(targetB);
-    });
-
-  let csv = "Nachname;Vorname;Aktueller Gurt;Alter;Gürtellänge;Zielgurt;Bezahlt;Anmeldung\n";
-
-  plannedStudents.forEach(student => {
-    const age = calculateAge(student.birthday);
-    const target = student.planningTargetBelt || getNextBelt(student.belt, age);
-
-    csv +=
-      `"${student.lastName || ""}";` +
-      `"${student.firstName || ""}";` +
-      `"${student.belt || ""}";` +
-      `"${age || ""}";` +
-      `"${student.beltSize || ""}";` +
-      `"${target || ""}";` +
-      `"${student.planningPaidAmount || ""}";` +
-      `"${student.planningRegistrationType || ""}"\n`;
-  });
-
-  const blob = new Blob(["\uFEFF" + csv], {
-    type: "text/csv;charset=utf-8;"
-  });
-
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement("a");
-
-  a.href = url;
-  a.download = "pruefungsplanung.csv";
-
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-
-  window.URL.revokeObjectURL(url);
-}
-
-function savePlanningTableValuesFromDom() {
-  const tableBody = document.getElementById("planningTableBody");
-
-  if (!tableBody) {
-    return;
-  }
-
-  const rows = tableBody.querySelectorAll("tr[data-student-id]");
-
-  rows.forEach(row => {
-    const student = data.students.find(item => item.id === row.dataset.studentId);
-
-    if (!student) {
-      return;
-    }
-
-    const targetBelt = row.querySelector('[data-field="planningTargetBelt"]');
-    const paidAmount = row.querySelector('[data-field="planningPaidAmount"]');
-    const registrationType = row.querySelector('[data-field="planningRegistrationType"]');
-
-    if (targetBelt) student.planningTargetBelt = targetBelt.value;
-    if (paidAmount) student.planningPaidAmount = paidAmount.value.trim();
-    if (registrationType) student.planningRegistrationType = registrationType.value;
-  });
-}
-
-function beltOrder(belt) {
-  const index = GURTE.indexOf(belt);
-  return index === -1 ? 999 : index;
-}
-function hasCurrentStamp(student) {
-
-  const currentYear =
-    String(new Date().getFullYear());
-
-  return (student.annualStamps || []).some(stamp => {
-
-    return (
-      String(stamp.year) === currentYear &&
-      stamp.status === "ja"
-    );
-
-  });
 }
 
 window.addEventListener("load", function() {
