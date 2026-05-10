@@ -1489,6 +1489,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "be182edc-eb43-4819-8c63-6ab6ac958c75",
+      "firstName": "Liana",
+      "lastName": "Hess",
+      "birthday": "2019-06-30",
+      "belt": "Weiß",
+      "beltSize": "220 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
