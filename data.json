@@ -182,7 +182,7 @@
       "belt": "Grün-Blau",
       "beltSize": "260 cm",
       "notes": "",
-      "plannedExam": false,
+      "plannedExam": true,
       "planningPaidAmount": "",
       "planningRegistrationType": "",
       "planningPaymentMethod": "",
