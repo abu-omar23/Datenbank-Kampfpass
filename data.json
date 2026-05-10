@@ -929,6 +929,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "042819cd-f91a-4ee3-a659-688adcfb0bbe",
+      "firstName": "Giulia",
+      "lastName": "Zotica",
+      "birthday": "2011-05-31",
+      "belt": "Weiß",
+      "beltSize": "280 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
