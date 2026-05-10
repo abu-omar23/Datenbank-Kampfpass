@@ -1189,6 +1189,345 @@ function getPlannedStudentsForExport() {
     });
 }
 
+
+function downloadExcelFile(fileName, htmlContent) {
+  const blob = new Blob(["\ufeff" + htmlContent], {
+    type: "application/vnd.ms-excel;charset=utf-8;"
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = fileName;
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  URL.revokeObjectURL(url);
+}
+
+function getExcelStyle() {
+  return `
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 22px;
+        font-weight: 900;
+        margin-bottom: 20px;
+      }
+
+      h2 {
+        text-align: center;
+        font-size: 18px;
+        font-weight: 900;
+        margin-top: 28px;
+        margin-bottom: 10px;
+      }
+
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 26px;
+      }
+
+      th {
+        background: #e5e7eb;
+        color: #000000;
+        font-weight: 900;
+        text-align: center;
+        border: 1px solid #000000;
+        padding: 8px;
+      }
+
+      td {
+        text-align: center;
+        border: 1px solid #000000;
+        padding: 7px;
+      }
+
+      .summary {
+        background: #f3f4f6;
+        font-weight: 900;
+      }
+
+      .section-title {
+        background: #dbeafe;
+        font-weight: 900;
+        text-align: center;
+      }
+
+      .ok {
+        background: #dcfce7;
+        color: #166534;
+        font-weight: 900;
+      }
+
+      .bad {
+        background: #fee2e2;
+        color: #991b1b;
+        font-weight: 900;
+      }
+    </style>
+  `;
+}
+
+function exportExamListExcel() {
+  try {
+    savePlanningTableValuesFromDom();
+
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const year = now.getFullYear();
+
+    const plannedStudents = getPlannedStudentsForExport();
+
+    const rowsHtml = plannedStudents.map(student => {
+      const age = calculateAge(student.birthday);
+      const targetBelt = student.planningTargetBelt || getNextBelt(student.belt, age);
+      const stampText = getCurrentStampYears(student);
+      const stampClass = stampText === "-" ? "bad" : "ok";
+
+      return `
+        <tr>
+          <td>${escapeHtml(student.lastName || "")}</td>
+          <td>${escapeHtml(student.firstName || "")}</td>
+          <td>${escapeHtml(student.belt || "")}</td>
+          <td><b>${escapeHtml(targetBelt || "")}</b></td>
+          <td>${age === null ? "" : age}</td>
+          <td>${escapeHtml(student.beltSize || "")}</td>
+          <td class="${stampClass}">${escapeHtml(stampText)}</td>
+          <td>${escapeHtml(student.planningRegistrationType || "")}</td>
+          <td>${escapeHtml(student.planningPaidAmount || "")}</td>
+          <td>${escapeHtml(student.planningPaymentMethod || "")}</td>
+        </tr>
+      `;
+    }).join("");
+
+    const html = `
+      <html>
+        <head>
+          <meta charset="UTF-8">
+          ${getExcelStyle()}
+        </head>
+
+        <body>
+          <h1>Gürtelprüfung (${month}.${year})</h1>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Nachname</th>
+                <th>Vorname</th>
+                <th>Aktueller Gurt</th>
+                <th>Zielgurt</th>
+                <th>Alter</th>
+                <th>Gürtellänge</th>
+                <th>Jahressichtmarke</th>
+                <th>Anmeldung</th>
+                <th>Bezahlt in €</th>
+                <th>Zahlungsart</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              ${rowsHtml || `<tr><td colspan="10">Keine Schüler für die Prüfung eingeplant.</td></tr>`}
+
+              <tr class="summary">
+                <td colspan="9">Gesamtzahl Prüflinge</td>
+                <td>${plannedStudents.length}</td>
+              </tr>
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `;
+
+    downloadExcelFile(`Gürtelprüfung Prüfungsliste (${month}.${year}).xls`, html);
+  } catch (error) {
+    console.error(error);
+    alert("Excel Export Fehler: " + error.message);
+  }
+}
+
+function exportMaterialExcel() {
+  try {
+    savePlanningTableValuesFromDom();
+
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const year = now.getFullYear();
+
+    const plannedStudents = getPlannedStudentsForExport();
+
+    const sizes = Array.from(new Set(
+      plannedStudents
+        .map(student => String(student.beltSize || "").trim())
+        .filter(Boolean)
+    )).sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+
+    const targetBelts = Array.from(new Set(
+      plannedStudents.map(student => {
+        const age = calculateAge(student.birthday);
+        return student.planningTargetBelt || getNextBelt(student.belt, age);
+      })
+    )).sort((a, b) => beltOrder(a) - beltOrder(b));
+
+    let beltTotal = 0;
+
+    const beltRows = targetBelts.map(targetBelt => {
+      let rowTotal = 0;
+
+      const cells = sizes.map(size => {
+        const count = plannedStudents.filter(student => {
+          const age = calculateAge(student.birthday);
+          const target = student.planningTargetBelt || getNextBelt(student.belt, age);
+
+          return target === targetBelt &&
+            String(student.beltSize || "").trim() === size;
+        }).length;
+
+        rowTotal += count;
+        beltTotal += count;
+
+        return `<td>${count || ""}</td>`;
+      }).join("");
+
+      return `
+        <tr>
+          <td><b>${escapeHtml(targetBelt)}</b></td>
+          ${cells}
+          <td><b>${rowTotal}</b></td>
+        </tr>
+      `;
+    }).join("");
+
+    const sizeTotals = sizes.map(size => {
+      const count = plannedStudents.filter(student =>
+        String(student.beltSize || "").trim() === size
+      ).length;
+
+      return `<td><b>${count || ""}</b></td>`;
+    }).join("");
+
+    const medalRows = targetBelts.map(targetBelt => {
+      const count = plannedStudents.filter(student => {
+        const age = calculateAge(student.birthday);
+        const target = student.planningTargetBelt || getNextBelt(student.belt, age);
+        return target === targetBelt;
+      }).length;
+
+      return `
+        <tr>
+          <td><b>${escapeHtml(targetBelt)}</b></td>
+          <td>${count}</td>
+        </tr>
+      `;
+    }).join("");
+
+    const missingStamps = plannedStudents.filter(student => !hasCurrentStamp(student)).length;
+
+    const html = `
+      <html>
+        <head>
+          <meta charset="UTF-8">
+          ${getExcelStyle()}
+        </head>
+
+        <body>
+          <h1>Materialbestellung Gürtelprüfung (${month}.${year})</h1>
+
+          <h2>Gürtelbestellung nach Zielgurt und Größe</h2>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Zielgurt</th>
+                ${sizes.map(size => `<th>${escapeHtml(size)}</th>`).join("")}
+                <th>Gesamt</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              ${beltRows || `<tr><td colspan="${sizes.length + 2}">Keine Daten vorhanden.</td></tr>`}
+
+              <tr class="summary">
+                <td>Summe</td>
+                ${sizeTotals}
+                <td>${beltTotal}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>Medaillen / Aufkleber</h2>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Farbe / Zielgurt</th>
+                <th>Anzahl</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              ${medalRows || `<tr><td>-</td><td>0</td></tr>`}
+
+              <tr class="summary">
+                <td>Gesamt</td>
+                <td>${plannedStudents.length}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>Zusatzmaterial</h2>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Material</th>
+                <th>Anzahl</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td>Urkunden</td>
+                <td>${plannedStudents.length}</td>
+              </tr>
+
+              <tr>
+                <td>Medaillen / Aufkleber</td>
+                <td>${plannedStudents.length}</td>
+              </tr>
+
+              <tr>
+                <td>Jahressichtmarken aktuelles Jahr</td>
+                <td>${missingStamps}</td>
+              </tr>
+
+              <tr>
+                <td>Pässe</td>
+                <td>manuell prüfen</td>
+              </tr>
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `;
+
+    downloadExcelFile(`Gürtelprüfung Material (${month}.${year}).xls`, html);
+  } catch (error) {
+    console.error(error);
+    alert("Excel Export Fehler: " + error.message);
+  }
+}
+
+
 function exportExamListCsv() {
   try {
     savePlanningTableValuesFromDom();
