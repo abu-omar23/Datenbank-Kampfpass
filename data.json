@@ -973,7 +973,7 @@
       "firstName": "Zulfikar",
       "lastName": "Nemr",
       "birthday": "2018-01-23",
-      "belt": "Weiß",
+      "belt": "Gelb",
       "beltSize": "240 cm",
       "notes": "",
       "plannedExam": false,
@@ -991,7 +991,14 @@
           "status": "ja"
         }
       ],
-      "exams": []
+      "exams": [
+        {
+          "id": "38526f70-56c5-4d55-b4c3-214b45df18ff",
+          "date": "2025-05-24",
+          "belt": "Gelb",
+          "note": ""
+        }
+      ]
     }
   ]
 }
