@@ -994,7 +994,7 @@
       "belt": "Orange",
       "beltSize": "240 cm",
       "notes": "",
-      "plannedExam": false,
+      "plannedExam": true,
       "planningTargetBelt": "",
       "planningRegistrationType": "",
       "planningPaidAmount": "",
