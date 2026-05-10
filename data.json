@@ -421,6 +421,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "5ebc38ad-f553-4582-91c3-ccf44d58f8ec",
+      "firstName": "Almaz",
+      "lastName": "Musaev",
+      "birthday": "2013-05-11",
+      "belt": "Grün",
+      "beltSize": "240 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
