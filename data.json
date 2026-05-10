@@ -189,6 +189,10 @@
       "planningTargetBelt": "",
       "annualStamps": [
         {
+          "year": "2024",
+          "status": "ja"
+        },
+        {
           "year": "2023",
           "status": "ja"
         }
