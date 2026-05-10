@@ -1061,6 +1061,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "0396495e-40fe-429d-8243-fed4f736ac0a",
+      "firstName": "Matti",
+      "lastName": "Wisniowski",
+      "birthday": "2012-11-08",
+      "belt": "Weiß",
+      "beltSize": "260 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
