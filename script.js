@@ -941,7 +941,7 @@ async function applyPassedExam() {
       id: makeId(),
       date: examDate,
       belt: targetBelt,
-      note: "Prüfung bestanden"
+      note: ""
     });
 
     student.exams.sort((a, b) => b.date.localeCompare(a.date));
