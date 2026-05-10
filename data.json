@@ -249,7 +249,7 @@
       "firstName": "Antonio",
       "lastName": "Smilyovic",
       "birthday": "2013-12-19",
-      "belt": "Grün",
+      "belt": "Grün-Blau",
       "beltSize": "260 cm",
       "notes": "",
       "plannedExam": false,
@@ -276,6 +276,12 @@
         }
       ],
       "exams": [
+        {
+          "id": "47bca35d-1a14-4ac9-b8a3-51e12af3c366",
+          "date": "2026-05-09",
+          "belt": "Grün-Blau",
+          "note": ""
+        },
         {
           "id": "7331d246-0433-4c87-9cc6-dc7c5532f292",
           "date": "2025-12-20",
