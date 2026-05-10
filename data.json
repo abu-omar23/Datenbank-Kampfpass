@@ -1411,7 +1411,7 @@
       "firstName": "Julius",
       "lastName": "Pontow",
       "birthday": "2012-11-24",
-      "belt": "Weiß",
+      "belt": "Gelb",
       "beltSize": "260 cm",
       "notes": "",
       "plannedExam": false,
@@ -1425,7 +1425,14 @@
           "status": "ja"
         }
       ],
-      "exams": []
+      "exams": [
+        {
+          "id": "ad4655a4-cd48-4e9e-8173-8ccbf04ee8ef",
+          "date": "2026-05-09",
+          "belt": "Gelb",
+          "note": ""
+        }
+      ]
     }
   ]
 }
