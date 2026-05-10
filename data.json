@@ -695,6 +695,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "90b66552-bc3f-417b-a029-29a39bf9eb54",
+      "firstName": "Alisa",
+      "lastName": "Khachatrian",
+      "birthday": "2016-12-08",
+      "belt": "Weiß",
+      "beltSize": "240 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
