@@ -36,9 +36,9 @@
       "belt": "Blau",
       "beltSize": "",
       "notes": "",
-      "plannedExam": true,
+      "plannedExam": false,
       "planningPaid": false,
-      "planningPaymentMethod": "Bar",
+      "planningPaymentMethod": "",
       "planningRegistrationSubmitted": false,
       "planningTargetBelt": "Blau-Braun",
       "annualStamps": [
