@@ -21,6 +21,36 @@ const GURTE = [
   "8. Dan"
 ];
 
+function beltOrder(belt) {
+  const order = [
+    "Weiß",
+    "Gelb",
+    "Gelb-Orange",
+    "Orange",
+    "Orange-Grün",
+    "Grün",
+    "Grün-Blau",
+    "Blau",
+    "Blau-Braun",
+    "Braun",
+    "Braun-Schwarz",
+    "Schwarz",
+    "1. Dan",
+    "2. Dan",
+    "3. Dan",
+    "4. Dan",
+    "5. Dan",
+    "6. Dan",
+    "7. Dan",
+    "8. Dan"
+  ];
+
+  const index = order.indexOf(belt);
+  return index === -1 ? 999 : index;
+}
+
+
+
 const studentsList = document.getElementById("studentsList");
 const searchInput = document.getElementById("searchInput");
 const beltFilter = document.getElementById("beltFilter");
@@ -845,7 +875,7 @@ function renderPlanningTable() {
   }
 
   const plannedStudents = data.students
-    .filter(student => student.plannedExam)
+    .filter(student => student.plannedExam === true || student.plannedExam === "true" || student.plannedExam === 1)
     .sort((a, b) => {
       const ageA = calculateAge(a.birthday);
       const ageB = calculateAge(b.birthday);
@@ -1188,38 +1218,6 @@ if (planningFilter) {
   planningFilter.addEventListener("change", renderStudents);
 }
 
-function beltOrder(belt) {
-
-  const order = [
-    "Weiß",
-    "Gelb",
-    "Gelb-Orange",
-    "Orange",
-    "Orange-Grün",
-    "Grün",
-    "Grün-Blau",
-    "Blau",
-    "Blau-Braun",
-    "Braun",
-    "Braun-Schwarz",
-    "Schwarz",
-    "Dan 1",
-    "Dan 2",
-    "Dan 3",
-    "Dan 4",
-    "Dan 5",
-    "Dan 6",
-    "Dan 7",
-    "Dan 8"
-  ];
-
-  const index =
-    order.indexOf(belt);
-
-  return index === -1
-    ? 999
-    : index;
-}
 window.addEventListener("load", function() {
   renderStudents();
   renderPlanningTable();
