@@ -1067,7 +1067,7 @@
       "firstName": "Matti",
       "lastName": "Wisniowski",
       "birthday": "2012-11-08",
-      "belt": "Gelb-Orange",
+      "belt": "Orange",
       "beltSize": "260 cm",
       "notes": "",
       "plannedExam": false,
@@ -1086,6 +1086,12 @@
         }
       ],
       "exams": [
+        {
+          "id": "bf5ae86b-5cfe-4879-a643-28b30bbf2084",
+          "date": "2026-05-09",
+          "belt": "Orange",
+          "note": ""
+        },
         {
           "id": "8262b792-a009-4dfb-8042-ea87847fd3c8",
           "date": "2025-12-20",
