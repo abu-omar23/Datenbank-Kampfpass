@@ -28,7 +28,7 @@
       "firstName": "Monir",
       "lastName": "Arrassen",
       "birthday": "2016-04-27",
-      "belt": "Gelb-Orange",
+      "belt": "Orange",
       "notes": "",
       "plannedExam": false,
       "annualStamps": [
@@ -50,6 +50,12 @@
         }
       ],
       "exams": [
+        {
+          "id": "1e2a8176-6510-4816-bfbf-4244b879dc90",
+          "date": "2024-05-11",
+          "belt": "Orange",
+          "note": ""
+        },
         {
           "id": "e699d5f0-8ed7-42cb-b774-67a3475bafab",
           "date": "2023-12-02",
