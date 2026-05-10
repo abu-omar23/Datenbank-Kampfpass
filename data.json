@@ -113,10 +113,10 @@
       "beltSize": "320 cm",
       "notes": "",
       "plannedExam": true,
-      "planningPaidAmount": "",
-      "planningRegistrationType": "",
-      "planningPaymentMethod": "",
-      "planningTargetBelt": "",
+      "planningPaidAmount": "75",
+      "planningRegistrationType": "Zettel",
+      "planningPaymentMethod": "Bar",
+      "planningTargetBelt": "Braun",
       "annualStamps": [
         {
           "year": "2026",
