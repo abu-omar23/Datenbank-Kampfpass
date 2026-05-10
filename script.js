@@ -896,6 +896,74 @@ function isHalfBelt(belt) {
   ].includes(belt);
 }
 
+
+async function applyPassedExam() {
+  if (!planningTableBody) {
+    return;
+  }
+
+  savePlanningTableValuesFromDom();
+
+  const plannedStudents = data.students.filter(student =>
+    student.plannedExam === true ||
+    student.plannedExam === "true" ||
+    student.plannedExam === 1
+  );
+
+  if (plannedStudents.length === 0) {
+    alert("Es sind keine Schüler in der Prüfungsplanung.");
+    return;
+  }
+
+  const today = new Date().toISOString().slice(0, 10);
+  const examDate = prompt("Datum der bestandenen Prüfung eingeben:", today);
+
+  if (!examDate) {
+    return;
+  }
+
+  const confirmed = confirm(
+    `Prüfung für ${plannedStudents.length} Schüler als bestanden übernehmen?\n\n` +
+    "Dabei wird der Zielgurt als aktueller Gurt gesetzt, der Prüfungsverlauf ergänzt und die Schüler werden aus der Prüfungsplanung entfernt."
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  plannedStudents.forEach(student => {
+    const age = calculateAge(student.birthday);
+    const targetBelt = student.planningTargetBelt || getNextBelt(student.belt, age);
+
+    student.exams = student.exams || [];
+
+    student.exams.push({
+      id: makeId(),
+      date: examDate,
+      belt: targetBelt,
+      note: "Prüfung bestanden"
+    });
+
+    student.exams.sort((a, b) => b.date.localeCompare(a.date));
+
+    student.belt = targetBelt;
+    student.plannedExam = false;
+    student.planningTargetBelt = "";
+    student.planningRegistrationType = "";
+    student.planningPaidAmount = "";
+    student.planningPaymentMethod = "";
+  });
+
+  try {
+    await saveStudents();
+    alert("Bestandene Prüfungen wurden übernommen.");
+    await loadStudents();
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
+
 /* Export */
 
 function exportPlanningExcel() {
