@@ -1,1 +1,428 @@
-body{background:#f3f5f9;font-family:Arial}
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #f4f6fb;
+  --card: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --danger: #dc2626;
+  --danger-light: #fee2e2;
+  --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.header {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 22px 28px;
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.header p {
+  margin: 5px 0 0;
+  color: var(--muted);
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.toolbar {
+  display: flex;
+  gap: 12px;
+  padding: 22px 28px 10px;
+}
+
+.toolbar input {
+  flex: 1;
+  padding: 15px 16px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  font-size: 16px;
+  background: white;
+}
+
+.status {
+  padding: 0 28px 10px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+main {
+  padding: 10px 28px 35px;
+}
+
+.students-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 18px;
+}
+
+.student-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.student-card:hover {
+  transform: translateY(-3px);
+  border-color: #c7d2fe;
+}
+
+.student-name {
+  font-size: 19px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.belt-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 9px;
+}
+
+.belt-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  border: 2px solid rgba(0,0,0,0.12);
+  flex: 0 0 auto;
+}
+
+.belt-text {
+  font-weight: 700;
+}
+
+.student-info {
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.empty-state {
+  background: white;
+  border: 1px dashed var(--border);
+  border-radius: 20px;
+  padding: 32px;
+  color: var(--muted);
+  text-align: center;
+  grid-column: 1 / -1;
+}
+
+button {
+  border: 0;
+  border-radius: 13px;
+  padding: 12px 15px;
+  font-weight: 800;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.primary-btn {
+  background: var(--primary);
+  color: white;
+}
+
+.primary-btn:hover {
+  background: var(--primary-dark);
+}
+
+.secondary-btn {
+  background: #eef2ff;
+  color: #1e3a8a;
+}
+
+.danger-btn {
+  background: var(--danger-light);
+  color: var(--danger);
+}
+
+.close-btn {
+  background: #f3f4f6;
+  color: #111827;
+  font-size: 22px;
+  line-height: 1;
+  padding: 8px 13px;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.58);
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 18px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.modal-box {
+  background: var(--card);
+  width: min(850px, 100%);
+  max-height: 92vh;
+  overflow: auto;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 25px 80px rgba(0,0,0,0.25);
+}
+
+.small-modal {
+  width: min(520px, 100%);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.modal-header h2 {
+  margin: 0;
+}
+
+label {
+  display: block;
+  font-weight: 800;
+  margin-bottom: 15px;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  margin-top: 7px;
+  padding: 12px 13px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  font-size: 15px;
+  background: white;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.two-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.edit-only {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 15px;
+  margin-top: 10px;
+}
+
+.edit-only h3 {
+  margin: 0 0 12px;
+}
+
+.history-area {
+  margin-top: 15px;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 22px 0;
+}
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.section-title h3 {
+  margin: 0;
+}
+
+.exam-form {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.exam-list {
+  display: grid;
+  gap: 10px;
+}
+
+.exam-item {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 13px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.exam-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.exam-date {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.exam-note {
+  color: var(--muted);
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+.hint {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+/* Gürtel-Farben */
+
+.belt-white {
+  background: #ffffff;
+}
+
+.belt-yellow {
+  background: #facc15;
+}
+
+.belt-orange {
+  background: #fb923c;
+}
+
+.belt-green {
+  background: #22c55e;
+}
+
+.belt-blue {
+  background: #3b82f6;
+}
+
+.belt-brown {
+  background: #92400e;
+}
+
+.belt-black {
+  background: #111827;
+}
+
+.belt-yellow-orange {
+  background: linear-gradient(90deg, #facc15 50%, #fb923c 50%);
+}
+
+.belt-orange-green {
+  background: linear-gradient(90deg, #fb923c 50%, #22c55e 50%);
+}
+
+.belt-green-blue {
+  background: linear-gradient(90deg, #22c55e 50%, #3b82f6 50%);
+}
+
+.belt-blue-brown {
+  background: linear-gradient(90deg, #3b82f6 50%, #92400e 50%);
+}
+
+.belt-brown-black {
+  background: linear-gradient(90deg, #92400e 50%, #111827 50%);
+}
+
+@media (max-width: 720px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 18px;
+  }
+
+  .header-actions {
+    flex-direction: column;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    padding: 18px;
+  }
+
+  .status {
+    padding: 0 18px 10px;
+  }
+
+  main {
+    padding: 8px 18px 28px;
+  }
+
+  .students-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .two-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .section-title {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .exam-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  button {
+    width: 100%;
+  }
+}
