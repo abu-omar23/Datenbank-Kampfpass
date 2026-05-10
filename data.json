@@ -1559,7 +1559,12 @@
       "planningRegistrationType": "",
       "planningPaidAmount": "",
       "planningPaymentMethod": "",
-      "annualStamps": [],
+      "annualStamps": [
+        {
+          "year": "2026",
+          "status": "ja"
+        }
+      ],
       "exams": []
     }
   ]
