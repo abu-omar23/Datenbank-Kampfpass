@@ -701,7 +701,7 @@
       "firstName": "Alisa",
       "lastName": "Khachatrian",
       "birthday": "2016-12-08",
-      "belt": "Weiß",
+      "belt": "Gelb",
       "beltSize": "240 cm",
       "notes": "",
       "plannedExam": false,
@@ -723,7 +723,14 @@
           "status": "ja"
         }
       ],
-      "exams": []
+      "exams": [
+        {
+          "id": "0fd38cc6-ffcf-41ec-b251-13ced04acf5d",
+          "date": "2024-11-16",
+          "belt": "Gelb",
+          "note": ""
+        }
+      ]
     }
   ]
 }
