@@ -1150,7 +1150,24 @@ function exportPlanningExcel() {
         student.plannedExam === true ||
         student.plannedExam === "true" ||
         student.plannedExam === 1
-      );
+      )
+      .sort((a, b) => {
+        const ageA = calculateAge(a.birthday);
+        const ageB = calculateAge(b.birthday);
+        const targetA = a.planningTargetBelt || getNextBelt(a.belt, ageA);
+        const targetB = b.planningTargetBelt || getNextBelt(b.belt, ageB);
+
+        const targetCompare = beltOrder(targetA) - beltOrder(targetB);
+
+        if (targetCompare !== 0) {
+          return targetCompare;
+        }
+
+        const nameA = `${a.lastName} ${a.firstName}`.toLowerCase();
+        const nameB = `${b.lastName} ${b.firstName}`.toLowerCase();
+
+        return nameA.localeCompare(nameB, "de");
+      });
 
     const rowsHtml = plannedStudents.map(student => {
       const age = calculateAge(student.birthday);
@@ -1176,7 +1193,6 @@ function exportPlanningExcel() {
       <html xmlns:o="urn:schemas-microsoft-com:office:office"
             xmlns:x="urn:schemas-microsoft-com:office:excel"
             xmlns="http://www.w3.org/TR/REC-html40">
-
         <head>
           <meta charset="UTF-8">
 
@@ -1184,21 +1200,18 @@ function exportPlanningExcel() {
           <xml>
             <x:ExcelWorkbook>
               <x:ExcelWorksheets>
-
                 <x:ExcelWorksheet>
                   <x:Name>Prüfliste</x:Name>
                   <x:WorksheetOptions>
                     <x:DisplayGridlines/>
                   </x:WorksheetOptions>
                 </x:ExcelWorksheet>
-
                 <x:ExcelWorksheet>
                   <x:Name>Bestellung</x:Name>
                   <x:WorksheetOptions>
                     <x:DisplayGridlines/>
                   </x:WorksheetOptions>
                 </x:ExcelWorksheet>
-
               </x:ExcelWorksheets>
             </x:ExcelWorkbook>
           </xml>
@@ -1236,56 +1249,49 @@ function exportPlanningExcel() {
               font-weight: 900;
             }
 
-            .sheet-break {
-              page-break-before: always;
+            .sheet2 {
+              mso-element: worksheet;
+              mso-element-name: Bestellung;
             }
           </style>
         </head>
 
         <body>
 
-          <div id="Mappe1">
+          <h3>Prüfungsliste</h3>
 
-            <h3>Prüfungsliste</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Nachname</th>
+                <th>Vorname</th>
+                <th>Aktueller Gurt</th>
+                <th>Zielgurt</th>
+                <th>Alter</th>
+                <th>Gürtellänge</th>
+                <th>Jahressichtmarke</th>
+                <th>Anmeldung</th>
+                <th>Bezahlt in €</th>
+                <th>Zahlungsart</th>
+              </tr>
+            </thead>
 
-            <table>
-              <thead>
-                <tr>
-                  <th>Nachname</th>
-                  <th>Vorname</th>
-                  <th>Aktueller Gurt</th>
-                  <th>Zielgurt</th>
-                  <th>Alter</th>
-                  <th>Gürtellänge</th>
-                  <th>Jahressichtmarke</th>
-                  <th>Anmeldung</th>
-                  <th>Bezahlt in €</th>
-                  <th>Zahlungsart</th>
-                </tr>
-              </thead>
+            <tbody>
+              ${rowsHtml || `<tr><td colspan="10">Keine Schüler für die Prüfung eingeplant.</td></tr>`}
 
-              <tbody>
-                ${rowsHtml}
+              <tr class="summary">
+                <td colspan="9">Gesamtzahl Prüflinge</td>
+                <td>${plannedStudents.length}</td>
+              </tr>
+            </tbody>
+          </table>
 
-                <tr class="summary">
-                  <td colspan="9">Gesamtzahl Prüflinge</td>
-                  <td>${plannedStudents.length}</td>
-                </tr>
-              </tbody>
-            </table>
-
-          </div>
-
-          <div class="sheet-break"></div>
-
-          <div id="Mappe2">
-
+          <div class="sheet2">
             ${buildBeltOrderTableHtml(plannedStudents)}
 
             ${buildMedalOrderTableHtml(plannedStudents)}
 
             ${buildMaterialSummaryHtml(plannedStudents)}
-
           </div>
 
         </body>
@@ -1337,8 +1343,15 @@ function renderStudents() {
       return matchesSearch && matchesBelt && matchesPlanning;
     })
     .sort((a, b) => {
+      const beltCompare = beltOrder(b.belt) - beltOrder(a.belt);
+
+      if (beltCompare !== 0) {
+        return beltCompare;
+      }
+
       const nameA = `${a.lastName} ${a.firstName}`.toLowerCase();
       const nameB = `${b.lastName} ${b.firstName}`.toLowerCase();
+
       return nameA.localeCompare(nameB, "de");
     });
 
