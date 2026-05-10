@@ -1237,6 +1237,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "a721b9e2-d3fb-49a1-bebb-b875ce96b080",
+      "firstName": "Hasan",
+      "lastName": "Cubuk",
+      "birthday": "2019-12-01",
+      "belt": "Weiß",
+      "beltSize": "240 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
