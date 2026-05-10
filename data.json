@@ -31,7 +31,12 @@
       "belt": "Blau",
       "notes": "",
       "plannedExam": false,
-      "annualStamps": [],
+      "annualStamps": [
+        {
+          "year": "2023",
+          "status": "ja"
+        }
+      ],
       "exams": []
     }
   ]
