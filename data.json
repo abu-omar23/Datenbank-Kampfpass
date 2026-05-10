@@ -891,7 +891,7 @@
       "firstName": "Belal",
       "lastName": "Karimi",
       "birthday": "2016-10-08",
-      "belt": "Gelb-Orange",
+      "belt": "Orange",
       "beltSize": "260 cm",
       "notes": "",
       "plannedExam": false,
@@ -910,6 +910,12 @@
         }
       ],
       "exams": [
+        {
+          "id": "7b610e34-4ba8-4a7d-a655-b39d9eb63de7",
+          "date": "2026-05-09",
+          "belt": "Orange",
+          "note": ""
+        },
         {
           "id": "e5c4107f-6459-49df-8850-c5f62efa6de3",
           "date": "2025-12-20",
