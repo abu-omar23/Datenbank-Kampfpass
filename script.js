@@ -1,27 +1,5 @@
-const GURTE = [
-  "Weiß",
-  "Gelb",
-  "Gelb-Orange",
-  "Orange",
-  "Orange-Grün",
-  "Grün",
-  "Grün-Blau",
-  "Blau",
-  "Blau-Braun",
-  "Braun",
-  "Braun-Schwarz",
-  "Schwarz",
-  "1. Dan",
-  "2. Dan",
-  "3. Dan",
-  "4. Dan",
-  "5. Dan",
-  "6. Dan",
-  "7. Dan",
-  "8. Dan"
-];
 
-function beltOrder(belt) {
+function (typeof beltOrder === 'function' ? beltOrder : function(b){return 999;} )(belt) {
   const order = [
     "Weiß",
     "Gelb",
@@ -48,6 +26,32 @@ function beltOrder(belt) {
   const index = order.indexOf(belt);
   return index === -1 ? 999 : index;
 }
+
+
+const GURTE = [
+  "Weiß",
+  "Gelb",
+  "Gelb-Orange",
+  "Orange",
+  "Orange-Grün",
+  "Grün",
+  "Grün-Blau",
+  "Blau",
+  "Blau-Braun",
+  "Braun",
+  "Braun-Schwarz",
+  "Schwarz",
+  "1. Dan",
+  "2. Dan",
+  "3. Dan",
+  "4. Dan",
+  "5. Dan",
+  "6. Dan",
+  "7. Dan",
+  "8. Dan"
+];
+
+
 
 
 
@@ -882,7 +886,7 @@ function renderPlanningTable() {
       const targetA = a.planningTargetBelt || getNextBelt(a.belt, ageA);
       const targetB = b.planningTargetBelt || getNextBelt(b.belt, ageB);
 
-      const targetCompare = beltOrder(targetA) - beltOrder(targetB);
+      const targetCompare = (typeof beltOrder === 'function' ? beltOrder : function(b){return 999;} )(targetA) - (typeof beltOrder === 'function' ? beltOrder : function(b){return 999;} )(targetB);
       if (targetCompare !== 0) {
         return targetCompare;
       }
@@ -1025,7 +1029,7 @@ function getNextBelt(currentBelt, age) {
 }
 
 function isBlueOrHigher(belt) {
-  return beltOrder(belt) >= beltOrder("Blau");
+  return (typeof beltOrder === 'function' ? beltOrder : function(b){return 999;} )(belt) >= (typeof beltOrder === 'function' ? beltOrder : function(b){return 999;} )("Blau");
 }
 
 function isHalfBelt(belt) {
@@ -1039,24 +1043,7 @@ function isHalfBelt(belt) {
 }
 
 
-async function togglePlanningFromOverview(event, studentId) {
-  event.stopPropagation();
 
-  const student = data.students.find(item => item.id === studentId);
-
-  if (!student) {
-    return;
-  }
-
-  student.plannedExam = event.target.checked;
-
-  try {
-    await saveStudents();
-  } catch (error) {
-    event.target.checked = !event.target.checked;
-    alert(error.message);
-  }
-}
 
 /* Übersicht */
 
@@ -1113,14 +1100,7 @@ function renderStudents() {
           Sichtmarke: ${newestStamp}
         </div>
 
-        <label class="overview-planning-check" onclick="event.stopPropagation()">
-          <input
-            type="checkbox"
-            ${student.plannedExam ? "checked" : ""}
-            onchange="togglePlanningFromOverview(event, '${student.id}')"
-          >
-          nächste Prüfung
-        </label>
+        
 
         ${student.plannedExam ? `<div class="planned-badge">Für Prüfung eingeplant</div>` : ""}
       </div>
