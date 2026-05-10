@@ -1573,6 +1573,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "5fad5775-ccfb-4aa6-b166-40b9b31784d0",
+      "firstName": "Vanessa",
+      "lastName": "Fries",
+      "birthday": "2012-06-28",
+      "belt": "Weiß",
+      "beltSize": "260 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
