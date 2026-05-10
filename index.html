@@ -16,7 +16,7 @@
 
   <div class="header-actions">
     <button class="primary-btn" onclick="openAddStudent()">+ Schüler hinzufügen</button>
-    <a class="button-link secondary-btn" href="pruefungsplanung.html">Prüfungsplanung Tabelle</a>
+    <a class="button-link secondary-btn" href="pruefungsplanung.html">Prüfungsplanung</a>
     <button class="secondary-btn" onclick="openSettings()">GitHub Verbindung</button>
   </div>
 </header>
@@ -243,29 +243,6 @@
   </div>
 </div>
 
-<div id="planningModal" class="modal hidden">
-  <div class="modal-box">
-
-    <div class="modal-header">
-      <h2>Prüfungsplanung auswählen</h2>
-      <button class="close-btn" onclick="closeExamPlanning()">×</button>
-    </div>
-
-    <p class="hint">
-      Hake alle Schüler an, die bei der nächsten Prüfung mitmachen sollen.
-    </p>
-
-    <div id="planningList" class="planning-list"></div>
-
-    <div class="form-actions">
-      <button class="primary-btn" onclick="savePlanning()">Planung speichern</button>
-      <a class="button-link secondary-btn" href="pruefungsplanung.html">Zur Tabelle</a>
-      <button class="secondary-btn" onclick="closeExamPlanning()">Schließen</button>
-    </div>
-
-  </div>
-</div>
-
 <div id="settingsModal" class="modal hidden">
   <div class="modal-box small-modal">
 
@@ -295,7 +272,7 @@
     </label>
 
     <p class="hint">
-      Der Token wird nur in diesem Browser gespeichert. Auf dem Handy musst du ihn einmal dort eintragen.
+      Der Token wird nur in diesem Browser gespeichert.
     </p>
 
     <div class="form-actions">

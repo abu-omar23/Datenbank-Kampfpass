@@ -1,33 +1,3 @@
-
-function (typeof beltOrder === 'function' ? beltOrder : function(b){return 999;} )(belt) {
-  const order = [
-    "Weiß",
-    "Gelb",
-    "Gelb-Orange",
-    "Orange",
-    "Orange-Grün",
-    "Grün",
-    "Grün-Blau",
-    "Blau",
-    "Blau-Braun",
-    "Braun",
-    "Braun-Schwarz",
-    "Schwarz",
-    "1. Dan",
-    "2. Dan",
-    "3. Dan",
-    "4. Dan",
-    "5. Dan",
-    "6. Dan",
-    "7. Dan",
-    "8. Dan"
-  ];
-
-  const index = order.indexOf(belt);
-  return index === -1 ? 999 : index;
-}
-
-
 const GURTE = [
   "Weiß",
   "Gelb",
@@ -51,10 +21,6 @@ const GURTE = [
   "8. Dan"
 ];
 
-
-
-
-
 const studentsList = document.getElementById("studentsList");
 const searchInput = document.getElementById("searchInput");
 const beltFilter = document.getElementById("beltFilter");
@@ -63,21 +29,14 @@ const statusText = document.getElementById("statusText") || document.getElementB
 
 const studentModal = document.getElementById("studentModal");
 const settingsModal = document.getElementById("settingsModal");
-const planningModal = document.getElementById("planningModal");
-
 const studentForm = document.getElementById("studentForm");
 const studentModalTitle = document.getElementById("studentModalTitle");
 const deleteStudentBtn = document.getElementById("deleteStudentBtn");
-
 const detailsArea = document.getElementById("detailsArea");
-
 const examFormArea = document.getElementById("examFormArea");
 const examList = document.getElementById("examList");
-
 const stampFormArea = document.getElementById("stampFormArea");
 const stampList = document.getElementById("stampList");
-
-const planningList = document.getElementById("planningList");
 const planningTableBody = document.getElementById("planningTableBody");
 
 let data = {
@@ -87,6 +46,11 @@ let data = {
 let currentSha = null;
 let currentStudentId = null;
 let editingExamId = null;
+
+function beltOrder(belt) {
+  const index = GURTE.indexOf(belt);
+  return index === -1 ? 999 : index;
+}
 
 function getSettings() {
   return {
@@ -169,14 +133,12 @@ function normalizeData(loadedData) {
       belt: student.belt || "Weiß",
       beltSize: student.beltSize || "",
       notes: student.notes || "",
-      plannedExam: Boolean(student.plannedExam),
-      planningPaidAmount: student.planningPaidAmount || "",
-      planningRegistrationType: student.planningRegistrationType || "",
-      planningPaymentMethod: student.planningPaymentMethod || "",
+      plannedExam: student.plannedExam === true || student.plannedExam === "true" || student.plannedExam === 1,
       planningTargetBelt: student.planningTargetBelt || "",
-      annualStamps: Array.isArray(student.annualStamps)
-        ? student.annualStamps
-        : oldStampToArray(student),
+      planningRegistrationType: student.planningRegistrationType || "",
+      planningPaidAmount: student.planningPaidAmount || "",
+      planningPaymentMethod: student.planningPaymentMethod || "",
+      annualStamps: Array.isArray(student.annualStamps) ? student.annualStamps : oldStampToArray(student),
       exams: Array.isArray(student.exams) ? student.exams : []
     };
   });
@@ -203,9 +165,8 @@ async function loadStudents() {
 
     setStatus("Lade Schülerdaten...");
 
-    // 1. Wenn GitHub-Daten vorhanden sind, über GitHub API laden.
     if (settings.owner && settings.repo && settings.branch && settings.token) {
-      const response = await fetch(`${githubFileUrl()}?ref=${settings.branch}`, {
+      const response = await fetch(`${githubFileUrl()}?ref=${settings.branch}&cache=${Date.now()}`, {
         headers: {
           Authorization: `Bearer ${settings.token}`,
           Accept: "application/vnd.github+json"
@@ -229,8 +190,6 @@ async function loadStudents() {
       return;
     }
 
-    // 2. Ohne Token: data.json normal von GitHub Pages / lokal laden.
-    // Anzeigen funktioniert dadurch auch auf der Prüfungsplanungsseite.
     const response = await fetch("data.json?cache=" + Date.now());
 
     if (!response.ok) {
@@ -289,11 +248,9 @@ async function saveStudents() {
     });
   }
 
-  // Immer zuerst den neuesten SHA holen, damit GitHub den Schreibvorgang akzeptiert.
   let sha = await getLatestSha();
   let response = await putFile(sha);
 
-  // Falls GitHub trotzdem einen Versionskonflikt meldet, einmal automatisch neu versuchen.
   if (response.status === 409) {
     sha = await getLatestSha();
     response = await putFile(sha);
@@ -302,7 +259,7 @@ async function saveStudents() {
   if (!response.ok) {
     const errorText = await response.text();
     console.error("GitHub Speicherfehler:", errorText);
-    throw new Error("Speichern fehlgeschlagen. Bitte GitHub Verbindung neu speichern und dann erneut versuchen.");
+    throw new Error("Speichern fehlgeschlagen. Bitte GitHub Verbindung prüfen.");
   }
 
   const result = await response.json();
@@ -312,7 +269,6 @@ async function saveStudents() {
   renderStudents();
   renderPlanningTable();
 }
-
 
 function makeId() {
   if (crypto.randomUUID) {
@@ -407,7 +363,6 @@ if (studentForm) {
     event.preventDefault();
 
     const studentId = currentStudentId || makeId();
-
     const existingIndex = data.students.findIndex(student => student.id === studentId);
     const oldStudent = existingIndex >= 0 ? data.students[existingIndex] : {};
 
@@ -420,10 +375,10 @@ if (studentForm) {
       beltSize: document.getElementById("beltSize").value,
       notes: document.getElementById("notes").value.trim(),
       plannedExam: document.getElementById("plannedExam").checked,
-      planningPaidAmount: oldStudent.planningPaidAmount || "",
-      planningRegistrationType: oldStudent.planningRegistrationType || "",
-      planningPaymentMethod: oldStudent.planningPaymentMethod || "",
       planningTargetBelt: oldStudent.planningTargetBelt || "",
+      planningRegistrationType: oldStudent.planningRegistrationType || "",
+      planningPaidAmount: oldStudent.planningPaidAmount || "",
+      planningPaymentMethod: oldStudent.planningPaymentMethod || "",
       annualStamps: oldStudent.annualStamps || [],
       exams: oldStudent.exams || []
     };
@@ -744,134 +699,7 @@ function renderStamps() {
   }).join("");
 }
 
-/* Prüfungsplanung Auswahl */
-
-function openExamPlanning() {
-  renderPlanningList();
-  planningModal.classList.remove("hidden");
-}
-
-function closeExamPlanning() {
-  planningModal.classList.add("hidden");
-}
-
-function renderPlanningList() {
-  if (!planningList) {
-    return;
-  }
-
-  const students = data.students.slice().sort((a, b) => {
-    const nameA = `${a.lastName} ${a.firstName}`.toLowerCase();
-    const nameB = `${b.lastName} ${b.firstName}`.toLowerCase();
-    return nameA.localeCompare(nameB, "de");
-  });
-
-  if (students.length === 0) {
-    planningList.innerHTML = `<div class="empty-state">Keine Schüler vorhanden.</div>`;
-    return;
-  }
-
-  planningList.innerHTML = students.map(student => {
-    return `
-      <label class="planning-item">
-        <input type="checkbox" data-planning-id="${student.id}" ${student.plannedExam ? "checked" : ""}>
-
-        <div>
-          <strong>${escapeHtml(student.firstName)} ${escapeHtml(student.lastName)}</strong>
-        </div>
-
-        <div class="belt-row">
-          <span class="belt-dot ${beltClass(student.belt)}"></span>
-          <span class="belt-text">${escapeHtml(student.belt)}</span>
-        </div>
-      </label>
-    `;
-  }).join("");
-}
-
-async function savePlanning() {
-  const checkboxes = planningList.querySelectorAll("input[data-planning-id]");
-
-  checkboxes.forEach(checkbox => {
-    const student = data.students.find(item => item.id === checkbox.dataset.planningId);
-
-    if (student) {
-      student.plannedExam = checkbox.checked;
-    }
-  });
-
-  try {
-    await saveStudents();
-    closeExamPlanning();
-  } catch (error) {
-    alert(error.message);
-  }
-}
-
-/* Eigene Prüfungsplanung Tabelle */
-
-
-function getExamFee() {
-  return Number(localStorage.getItem("exam_fee") || "0");
-}
-
-function getStampFee() {
-  return Number(localStorage.getItem("stamp_fee") || "0");
-}
-
-function saveFeeSettingsFromInputs() {
-  const examFeeInput = document.getElementById("examFeeInput");
-  const stampFeeInput = document.getElementById("stampFeeInput");
-
-  if (examFeeInput) {
-    localStorage.setItem("exam_fee", examFeeInput.value || "0");
-  }
-
-  if (stampFeeInput) {
-    localStorage.setItem("stamp_fee", stampFeeInput.value || "0");
-  }
-}
-
-function loadFeeSettingsIntoInputs() {
-  const examFeeInput = document.getElementById("examFeeInput");
-  const stampFeeInput = document.getElementById("stampFeeInput");
-
-  if (examFeeInput) {
-    examFeeInput.value = localStorage.getItem("exam_fee") || "";
-    examFeeInput.addEventListener("input", function() {
-      saveFeeSettingsFromInputs();
-      renderPlanningTable();
-    });
-  }
-
-  if (stampFeeInput) {
-    stampFeeInput.value = localStorage.getItem("stamp_fee") || "";
-    stampFeeInput.addEventListener("input", function() {
-      saveFeeSettingsFromInputs();
-      renderPlanningTable();
-    });
-  }
-}
-
-function getOpenAmount(student) {
-  const examFee = getExamFee();
-  const stampFee = getStampFee();
-
-  if (hasCurrentStamp(student)) {
-    return examFee;
-  }
-
-  return examFee + stampFee;
-}
-
-function formatEuro(value) {
-  const number = Number(value || 0);
-  return number.toLocaleString("de-DE", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }) + " €";
-}
-
+/* Prüfungsplanung */
 
 function renderPlanningTable() {
   if (!planningTableBody) {
@@ -886,7 +714,8 @@ function renderPlanningTable() {
       const targetA = a.planningTargetBelt || getNextBelt(a.belt, ageA);
       const targetB = b.planningTargetBelt || getNextBelt(b.belt, ageB);
 
-      const targetCompare = (typeof beltOrder === 'function' ? beltOrder : function(b){return 999;} )(targetA) - (typeof beltOrder === 'function' ? beltOrder : function(b){return 999;} )(targetB);
+      const targetCompare = beltOrder(targetA) - beltOrder(targetB);
+
       if (targetCompare !== 0) {
         return targetCompare;
       }
@@ -982,6 +811,32 @@ async function savePlanningTable() {
   }
 }
 
+function savePlanningTableValuesFromDom() {
+  if (!planningTableBody) {
+    return;
+  }
+
+  const rows = planningTableBody.querySelectorAll("tr[data-student-id]");
+
+  rows.forEach(row => {
+    const student = data.students.find(item => item.id === row.dataset.studentId);
+
+    if (!student) {
+      return;
+    }
+
+    const targetBelt = row.querySelector('[data-field="planningTargetBelt"]');
+    const registrationType = row.querySelector('[data-field="planningRegistrationType"]');
+    const paidAmount = row.querySelector('[data-field="planningPaidAmount"]');
+    const paymentMethod = row.querySelector('[data-field="planningPaymentMethod"]');
+
+    student.planningTargetBelt = targetBelt ? targetBelt.value : "";
+    student.planningRegistrationType = registrationType ? registrationType.value : "";
+    student.planningPaidAmount = paidAmount ? paidAmount.value.trim() : "";
+    student.planningPaymentMethod = paymentMethod ? paymentMethod.value : "";
+  });
+}
+
 async function removeStudentFromPlanning(studentId) {
   const student = data.students.find(item => item.id === studentId);
 
@@ -996,8 +851,9 @@ async function removeStudentFromPlanning(studentId) {
   }
 
   student.plannedExam = false;
-  student.planningPaidAmount = "";
+  student.planningTargetBelt = "";
   student.planningRegistrationType = "";
+  student.planningPaidAmount = "";
   student.planningPaymentMethod = "";
 
   try {
@@ -1017,8 +873,6 @@ function getNextBelt(currentBelt, age) {
 
   let nextIndex = currentIndex + 1;
 
-  // Unter Blau: ab 14 Jahren keine halben Gürtel.
-  // Ab Blau: immer halbe Schritte, auch ab 14 Jahren.
   if (age !== null && age >= 14 && !isBlueOrHigher(currentBelt)) {
     while (nextIndex < GURTE.length - 1 && isHalfBelt(GURTE[nextIndex])) {
       nextIndex++;
@@ -1029,7 +883,7 @@ function getNextBelt(currentBelt, age) {
 }
 
 function isBlueOrHigher(belt) {
-  return (typeof beltOrder === 'function' ? beltOrder : function(b){return 999;} )(belt) >= (typeof beltOrder === 'function' ? beltOrder : function(b){return 999;} )("Blau");
+  return beltOrder(belt) >= beltOrder("Blau");
 }
 
 function isHalfBelt(belt) {
@@ -1042,8 +896,139 @@ function isHalfBelt(belt) {
   ].includes(belt);
 }
 
+/* Export */
 
+function exportPlanningExcel() {
+  savePlanningTableValuesFromDom();
 
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const year = now.getFullYear();
+  const fileName = `Gürtelprüfung (${month}.${year}).xls`;
+
+  const plannedStudents = data.students
+    .filter(student => student.plannedExam === true || student.plannedExam === "true" || student.plannedExam === 1)
+    .sort((a, b) => {
+      const ageA = calculateAge(a.birthday);
+      const ageB = calculateAge(b.birthday);
+      const targetA = a.planningTargetBelt || getNextBelt(a.belt, ageA);
+      const targetB = b.planningTargetBelt || getNextBelt(b.belt, ageB);
+
+      const targetCompare = beltOrder(targetA) - beltOrder(targetB);
+
+      if (targetCompare !== 0) {
+        return targetCompare;
+      }
+
+      const nameA = `${a.lastName} ${a.firstName}`.toLowerCase();
+      const nameB = `${b.lastName} ${b.firstName}`.toLowerCase();
+      return nameA.localeCompare(nameB, "de");
+    });
+
+  const rowsHtml = plannedStudents.map(student => {
+    const age = calculateAge(student.birthday);
+    const targetBelt = student.planningTargetBelt || getNextBelt(student.belt, age);
+
+    return `
+      <tr>
+        <td>${escapeHtml(student.lastName || "")}</td>
+        <td>${escapeHtml(student.firstName || "")}</td>
+        <td>${escapeHtml(student.belt || "")}</td>
+        <td>${escapeHtml(targetBelt || "")}</td>
+        <td>${age === null ? "" : age}</td>
+        <td>${escapeHtml(student.beltSize || "")}</td>
+        <td class="${getCurrentStampYears(student) !== "-" ? "neutral" : "bad"}">${escapeHtml(getCurrentStampYears(student))}</td>
+        <td>${escapeHtml(student.planningRegistrationType || "")}</td>
+        <td>${escapeHtml(student.planningPaidAmount || "")}</td>
+        <td>${escapeHtml(student.planningPaymentMethod || "")}</td>
+      </tr>
+    `;
+  }).join("");
+
+  const html = `
+    <html>
+      <head>
+        <meta charset="UTF-8">
+        <style>
+          table {
+            border-collapse: collapse;
+            font-family: Arial, sans-serif;
+            width: 100%;
+          }
+
+          th {
+            background: #f8fafc;
+            font-weight: 900;
+            text-align: center;
+            border: 1px solid #d1d5db;
+            padding: 8px;
+          }
+
+          td {
+            text-align: center;
+            border: 1px solid #d1d5db;
+            padding: 8px;
+          }
+
+          .bad {
+            background: #fee2e2;
+            color: #991b1b;
+            font-weight: 800;
+          }
+
+          .neutral {
+            background: #eef2ff;
+            color: #1e3a8a;
+            font-weight: 800;
+          }
+
+          .summary {
+            background: #f8fafc;
+            font-weight: 900;
+          }
+        </style>
+      </head>
+      <body>
+        <table>
+          <thead>
+            <tr>
+              <th>Nachname</th>
+              <th>Vorname</th>
+              <th>Aktueller Gurt</th>
+              <th>Zielgurt</th>
+              <th>Alter</th>
+              <th>Gürtellänge</th>
+              <th>Jahressichtmarke</th>
+              <th>Anmeldung</th>
+              <th>Bezahlt in €</th>
+              <th>Zahlungsart</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml || `<tr><td colspan="10">Keine Schüler für die Prüfung eingeplant.</td></tr>`}
+            <tr class="summary">
+              <td colspan="9">Gesamtzahl Prüflinge</td>
+              <td>${plannedStudents.length}</td>
+            </tr>
+          </tbody>
+        </table>
+      </body>
+    </html>
+  `;
+
+  const blob = new Blob(["\ufeff" + html], {
+    type: "application/vnd.ms-excel;charset=utf-8;"
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
 
 /* Übersicht */
 
@@ -1100,8 +1085,6 @@ function renderStudents() {
           Sichtmarke: ${newestStamp}
         </div>
 
-        
-
         ${student.plannedExam ? `<div class="planned-badge">Für Prüfung eingeplant</div>` : ""}
       </div>
     `;
@@ -1117,6 +1100,25 @@ function getNewestStamp(student) {
 
   const newest = stamps[0];
   return `${newest.year}: ${newest.status === "ja" ? "Ja" : "Nein"}`;
+}
+
+function getCurrentStampYears(student) {
+  const currentYear = String(new Date().getFullYear());
+
+  const currentStamps = (student.annualStamps || [])
+    .filter(stamp => stamp.status === "ja" && String(stamp.year) === currentYear)
+    .map(stamp => String(stamp.year));
+
+  if (currentStamps.length > 0) {
+    return currentStamps.join(", ");
+  }
+
+  const allStamps = (student.annualStamps || [])
+    .filter(stamp => stamp.status === "ja")
+    .map(stamp => String(stamp.year))
+    .sort((a, b) => b.localeCompare(a));
+
+  return allStamps.length > 0 ? allStamps.join(", ") : "-";
 }
 
 function beltClass(belt) {
@@ -1201,5 +1203,13 @@ if (planningFilter) {
 window.addEventListener("load", function() {
   renderStudents();
   renderPlanningTable();
-  loadStudents();
+
+  const settings = getSettings();
+
+  if (settings.owner && settings.repo && settings.token) {
+    loadStudents();
+  } else {
+    setStatus("Bitte GitHub Verbindung eintragen.");
+    loadStudents();
+  }
 });

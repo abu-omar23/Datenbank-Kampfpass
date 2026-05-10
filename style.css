@@ -118,6 +118,10 @@ main {
   margin-bottom: 7px;
 }
 
+.center-belt {
+  justify-content: center;
+}
+
 .belt-dot {
   width: 15px;
   height: 15px;
@@ -343,29 +347,6 @@ hr {
   font-size: 13px;
 }
 
-.planning-list {
-  display: grid;
-  gap: 8px;
-  margin: 14px 0;
-}
-
-.planning-item {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 10px;
-  background: #f8fafc;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 10px 12px;
-}
-
-.planning-item input {
-  width: 18px;
-  height: 18px;
-  margin: 0;
-}
-
 .hint {
   color: var(--muted);
   line-height: 1.4;
@@ -382,8 +363,6 @@ hr {
   grid-column: 1 / -1;
 }
 
-/* Tabelle Prüfungsplanung */
-
 .table-page {
   padding: 8px 22px 32px;
 }
@@ -398,43 +377,44 @@ hr {
 
 .planning-table {
   width: 100%;
-  border-collapse: collapse;
-  min-width: 980px;
-}
-
-.planning-table th,
-.planning-table td {
-  border-bottom: 1px solid var(--border);
-  padding: 10px;
-  text-align: left;
-  font-size: 14px;
-  vertical-align: middle;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 1250px;
 }
 
 .planning-table th {
   background: #f8fafc;
-  font-weight: 800;
-  color: #374151;
-  position: sticky;
-  top: 0;
+  color: #111827;
+  font-weight: 900;
+  text-align: center;
+  font-size: 14px;
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.planning-table td {
+  background: #ffffff;
+  text-align: center;
+  vertical-align: middle;
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
 }
 
 .planning-table tr:hover td {
-  background: #f9fafb;
+  background: #f8fafc;
 }
 
 .table-input,
 .table-select {
-  min-width: 120px;
+  text-align: center;
+  font-weight: 700;
   margin: 0;
-  padding: 8px 10px;
-  border-radius: 10px;
 }
 
-.table-checkbox {
-  width: 18px;
-  height: 18px;
-  margin: 0;
+.euro-input {
+  width: 95px;
+  min-width: 95px;
 }
 
 .table-actions {
@@ -444,35 +424,53 @@ hr {
   padding: 16px 22px 8px;
 }
 
-/* Gürtel-Farben */
-
-.belt-white {
-  background: #ffffff;
+.small-remove-btn {
+  width: 30px;
+  min-width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 9px;
+  font-size: 18px;
+  line-height: 1;
 }
 
-.belt-yellow {
-  background: #facc15;
+.status-ok {
+  background: #dcfce7;
+  color: #166534;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  display: inline-block;
 }
 
-.belt-orange {
-  background: #fb923c;
+.status-bad {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  display: inline-block;
 }
 
-.belt-green {
-  background: #22c55e;
+.status-neutral {
+  background: #eef2ff;
+  color: #1e3a8a;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  display: inline-block;
 }
 
-.belt-blue {
-  background: #3b82f6;
-}
-
-.belt-brown {
-  background: #92400e;
-}
-
-.belt-black {
-  background: #111827;
-}
+.belt-white { background: #ffffff; }
+.belt-yellow { background: #facc15; }
+.belt-orange { background: #fb923c; }
+.belt-green { background: #22c55e; }
+.belt-blue { background: #3b82f6; }
+.belt-brown { background: #92400e; }
+.belt-black { background: #111827; }
 
 .belt-yellow-orange {
   background: linear-gradient(90deg, #facc15 50%, #fb923c 50%);
@@ -575,14 +573,6 @@ hr {
     align-items: stretch;
   }
 
-  .planning-item {
-    grid-template-columns: auto 1fr;
-  }
-
-  .planning-item .belt-row {
-    grid-column: 2;
-  }
-
   button,
   .button-link {
     width: 100%;
@@ -596,157 +586,3 @@ hr {
     padding: 8px 16px 24px;
   }
 }
-
-
-.euro-input {
-  min-width: 95px;
-}
-
-
-/* KORRIGIERTE PRÜFUNGSPLANUNG TABELLE */
-.planning-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  min-width: 1250px;
-}
-
-.planning-table th {
-  background: #f8fafc;
-  color: #111827;
-  font-weight: 900;
-  text-align: center;
-  font-size: 14px;
-  padding: 12px 10px;
-  border-bottom: 1px solid var(--border);
-}
-
-.planning-table td {
-  background: #ffffff;
-  text-align: center;
-  vertical-align: middle;
-  padding: 10px;
-  border-bottom: 1px solid var(--border);
-  font-size: 14px;
-}
-
-.planning-table tr:hover td {
-  background: #f8fafc;
-}
-
-.planning-table td:first-child,
-.planning-table th:first-child {
-  min-width: 180px;
-}
-
-.center-belt {
-  justify-content: center;
-}
-
-.table-input,
-.table-select {
-  text-align: center;
-  font-weight: 700;
-  margin: 0;
-}
-
-.euro-input {
-  width: 95px;
-  min-width: 95px;
-}
-
-.status-column {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  align-items: center;
-}
-
-.status-ok {
-  background: #dcfce7;
-  color: #166534;
-  padding: 5px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 800;
-  display: inline-block;
-}
-
-.status-bad {
-  background: #fee2e2;
-  color: #991b1b;
-  padding: 5px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 800;
-  display: inline-block;
-}
-
-.status-neutral {
-  background: #eef2ff;
-  color: #1e3a8a;
-  padding: 5px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 800;
-  display: inline-block;
-}
-
-
-.small-remove-btn {
-  width: 30px;
-  min-width: 30px;
-  height: 30px;
-  padding: 0;
-  border-radius: 9px;
-  font-size: 18px;
-  line-height: 1;
-}
-
-
-/* GEBÜHRENRECHNER */
-.fee-box {
-  padding: 8px 22px;
-}
-
-.fee-grid {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  box-shadow: var(--shadow);
-  padding: 14px;
-  display: grid;
-  grid-template-columns: 180px 180px 1fr;
-  gap: 12px;
-  align-items: end;
-}
-
-.fee-grid label {
-  margin-bottom: 0;
-}
-
-.fee-hint {
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.35;
-}
-
-.open-amount {
-  font-weight: 900;
-  color: #111827;
-}
-
-@media (max-width: 720px) {
-  .fee-box {
-    padding: 8px 16px;
-  }
-
-  .fee-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-
-
-
-
