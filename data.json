@@ -9,6 +9,10 @@
       "beltSize": "",
       "notes": "",
       "plannedExam": false,
+      "planningPaid": false,
+      "planningPaymentMethod": "",
+      "planningRegistrationSubmitted": false,
+      "planningTargetBelt": "",
       "annualStamps": [
         {
           "year": "2024",
@@ -33,6 +37,10 @@
       "beltSize": "",
       "notes": "",
       "plannedExam": true,
+      "planningPaid": false,
+      "planningPaymentMethod": "Bar",
+      "planningRegistrationSubmitted": false,
+      "planningTargetBelt": "Blau-Braun",
       "annualStamps": [
         {
           "year": "2026",
@@ -105,6 +113,10 @@
       "beltSize": "320 cm",
       "notes": "",
       "plannedExam": false,
+      "planningPaid": false,
+      "planningPaymentMethod": "",
+      "planningRegistrationSubmitted": false,
+      "planningTargetBelt": "",
       "annualStamps": [
         {
           "year": "2026",
