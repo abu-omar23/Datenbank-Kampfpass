@@ -383,7 +383,7 @@
       "firstName": "Roman",
       "lastName": "Schröder",
       "birthday": "2011-09-25",
-      "belt": "Orange",
+      "belt": "Grün",
       "beltSize": "",
       "notes": "",
       "plannedExam": false,
@@ -402,6 +402,12 @@
         }
       ],
       "exams": [
+        {
+          "id": "69a2c583-4785-4e77-b791-6fdd2d0dbff5",
+          "date": "2026-05-09",
+          "belt": "Grün",
+          "note": ""
+        },
         {
           "id": "a8e2425e-30c6-4c82-b30f-231e2cb1054f",
           "date": "2025-12-20",
