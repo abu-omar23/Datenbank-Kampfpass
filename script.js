@@ -1,1 +1,579 @@
-console.log('Schülerverwaltung geladen')
+const studentsList = document.getElementById("studentsList");
+const searchInput = document.getElementById("searchInput");
+const statusText = document.getElementById("statusText");
+
+const studentModal = document.getElementById("studentModal");
+const settingsModal = document.getElementById("settingsModal");
+
+const studentForm = document.getElementById("studentForm");
+const studentModalTitle = document.getElementById("studentModalTitle");
+const deleteStudentBtn = document.getElementById("deleteStudentBtn");
+
+const historyArea = document.getElementById("historyArea");
+const examFormArea = document.getElementById("examFormArea");
+const examList = document.getElementById("examList");
+
+let data = {
+  students: []
+};
+
+let currentSha = null;
+let currentStudentId = null;
+let editingExamId = null;
+
+function getSettings() {
+  return {
+    owner: localStorage.getItem("github_owner") || "",
+    repo: localStorage.getItem("github_repo") || "",
+    branch: localStorage.getItem("github_branch") || "main",
+    token: localStorage.getItem("github_token") || ""
+  };
+}
+
+function setStatus(text) {
+  statusText.textContent = text;
+}
+
+function openSettings() {
+  const settings = getSettings();
+
+  document.getElementById("ownerInput").value = settings.owner;
+  document.getElementById("repoInput").value = settings.repo;
+  document.getElementById("branchInput").value = settings.branch;
+  document.getElementById("tokenInput").value = settings.token;
+
+  settingsModal.classList.remove("hidden");
+}
+
+function closeSettings() {
+  settingsModal.classList.add("hidden");
+}
+
+function saveSettings() {
+  localStorage.setItem("github_owner", document.getElementById("ownerInput").value.trim());
+  localStorage.setItem("github_repo", document.getElementById("repoInput").value.trim());
+  localStorage.setItem("github_branch", document.getElementById("branchInput").value.trim() || "main");
+  localStorage.setItem("github_token", document.getElementById("tokenInput").value.trim());
+
+  closeSettings();
+  loadStudents();
+}
+
+function githubFileUrl() {
+  const settings = getSettings();
+  return `https://api.github.com/repos/${settings.owner}/${settings.repo}/contents/data.json`;
+}
+
+function checkSettings() {
+  const settings = getSettings();
+
+  if (!settings.owner || !settings.repo || !settings.branch || !settings.token) {
+    throw new Error("Bitte zuerst GitHub Verbindung eintragen.");
+  }
+
+  return settings;
+}
+
+function encodeBase64Unicode(text) {
+  return btoa(unescape(encodeURIComponent(text)));
+}
+
+function decodeBase64Unicode(base64) {
+  return decodeURIComponent(escape(atob(base64.replace(/\n/g, ""))));
+}
+
+function normalizeData(loadedData) {
+  if (!loadedData || typeof loadedData !== "object") {
+    return { students: [] };
+  }
+
+  if (!Array.isArray(loadedData.students)) {
+    loadedData.students = [];
+  }
+
+  loadedData.students = loadedData.students.map(student => {
+    return {
+      id: student.id || makeId(),
+      firstName: student.firstName || "",
+      lastName: student.lastName || "",
+      birthday: student.birthday || "",
+      belt: student.belt || "Weiß",
+      notes: student.notes || "",
+      annualStamp: student.annualStamp || "nein",
+      annualStampYear: student.annualStampYear || "",
+      exams: Array.isArray(student.exams) ? student.exams : []
+    };
+  });
+
+  return loadedData;
+}
+
+async function loadStudents() {
+  try {
+    const settings = checkSettings();
+
+    setStatus("Verbinde mit GitHub...");
+
+    const response = await fetch(`${githubFileUrl()}?ref=${settings.branch}`, {
+      headers: {
+        Authorization: `Bearer ${settings.token}`,
+        Accept: "application/vnd.github+json"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("data.json konnte nicht geladen werden. Prüfe GitHub Benutzername, Repo, Branch und Token.");
+    }
+
+    const file = await response.json();
+    currentSha = file.sha;
+
+    const content = decodeBase64Unicode(file.content);
+    data = normalizeData(JSON.parse(content));
+
+    renderStudents();
+
+    setStatus(`Verbunden · ${data.students.length} Schüler geladen`);
+  } catch (error) {
+    setStatus(error.message);
+    renderStudents();
+  }
+}
+
+async function saveStudents() {
+  const settings = checkSettings();
+
+  if (!currentSha) {
+    await loadStudents();
+  }
+
+  const content = JSON.stringify(data, null, 2);
+
+  const response = await fetch(githubFileUrl(), {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${settings.token}`,
+      Accept: "application/vnd.github+json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      message: "Schülerdaten aktualisiert",
+      content: encodeBase64Unicode(content),
+      sha: currentSha,
+      branch: settings.branch
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error("Speichern fehlgeschlagen. Prüfe, ob dein Token Schreibrechte für Contents hat.");
+  }
+
+  const result = await response.json();
+  currentSha = result.content.sha;
+
+  setStatus("Gespeichert");
+  renderStudents();
+}
+
+function makeId() {
+  if (crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+
+  return String(Date.now()) + String(Math.floor(Math.random() * 100000));
+}
+
+function getCurrentStudent() {
+  return data.students.find(student => student.id === currentStudentId);
+}
+
+function openAddStudent() {
+  currentStudentId = null;
+  editingExamId = null;
+
+  studentModalTitle.textContent = "Schüler hinzufügen";
+  studentForm.reset();
+
+  document.getElementById("studentId").value = "";
+  document.getElementById("belt").value = "Weiß";
+  document.getElementById("annualStamp").value = "nein";
+  document.getElementById("annualStampYear").value = "";
+
+  deleteStudentBtn.classList.add("hidden");
+  historyArea.classList.add("hidden");
+  examFormArea.classList.add("hidden");
+  examList.innerHTML = "";
+
+  studentModal.classList.remove("hidden");
+}
+
+function openEditStudent(studentId) {
+  const student = data.students.find(item => item.id === studentId);
+
+  if (!student) {
+    return;
+  }
+
+  currentStudentId = studentId;
+  editingExamId = null;
+
+  studentModalTitle.textContent = "Schüler bearbeiten";
+
+  document.getElementById("studentId").value = student.id;
+  document.getElementById("firstName").value = student.firstName;
+  document.getElementById("lastName").value = student.lastName;
+  document.getElementById("birthday").value = student.birthday;
+  document.getElementById("belt").value = student.belt;
+  document.getElementById("notes").value = student.notes;
+  document.getElementById("annualStamp").value = student.annualStamp;
+  document.getElementById("annualStampYear").value = student.annualStampYear;
+
+  deleteStudentBtn.classList.remove("hidden");
+  historyArea.classList.remove("hidden");
+  examFormArea.classList.add("hidden");
+
+  renderExams();
+
+  studentModal.classList.remove("hidden");
+}
+
+function closeStudentModal() {
+  studentModal.classList.add("hidden");
+}
+
+studentForm.addEventListener("submit", async function(event) {
+  event.preventDefault();
+
+  const studentId = currentStudentId || makeId();
+
+  const studentData = {
+    id: studentId,
+    firstName: document.getElementById("firstName").value.trim(),
+    lastName: document.getElementById("lastName").value.trim(),
+    birthday: document.getElementById("birthday").value,
+    belt: document.getElementById("belt").value,
+    notes: document.getElementById("notes").value.trim(),
+    annualStamp: document.getElementById("annualStamp").value,
+    annualStampYear: document.getElementById("annualStampYear").value,
+    exams: []
+  };
+
+  const existingIndex = data.students.findIndex(student => student.id === studentId);
+
+  if (existingIndex >= 0) {
+    studentData.exams = data.students[existingIndex].exams || [];
+    data.students[existingIndex] = studentData;
+  } else {
+    data.students.push(studentData);
+    currentStudentId = studentId;
+  }
+
+  try {
+    await saveStudents();
+    closeStudentModal();
+  } catch (error) {
+    alert(error.message);
+  }
+});
+
+async function deleteCurrentStudent() {
+  const student = getCurrentStudent();
+
+  if (!student) {
+    return;
+  }
+
+  const confirmed = confirm(`Schüler ${student.firstName} ${student.lastName} wirklich löschen?`);
+
+  if (!confirmed) {
+    return;
+  }
+
+  data.students = data.students.filter(item => item.id !== student.id);
+
+  try {
+    await saveStudents();
+    closeStudentModal();
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
+function openExamForm() {
+  editingExamId = null;
+
+  document.getElementById("examDate").value = "";
+  document.getElementById("examBelt").value = "Weiß";
+  document.getElementById("examNote").value = "";
+
+  examFormArea.classList.remove("hidden");
+}
+
+function closeExamForm() {
+  editingExamId = null;
+  examFormArea.classList.add("hidden");
+}
+
+function editExam(examId) {
+  const student = getCurrentStudent();
+
+  if (!student) {
+    return;
+  }
+
+  const exam = student.exams.find(item => item.id === examId);
+
+  if (!exam) {
+    return;
+  }
+
+  editingExamId = examId;
+
+  document.getElementById("examDate").value = exam.date || "";
+  document.getElementById("examBelt").value = exam.belt || "Weiß";
+  document.getElementById("examNote").value = exam.note || "";
+
+  examFormArea.classList.remove("hidden");
+}
+
+async function saveExam() {
+  const student = getCurrentStudent();
+
+  if (!student) {
+    alert("Bitte Schüler zuerst speichern.");
+    return;
+  }
+
+  const date = document.getElementById("examDate").value;
+  const belt = document.getElementById("examBelt").value;
+  const note = document.getElementById("examNote").value.trim();
+
+  if (!date) {
+    alert("Bitte Datum eintragen.");
+    return;
+  }
+
+  const examData = {
+    id: editingExamId || makeId(),
+    date: date,
+    belt: belt,
+    note: note
+  };
+
+  student.exams = student.exams || [];
+
+  const existingIndex = student.exams.findIndex(item => item.id === examData.id);
+
+  if (existingIndex >= 0) {
+    student.exams[existingIndex] = examData;
+  } else {
+    student.exams.push(examData);
+  }
+
+  student.exams.sort((a, b) => b.date.localeCompare(a.date));
+
+  const newestExam = student.exams[0];
+
+  if (newestExam) {
+    student.belt = newestExam.belt;
+    document.getElementById("belt").value = newestExam.belt;
+  }
+
+  try {
+    await saveStudents();
+    renderExams();
+    closeExamForm();
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
+async function deleteExam(examId) {
+  const student = getCurrentStudent();
+
+  if (!student) {
+    return;
+  }
+
+  const confirmed = confirm("Diesen Prüfungseintrag löschen?");
+
+  if (!confirmed) {
+    return;
+  }
+
+  student.exams = student.exams.filter(item => item.id !== examId);
+
+  student.exams.sort((a, b) => b.date.localeCompare(a.date));
+
+  const newestExam = student.exams[0];
+
+  if (newestExam) {
+    student.belt = newestExam.belt;
+    document.getElementById("belt").value = newestExam.belt;
+  }
+
+  try {
+    await saveStudents();
+    renderExams();
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
+function renderExams() {
+  const student = getCurrentStudent();
+
+  if (!student) {
+    examList.innerHTML = "";
+    return;
+  }
+
+  const exams = (student.exams || []).slice().sort((a, b) => b.date.localeCompare(a.date));
+
+  if (exams.length === 0) {
+    examList.innerHTML = `<div class="empty-state">Noch keine Einträge vorhanden.</div>`;
+    return;
+  }
+
+  examList.innerHTML = exams.map(exam => {
+    return `
+      <div class="exam-item">
+        <div>
+          <div class="exam-main">
+            <span class="belt-dot ${beltClass(exam.belt)}"></span>
+            <strong>${escapeHtml(exam.belt)}</strong>
+          </div>
+          <div class="exam-date">${formatDate(exam.date)}</div>
+          ${exam.note ? `<div class="exam-note">${escapeHtml(exam.note)}</div>` : ""}
+        </div>
+
+        <div class="form-actions">
+          <button class="secondary-btn" onclick="editExam('${exam.id}')">Bearbeiten</button>
+          <button class="danger-btn" onclick="deleteExam('${exam.id}')">Löschen</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderStudents() {
+  const search = searchInput.value.toLowerCase().trim();
+
+  const students = data.students
+    .filter(student => {
+      const text = `${student.firstName} ${student.lastName} ${student.belt}`.toLowerCase();
+      return text.includes(search);
+    })
+    .sort((a, b) => {
+      const nameA = `${a.lastName} ${a.firstName}`.toLowerCase();
+      const nameB = `${b.lastName} ${b.firstName}`.toLowerCase();
+      return nameA.localeCompare(nameB, "de");
+    });
+
+  if (students.length === 0) {
+    studentsList.innerHTML = `<div class="empty-state">Keine Schüler gefunden.</div>`;
+    return;
+  }
+
+  studentsList.innerHTML = students.map(student => {
+    return `
+      <div class="student-card" onclick="openEditStudent('${student.id}')">
+        <div class="student-name">${escapeHtml(student.firstName)} ${escapeHtml(student.lastName)}</div>
+
+        <div class="belt-row">
+          <span class="belt-dot ${beltClass(student.belt)}"></span>
+          <span class="belt-text">${escapeHtml(student.belt)}</span>
+        </div>
+
+        <div class="student-info">
+          Geburtstag: ${student.birthday ? formatDate(student.birthday) : "-"}
+        </div>
+
+        <div class="student-info">
+          Sichtmarke: ${student.annualStamp === "ja" ? "Ja" : "Nein"} ${student.annualStampYear || ""}
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function beltClass(belt) {
+  const value = String(belt || "").toLowerCase();
+
+  if (value.includes("gelb-orange")) {
+    return "belt-yellow-orange";
+  }
+
+  if (value.includes("orange-grün")) {
+    return "belt-orange-green";
+  }
+
+  if (value.includes("grün-blau")) {
+    return "belt-green-blue";
+  }
+
+  if (value.includes("blau-braun")) {
+    return "belt-blue-brown";
+  }
+
+  if (value.includes("braun-schwarz")) {
+    return "belt-brown-black";
+  }
+
+  if (value.includes("weiß")) {
+    return "belt-white";
+  }
+
+  if (value.includes("gelb")) {
+    return "belt-yellow";
+  }
+
+  if (value.includes("orange")) {
+    return "belt-orange";
+  }
+
+  if (value.includes("grün")) {
+    return "belt-green";
+  }
+
+  if (value.includes("blau")) {
+    return "belt-blue";
+  }
+
+  if (value.includes("braun")) {
+    return "belt-brown";
+  }
+
+  return "belt-black";
+}
+
+function formatDate(dateString) {
+  if (!dateString) {
+    return "-";
+  }
+
+  return new Date(dateString + "T00:00:00").toLocaleDateString("de-DE");
+}
+
+function escapeHtml(text) {
+  return String(text || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+searchInput.addEventListener("input", renderStudents);
+
+window.addEventListener("load", function() {
+  renderStudents();
+
+  const settings = getSettings();
+
+  if (settings.owner && settings.repo && settings.token) {
+    loadStudents();
+  } else {
+    setStatus("Bitte GitHub Verbindung eintragen.");
+  }
+});
