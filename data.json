@@ -1327,7 +1327,7 @@
       "firstName": "Danilo",
       "lastName": "Rajovic",
       "birthday": "2010-12-27",
-      "belt": "Weiß",
+      "belt": "Gelb",
       "beltSize": "300 cm",
       "notes": "",
       "plannedExam": false,
@@ -1341,7 +1341,14 @@
           "status": "ja"
         }
       ],
-      "exams": []
+      "exams": [
+        {
+          "id": "eba32a82-e586-4f63-ac52-c89398e9a9f4",
+          "date": "2026-05-09",
+          "belt": "Gelb",
+          "note": "Marke fehlt im Pass 2026"
+        }
+      ]
     }
   ]
 }
