@@ -1383,7 +1383,7 @@
       "firstName": "Klara",
       "lastName": "Peschke",
       "birthday": "2019-11-17",
-      "belt": "Weiß",
+      "belt": "Gelb",
       "beltSize": "220 cm",
       "notes": "",
       "plannedExam": false,
@@ -1397,7 +1397,14 @@
           "status": "ja"
         }
       ],
-      "exams": []
+      "exams": [
+        {
+          "id": "9e12c6d0-ca56-45ca-b5a8-6fd91e86f354",
+          "date": "2026-05-09",
+          "belt": "Gelb",
+          "note": ""
+        }
+      ]
     }
   ]
 }
