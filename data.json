@@ -749,6 +749,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "eb46f1e3-4460-4ea7-9e84-d0f9cad3b4a1",
+      "firstName": "Eleyna",
+      "lastName": "Alhattab-Partar",
+      "birthday": "2018-01-09",
+      "belt": "Weiß",
+      "beltSize": "",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
