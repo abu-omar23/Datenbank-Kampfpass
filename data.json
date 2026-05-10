@@ -9,9 +9,9 @@
       "beltSize": "300 cm",
       "notes": "",
       "plannedExam": false,
-      "planningPaid": false,
+      "planningPaidAmount": "",
+      "planningRegistrationType": "",
       "planningPaymentMethod": "",
-      "planningRegistrationSubmitted": false,
       "planningTargetBelt": "",
       "annualStamps": [
         {
@@ -37,9 +37,9 @@
       "beltSize": "",
       "notes": "",
       "plannedExam": false,
-      "planningPaid": false,
+      "planningPaidAmount": "",
+      "planningRegistrationType": "",
       "planningPaymentMethod": "",
-      "planningRegistrationSubmitted": false,
       "planningTargetBelt": "Blau-Braun",
       "annualStamps": [
         {
@@ -112,10 +112,10 @@
       "belt": "Blau",
       "beltSize": "320 cm",
       "notes": "",
-      "plannedExam": true,
-      "planningPaid": false,
+      "plannedExam": false,
+      "planningPaidAmount": "",
+      "planningRegistrationType": "",
       "planningPaymentMethod": "",
-      "planningRegistrationSubmitted": false,
       "planningTargetBelt": "",
       "annualStamps": [
         {
