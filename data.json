@@ -1355,7 +1355,7 @@
       "firstName": "Vukan",
       "lastName": "Rajovic",
       "birthday": "2014-11-18",
-      "belt": "Weiß",
+      "belt": "Gelb",
       "beltSize": "260 cm",
       "notes": "",
       "plannedExam": false,
@@ -1369,7 +1369,14 @@
           "status": "ja"
         }
       ],
-      "exams": []
+      "exams": [
+        {
+          "id": "49428154-0817-47b2-be16-af223427d401",
+          "date": "2026-05-09",
+          "belt": "Gelb",
+          "note": "Marke fehlt im Pass 2026"
+        }
+      ]
     }
   ]
 }
