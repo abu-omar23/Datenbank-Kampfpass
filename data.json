@@ -1105,6 +1105,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "477b6ec3-a16e-4f2d-9fb9-fd60ee9b607b",
+      "firstName": "Youcef",
+      "lastName": "Chihani",
+      "birthday": "2013-07-17",
+      "belt": "Weiß",
+      "beltSize": "260 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
