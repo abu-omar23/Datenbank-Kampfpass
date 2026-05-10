@@ -6,6 +6,7 @@
       "lastName": "Brandt",
       "birthday": "2000-07-23",
       "belt": "1. Dan",
+      "beltSize": "",
       "notes": "",
       "plannedExam": false,
       "annualStamps": [
@@ -29,6 +30,7 @@
       "lastName": "Arrassen",
       "birthday": "2016-04-27",
       "belt": "Blau",
+      "beltSize": "",
       "notes": "",
       "plannedExam": false,
       "annualStamps": [
@@ -100,6 +102,7 @@
       "lastName": "Kohli",
       "birthday": "2011-11-15",
       "belt": "Blau",
+      "beltSize": "320 cm",
       "notes": "",
       "plannedExam": false,
       "annualStamps": [
