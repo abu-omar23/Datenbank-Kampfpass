@@ -1579,7 +1579,7 @@
       "firstName": "Vanessa",
       "lastName": "Fries",
       "birthday": "2012-06-28",
-      "belt": "Weiß",
+      "belt": "Gelb",
       "beltSize": "260 cm",
       "notes": "",
       "plannedExam": false,
@@ -1593,7 +1593,14 @@
           "status": "ja"
         }
       ],
-      "exams": []
+      "exams": [
+        {
+          "id": "394ecd03-8163-4f7a-8d64-de23cb56fcbd",
+          "date": "2026-05-09",
+          "belt": "Gelb",
+          "note": ""
+        }
+      ]
     }
   ]
 }
