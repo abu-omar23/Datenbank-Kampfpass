@@ -1,1 +1,15 @@
-{"students":[]}
+{
+  "students": [
+    {
+      "id": "1778419533930",
+      "firstName": "Halim",
+      "lastName": "Brandt",
+      "birthday": "2000-07-23",
+      "belt": "Schwarzgurt",
+      "notes": "",
+      "annualStamp": "ja",
+      "annualStampYear": "2024",
+      "exams": []
+    }
+  ]
+}
