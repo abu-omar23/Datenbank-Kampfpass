@@ -179,7 +179,7 @@
       "firstName": "Karl-Leonard",
       "lastName": "Peschke",
       "birthday": "2015-07-13",
-      "belt": "Orange-Grün",
+      "belt": "Grün",
       "beltSize": "260 cm",
       "notes": "",
       "plannedExam": false,
@@ -206,6 +206,12 @@
         }
       ],
       "exams": [
+        {
+          "id": "fd475177-42b7-4e01-927c-c306778b2f8b",
+          "date": "2025-05-24",
+          "belt": "Grün",
+          "note": ""
+        },
         {
           "id": "ec61c8e0-23eb-4697-8953-fc325545363b",
           "date": "2024-11-16",
