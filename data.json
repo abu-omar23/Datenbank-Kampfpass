@@ -1551,7 +1551,7 @@
       "firstName": "Benjamin",
       "lastName": "Garro",
       "birthday": "2012-08-28",
-      "belt": "Weiß",
+      "belt": "Gelb",
       "beltSize": "280 cm",
       "notes": "",
       "plannedExam": false,
@@ -1565,7 +1565,14 @@
           "status": "ja"
         }
       ],
-      "exams": []
+      "exams": [
+        {
+          "id": "e5d21b98-019f-44ab-99a4-cd8865621c23",
+          "date": "2026-05-09",
+          "belt": "Gelb",
+          "note": ""
+        }
+      ]
     }
   ]
 }
