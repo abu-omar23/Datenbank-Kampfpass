@@ -847,7 +847,7 @@
       "firstName": "Herdem",
       "lastName": "Gerekli",
       "birthday": "2019-01-28",
-      "belt": "Weiß",
+      "belt": "Gelb",
       "beltSize": "260 cm",
       "notes": "",
       "plannedExam": false,
@@ -865,7 +865,14 @@
           "status": "ja"
         }
       ],
-      "exams": []
+      "exams": [
+        {
+          "id": "f9a5015a-6bda-4698-abc5-2b4a73bb5e75",
+          "date": "2025-05-24",
+          "belt": "Gelb",
+          "note": ""
+        }
+      ]
     }
   ]
 }
