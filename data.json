@@ -10,9 +10,9 @@
       "notes": "",
       "plannedExam": true,
       "planningTargetBelt": "2. Dan",
-      "planningRegistrationType": "",
-      "planningPaidAmount": "",
-      "planningPaymentMethod": "",
+      "planningRegistrationType": "mündlich",
+      "planningPaidAmount": "75",
+      "planningPaymentMethod": "Bar",
       "annualStamps": [
         {
           "year": "2024",
