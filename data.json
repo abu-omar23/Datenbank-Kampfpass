@@ -93,6 +93,17 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "de5ee28c-ba7e-409a-ae8b-698c07e03d8e",
+      "firstName": "Aymen",
+      "lastName": "Kohli",
+      "birthday": "2011-11-15",
+      "belt": "Blau",
+      "notes": "",
+      "plannedExam": false,
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
