@@ -93,6 +93,17 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "5a20db45-06ea-4e51-af1a-39c5c2c2cfa3",
+      "firstName": "y",
+      "lastName": "y",
+      "birthday": "",
+      "belt": "Weiß",
+      "notes": "",
+      "plannedExam": false,
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
