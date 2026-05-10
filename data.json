@@ -1149,7 +1149,7 @@
       "firstName": "Miran",
       "lastName": "Almaz",
       "birthday": "2014-01-21",
-      "belt": "Gelb",
+      "belt": "Gelb-Orange",
       "beltSize": "300 cm",
       "notes": "",
       "plannedExam": false,
@@ -1168,6 +1168,12 @@
         }
       ],
       "exams": [
+        {
+          "id": "176f3a0e-dc24-4d28-be20-ec1b1076f283",
+          "date": "2026-05-09",
+          "belt": "Gelb-Orange",
+          "note": ""
+        },
         {
           "id": "641322a7-2469-484f-ae0a-4f42952769de",
           "date": "2025-12-20",
