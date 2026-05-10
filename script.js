@@ -138,6 +138,7 @@ function normalizeData(loadedData) {
       plannedExam: Boolean(student.plannedExam),
       planningPaidAmount: student.planningPaidAmount || "",
       planningRegistrationType: student.planningRegistrationType || "",
+      planningPaymentMethod: student.planningPaymentMethod || "",
       planningTargetBelt: student.planningTargetBelt || "",
       annualStamps: Array.isArray(student.annualStamps)
         ? student.annualStamps
@@ -359,6 +360,7 @@ if (studentForm) {
       plannedExam: document.getElementById("plannedExam").checked,
       planningPaidAmount: oldStudent.planningPaidAmount || "",
       planningRegistrationType: oldStudent.planningRegistrationType || "",
+      planningPaymentMethod: oldStudent.planningPaymentMethod || "",
       planningTargetBelt: oldStudent.planningTargetBelt || "",
       annualStamps: oldStudent.annualStamps || [],
       exams: oldStudent.exams || []
@@ -781,9 +783,6 @@ function renderPlanningTable() {
   planningTableBody.innerHTML = plannedStudents.map(student => {
     const age = calculateAge(student.birthday);
     const targetBelt = student.planningTargetBelt || getNextBelt(student.belt, age);
-    const stampOk = hasCurrentStamp(student);
-    const paidOk = Boolean(student.planningPaidAmount && student.planningPaidAmount.trim());
-    const registrationOk = Boolean(student.planningRegistrationType);
 
     return `
       <tr data-student-id="${student.id}">
@@ -813,8 +812,8 @@ function renderPlanningTable() {
         </td>
 
         <td>
-          <span class="${stampOk ? "status-ok" : "status-bad"}">
-            ${stampOk ? "Vorhanden" : "Fehlt"}
+          <span class="${getCurrentStampYears(student) !== "-" ? "status-neutral" : "status-bad"}">
+            ${getCurrentStampYears(student)}
           </span>
         </td>
 
@@ -831,14 +830,15 @@ function renderPlanningTable() {
         </td>
 
         <td>
-          <div class="status-column">
-            ${paidOk ? `<span class="status-ok">Bezahlt</span>` : `<span class="status-bad">Offen</span>`}
-            ${registrationOk ? `<span class="status-ok">Angemeldet</span>` : `<span class="status-bad">Keine Anmeldung</span>`}
-          </div>
+          <select class="table-select" data-field="planningPaymentMethod">
+            <option value="" ${!student.planningPaymentMethod ? "selected" : ""}>-</option>
+            <option value="Bar" ${student.planningPaymentMethod === "Bar" ? "selected" : ""}>Bar</option>
+            <option value="Überweisung" ${student.planningPaymentMethod === "Überweisung" ? "selected" : ""}>Überweisung</option>
+          </select>
         </td>
 
         <td>
-          <button class="danger-btn" onclick="removeStudentFromPlanning('${student.id}')">Entfernen</button>
+          <button class="danger-btn small-remove-btn" onclick="removeStudentFromPlanning('${student.id}')">×</button>
         </td>
       </tr>
     `;
@@ -864,10 +864,12 @@ async function savePlanningTable() {
     const targetBelt = row.querySelector('[data-field="planningTargetBelt"]');
     const paidAmount = row.querySelector('[data-field="planningPaidAmount"]');
     const registrationType = row.querySelector('[data-field="planningRegistrationType"]');
+    const paymentMethod = row.querySelector('[data-field="planningPaymentMethod"]');
 
     student.planningTargetBelt = targetBelt.value;
     student.planningPaidAmount = paidAmount.value.trim();
     student.planningRegistrationType = registrationType.value;
+    student.planningPaymentMethod = paymentMethod.value;
   });
 
   try {
@@ -894,6 +896,7 @@ async function removeStudentFromPlanning(studentId) {
   student.plannedExam = false;
   student.planningPaidAmount = "";
   student.planningRegistrationType = "";
+  student.planningPaymentMethod = "";
 
   try {
     await saveStudents();
@@ -961,9 +964,6 @@ function exportPlanningExcel() {
   const rowsHtml = plannedStudents.map(student => {
     const age = calculateAge(student.birthday);
     const targetBelt = student.planningTargetBelt || getNextBelt(student.belt, age);
-    const stampOk = hasCurrentStamp(student);
-    const paidOk = Boolean(student.planningPaidAmount && student.planningPaidAmount.trim());
-    const registrationOk = Boolean(student.planningRegistrationType);
 
     return `
       <tr>
@@ -972,13 +972,10 @@ function exportPlanningExcel() {
         <td>${escapeHtml(targetBelt || "")}</td>
         <td>${age === null ? "" : age}</td>
         <td>${escapeHtml(student.beltSize || "")}</td>
-        <td class="${stampOk ? "ok" : "bad"}">${stampOk ? "Vorhanden" : "Fehlt"}</td>
+        <td class="${getCurrentStampYears(student) !== "-" ? "neutral" : "bad"}">${escapeHtml(getCurrentStampYears(student))}</td>
         <td>${escapeHtml(student.planningRegistrationType || "")}</td>
         <td>${escapeHtml(student.planningPaidAmount || "")}</td>
-        <td>
-          ${paidOk ? "Bezahlt" : "Offen"}
-          ${registrationOk ? " / Angemeldet" : " / Keine Anmeldung"}
-        </td>
+        <td>${escapeHtml(student.planningPaymentMethod || "")}</td>
       </tr>
     `;
   }).join("");
@@ -1008,16 +1005,21 @@ function exportPlanningExcel() {
             padding: 8px;
           }
 
-          .ok {
-            background: #dcfce7;
-            color: #166534;
-            font-weight: 800;
-          }
-
           .bad {
             background: #fee2e2;
             color: #991b1b;
             font-weight: 800;
+          }
+
+          .neutral {
+            background: #eef2ff;
+            color: #1e3a8a;
+            font-weight: 800;
+          }
+
+          .summary {
+            background: #f8fafc;
+            font-weight: 900;
           }
         </style>
       </head>
@@ -1033,11 +1035,15 @@ function exportPlanningExcel() {
               <th>Jahressichtmarke</th>
               <th>Anmeldung</th>
               <th>Bezahlt in €</th>
-              <th>Status</th>
+              <th>Zahlungsart</th>
             </tr>
           </thead>
           <tbody>
             ${rowsHtml || `<tr><td colspan="9">Keine Schüler für die Prüfung eingeplant.</td></tr>`}
+            <tr class="summary">
+              <td colspan="8">Gesamtzahl Prüflinge</td>
+              <td>${plannedStudents.length}</td>
+            </tr>
           </tbody>
         </table>
       </body>
@@ -1076,6 +1082,7 @@ function savePlanningTableValuesFromDom() {
     const targetBelt = row.querySelector('[data-field="planningTargetBelt"]');
     const paidAmount = row.querySelector('[data-field="planningPaidAmount"]');
     const registrationType = row.querySelector('[data-field="planningRegistrationType"]');
+    const paymentMethod = row.querySelector('[data-field="planningPaymentMethod"]');
 
     if (targetBelt) {
       student.planningTargetBelt = targetBelt.value;
@@ -1088,9 +1095,33 @@ function savePlanningTableValuesFromDom() {
     if (registrationType) {
       student.planningRegistrationType = registrationType.value;
     }
+
+    if (paymentMethod) {
+      student.planningPaymentMethod = paymentMethod.value;
+    }
   });
 }
 
+
+
+function getCurrentStampYears(student) {
+  const currentYear = String(new Date().getFullYear());
+
+  const currentStamps = (student.annualStamps || [])
+    .filter(stamp => stamp.status === "ja" && String(stamp.year) === currentYear)
+    .map(stamp => String(stamp.year));
+
+  if (currentStamps.length > 0) {
+    return currentStamps.join(", ");
+  }
+
+  const allStamps = (student.annualStamps || [])
+    .filter(stamp => stamp.status === "ja")
+    .map(stamp => String(stamp.year))
+    .sort((a, b) => b.localeCompare(a));
+
+  return allStamps.length > 0 ? allStamps.join(", ") : "-";
+}
 
 function hasCurrentStamp(student) {
   const currentYear = String(new Date().getFullYear());
