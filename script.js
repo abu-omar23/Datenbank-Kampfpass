@@ -1296,8 +1296,20 @@ function renderStudents() {
       return matchesSearch && matchesBelt && matchesPlanning;
     })
     .sort((a, b) => {
-      const nameA = `${a.lastName} ${a.firstName}`.toLowerCase();
-      const nameB = `${b.lastName} ${b.firstName}`.toLowerCase();
+    
+      const beltCompare =
+        beltOrder(b.belt) - beltOrder(a.belt);
+    
+      if (beltCompare !== 0) {
+        return beltCompare;
+      }
+    
+      const nameA =
+        `${a.lastName} ${a.firstName}`.toLowerCase();
+    
+      const nameB =
+        `${b.lastName} ${b.firstName}`.toLowerCase();
+    
       return nameA.localeCompare(nameB, "de");
     });
 
