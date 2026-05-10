@@ -1017,7 +1017,7 @@
       "firstName": "Damir",
       "lastName": "Skotar",
       "birthday": "2018-06-17",
-      "belt": "Gelb",
+      "belt": "Gelb-Orange",
       "beltSize": "240 cm",
       "notes": "",
       "plannedExam": false,
@@ -1036,6 +1036,12 @@
         }
       ],
       "exams": [
+        {
+          "id": "3dfa9008-67a9-441f-8d1c-6327d3b7f211",
+          "date": "2025-12-20",
+          "belt": "Gelb-Orange",
+          "note": ""
+        },
         {
           "id": "1abfa95c-e1f3-4375-823e-44dca7a49f28",
           "date": "2025-05-24",
