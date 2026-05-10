@@ -1215,7 +1215,7 @@
       "firstName": "Djamel",
       "lastName": "Ouro-Djeri",
       "birthday": "",
-      "belt": "Weiß",
+      "belt": "Gelb",
       "beltSize": "300 cm",
       "notes": "",
       "plannedExam": false,
@@ -1229,7 +1229,14 @@
           "status": "ja"
         }
       ],
-      "exams": []
+      "exams": [
+        {
+          "id": "c5ce3938-8e3e-4be7-b1fe-bfe990796cda",
+          "date": "2026-05-09",
+          "belt": "Gelb",
+          "note": ""
+        }
+      ]
     }
   ]
 }
