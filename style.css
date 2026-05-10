@@ -588,16 +588,16 @@ hr {
 }
 
 
-/* BUTTON FIX */
-.table-actions {
+/* BUTTON SAFETY FIX */
+.table-actions,
+.header-actions {
   position: relative;
   z-index: 50;
 }
 
 .table-actions button,
-.table-actions .button-link,
 .header-actions button,
-.header-actions .button-link {
+.button-link {
   pointer-events: auto;
 }
 

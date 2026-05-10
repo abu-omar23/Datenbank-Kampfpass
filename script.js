@@ -923,8 +923,7 @@ async function applyPassedExam() {
   }
 
   const confirmed = confirm(
-    `Prüfung für ${plannedStudents.length} Schüler als bestanden übernehmen?\n\n` +
-    "Dabei wird der Zielgurt als aktueller Gurt gesetzt, der Prüfungsverlauf ergänzt und die Schüler werden aus der Prüfungsplanung entfernt."
+    `Prüfung für ${plannedStudents.length} Schüler als bestanden übernehmen?`
   );
 
   if (!confirmed) {
@@ -966,14 +965,16 @@ async function applyPassedExam() {
 
 /* Export */
 
+function exportPlanningExcel() {
+  savePlanningTableValuesFromDom();
 
-function getPlannedStudentsSortedForExport() {
-  return data.students
-    .filter(student =>
-      student.plannedExam === true ||
-      student.plannedExam === "true" ||
-      student.plannedExam === 1
-    )
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const year = now.getFullYear();
+  const fileName = `Gürtelprüfung (${month}.${year}).xls`;
+
+  const plannedStudents = data.students
+    .filter(student => student.plannedExam === true || student.plannedExam === "true" || student.plannedExam === 1)
     .sort((a, b) => {
       const ageA = calculateAge(a.birthday);
       const ageB = calculateAge(b.birthday);
@@ -990,172 +991,6 @@ function getPlannedStudentsSortedForExport() {
       const nameB = `${b.lastName} ${b.firstName}`.toLowerCase();
       return nameA.localeCompare(nameB, "de");
     });
-}
-
-function buildBeltOrderTableHtml(plannedStudents) {
-  const sizes = Array.from(new Set(
-    plannedStudents
-      .map(student => String(student.beltSize || "").trim())
-      .filter(Boolean)
-  )).sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
-
-  const targetBelts = Array.from(new Set(
-    plannedStudents.map(student => {
-      const age = calculateAge(student.birthday);
-      return student.planningTargetBelt || getNextBelt(student.belt, age);
-    })
-  )).sort((a, b) => beltOrder(a) - beltOrder(b));
-
-  if (targetBelts.length === 0 || sizes.length === 0) {
-    return `
-      <h3>Gürtelbestellung nach Zielgurt und Größe</h3>
-      <table>
-        <tr><td>Keine Gürtelgrößen eingetragen.</td></tr>
-      </table>
-    `;
-  }
-
-  let totalAll = 0;
-
-  const rows = targetBelts.map(targetBelt => {
-    let rowTotal = 0;
-
-    const cells = sizes.map(size => {
-      const count = plannedStudents.filter(student => {
-        const age = calculateAge(student.birthday);
-        const target = student.planningTargetBelt || getNextBelt(student.belt, age);
-        return target === targetBelt && String(student.beltSize || "").trim() === size;
-      }).length;
-
-      rowTotal += count;
-      totalAll += count;
-
-      return `<td>${count || ""}</td>`;
-    }).join("");
-
-    return `
-      <tr>
-        <td>${escapeHtml(targetBelt)}</td>
-        ${cells}
-        <td><b>${rowTotal}</b></td>
-      </tr>
-    `;
-  }).join("");
-
-  const sumCells = sizes.map(size => {
-    const count = plannedStudents.filter(student => String(student.beltSize || "").trim() === size).length;
-    return `<td><b>${count || ""}</b></td>`;
-  }).join("");
-
-  return `
-    <h3>Gürtelbestellung nach Zielgurt und Größe</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Zielgurt</th>
-          ${sizes.map(size => `<th>${escapeHtml(size)}</th>`).join("")}
-          <th>Summe</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${rows}
-        <tr class="summary">
-          <td><b>Summe</b></td>
-          ${sumCells}
-          <td><b>${totalAll}</b></td>
-        </tr>
-      </tbody>
-    </table>
-  `;
-}
-
-function buildMedalOrderTableHtml(plannedStudents) {
-  const targetBelts = Array.from(new Set(
-    plannedStudents.map(student => {
-      const age = calculateAge(student.birthday);
-      return student.planningTargetBelt || getNextBelt(student.belt, age);
-    })
-  )).sort((a, b) => beltOrder(a) - beltOrder(b));
-
-  let total = 0;
-
-  const rows = targetBelts.map(targetBelt => {
-    const count = plannedStudents.filter(student => {
-      const age = calculateAge(student.birthday);
-      const target = student.planningTargetBelt || getNextBelt(student.belt, age);
-      return target === targetBelt;
-    }).length;
-
-    total += count;
-
-    return `
-      <tr>
-        <td>${escapeHtml(targetBelt)}</td>
-        <td><b>${count}</b></td>
-      </tr>
-    `;
-  }).join("");
-
-  return `
-    <h3>Medaillen / Aufkleber nach Zielgurt</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Medaillenfarbe / Zielgurt</th>
-          <th>Anzahl</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${rows || `<tr><td>-</td><td>0</td></tr>`}
-        <tr class="summary">
-          <td><b>Summe</b></td>
-          <td><b>${total}</b></td>
-        </tr>
-      </tbody>
-    </table>
-  `;
-}
-
-function buildMaterialSummaryHtml(plannedStudents) {
-  const missingCurrentStamps = plannedStudents.filter(student => !hasCurrentStamp(student)).length;
-
-  return `
-    <h3>Zusatzmaterial</h3>
-    <table>
-      <tbody>
-        <tr>
-          <td>Urkunden</td>
-          <td><b>${plannedStudents.length}</b></td>
-        </tr>
-        <tr>
-          <td>Medaillen / Aufkleber in Gürtelfarbe</td>
-          <td><b>${plannedStudents.length}</b></td>
-        </tr>
-        <tr>
-          <td>Jahressichtmarken aktuelles Jahr</td>
-          <td><b>${missingCurrentStamps}</b></td>
-        </tr>
-        <tr>
-          <td>Pässe</td>
-          <td>manuell prüfen</td>
-        </tr>
-      </tbody>
-    </table>
-  `;
-}
-
-
-function exportPlanningExcel() {
-  try {
-
-  savePlanningTableValuesFromDom();
-
-  const now = new Date();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const year = now.getFullYear();
-  const fileName = `Gürtelprüfung (${month}.${year}).xls`;
-
-  const plannedStudents = getPlannedStudentsSortedForExport();
 
   const rowsHtml = plannedStudents.map(student => {
     const age = calculateAge(student.birthday);
@@ -1182,33 +1017,24 @@ function exportPlanningExcel() {
       <head>
         <meta charset="UTF-8">
         <style>
-          body {
-            font-family: Arial, sans-serif;
-          }
-
           table {
             border-collapse: collapse;
             font-family: Arial, sans-serif;
-            margin-bottom: 28px;
+            width: 100%;
           }
 
           th {
             background: #f8fafc;
             font-weight: 900;
             text-align: center;
-            border: 1px solid #000000;
+            border: 1px solid #d1d5db;
             padding: 8px;
           }
 
           td {
             text-align: center;
-            border: 1px solid #000000;
+            border: 1px solid #d1d5db;
             padding: 8px;
-          }
-
-          h3 {
-            margin-top: 24px;
-            margin-bottom: 8px;
           }
 
           .bad {
@@ -1230,8 +1056,6 @@ function exportPlanningExcel() {
         </style>
       </head>
       <body>
-        <h3>Prüfungsliste</h3>
-
         <table>
           <thead>
             <tr>
@@ -1255,12 +1079,6 @@ function exportPlanningExcel() {
             </tr>
           </tbody>
         </table>
-
-        ${buildBeltOrderTableHtml(plannedStudents)}
-
-        ${buildMedalOrderTableHtml(plannedStudents)}
-
-        ${buildMaterialSummaryHtml(plannedStudents)}
       </body>
     </html>
   `;
@@ -1278,12 +1096,6 @@ function exportPlanningExcel() {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 }
-  } catch (error) {
-    console.error("Excel Export Fehler:", error);
-    alert("Excel Export konnte nicht erstellt werden: " + error.message);
-  }
-}
-
 
 /* Übersicht */
 
