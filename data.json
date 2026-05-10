@@ -1011,6 +1011,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "ffb83523-a4a6-45e2-932f-c64f527bf3db",
+      "firstName": "Damir",
+      "lastName": "Skotar",
+      "birthday": "2018-06-17",
+      "belt": "Weiß",
+      "beltSize": "240 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
