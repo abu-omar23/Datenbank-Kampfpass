@@ -1111,7 +1111,7 @@
       "firstName": "Youcef",
       "lastName": "Chihani",
       "birthday": "2013-07-17",
-      "belt": "Weiß",
+      "belt": "Gelb",
       "beltSize": "260 cm",
       "notes": "",
       "plannedExam": false,
@@ -1129,7 +1129,14 @@
           "status": "ja"
         }
       ],
-      "exams": []
+      "exams": [
+        {
+          "id": "7f1cdec5-1244-475a-b441-4c84c4cc738b",
+          "date": "2025-12-20",
+          "belt": "Gelb",
+          "note": ""
+        }
+      ]
     }
   ]
 }
