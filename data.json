@@ -36,7 +36,7 @@
       "belt": "Blau",
       "beltSize": "",
       "notes": "",
-      "plannedExam": false,
+      "plannedExam": true,
       "planningPaidAmount": "",
       "planningRegistrationType": "",
       "planningPaymentMethod": "",
