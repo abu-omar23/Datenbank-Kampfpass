@@ -37,9 +37,9 @@
       "beltSize": "",
       "notes": "",
       "plannedExam": true,
-      "planningPaidAmount": "",
-      "planningRegistrationType": "",
-      "planningPaymentMethod": "",
+      "planningPaidAmount": "75",
+      "planningRegistrationType": "Zettel",
+      "planningPaymentMethod": "Bar",
       "planningTargetBelt": "Blau-Braun",
       "annualStamps": [
         {
