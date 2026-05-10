@@ -587,6 +587,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "59cc1591-84bb-4e01-810c-9fd583ff7133",
+      "firstName": "Artem",
+      "lastName": "Nedorez",
+      "birthday": "2015-09-21",
+      "belt": "Weiß",
+      "beltSize": "",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
