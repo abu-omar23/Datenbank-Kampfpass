@@ -1271,7 +1271,7 @@
       "firstName": "Arian",
       "lastName": "Arifi",
       "birthday": "2020-05-04",
-      "belt": "Weiß",
+      "belt": "Gelb-Orange",
       "beltSize": "220 cm",
       "notes": "",
       "plannedExam": false,
@@ -1285,7 +1285,14 @@
           "status": "ja"
         }
       ],
-      "exams": []
+      "exams": [
+        {
+          "id": "f1f06503-6487-4d40-ba99-9efb2d0a2d18",
+          "date": "2026-05-09",
+          "belt": "Gelb-Orange",
+          "note": ""
+        }
+      ]
     }
   ]
 }
