@@ -319,7 +319,7 @@
       "firstName": "Emma",
       "lastName": "Rekar",
       "birthday": "2016-09-11",
-      "belt": "Orange",
+      "belt": "Orange-Grün",
       "beltSize": "240 cm",
       "notes": "",
       "plannedExam": false,
@@ -346,6 +346,12 @@
         }
       ],
       "exams": [
+        {
+          "id": "4adf8bf4-3308-4217-b8eb-0c110684898b",
+          "date": "2025-05-24",
+          "belt": "Orange-Grün",
+          "note": ""
+        },
         {
           "id": "e562d2ff-d032-4fe6-9248-98ef507dc740",
           "date": "2024-11-16",
