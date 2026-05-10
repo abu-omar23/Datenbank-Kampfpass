@@ -885,6 +885,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "045ca299-a56b-499d-99ad-812dab0968e9",
+      "firstName": "Belal",
+      "lastName": "Karimi",
+      "birthday": "2016-10-08",
+      "belt": "Weiß",
+      "beltSize": "260 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
