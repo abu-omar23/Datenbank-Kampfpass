@@ -427,7 +427,7 @@
       "firstName": "Almaz",
       "lastName": "Musaev",
       "birthday": "2013-05-11",
-      "belt": "Orange-Grün",
+      "belt": "Grün",
       "beltSize": "240 cm",
       "notes": "",
       "plannedExam": false,
@@ -454,6 +454,12 @@
         }
       ],
       "exams": [
+        {
+          "id": "63b72185-7c57-4999-9e67-05c633881a3d",
+          "date": "2026-05-09",
+          "belt": "Grün",
+          "note": ""
+        },
         {
           "id": "ad15da83-6cfc-49db-bc9a-e5c134d00bc7",
           "date": "2025-05-24",
