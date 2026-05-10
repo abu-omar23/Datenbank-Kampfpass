@@ -647,7 +647,7 @@
       "firstName": "Noah",
       "lastName": "Lorenz",
       "birthday": "2015-07-16",
-      "belt": "Orange",
+      "belt": "Orange-Grün",
       "beltSize": "260 cm",
       "notes": "",
       "plannedExam": false,
@@ -670,6 +670,12 @@
         }
       ],
       "exams": [
+        {
+          "id": "0b4c4a2f-4a3c-4f63-ac40-92e0e1488f80",
+          "date": "2026-05-09",
+          "belt": "Orange-Grün",
+          "note": ""
+        },
         {
           "id": "c12422df-8902-4a40-865e-f74f917ab29e",
           "date": "2025-12-20",
