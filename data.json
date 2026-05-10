@@ -1181,6 +1181,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "ddc5cef7-69be-4ebe-a62a-8f57aa12b6b5",
+      "firstName": "Ari",
+      "lastName": "Zukaj",
+      "birthday": "2018-01-29",
+      "belt": "Weiß",
+      "beltSize": "260 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
