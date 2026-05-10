@@ -1293,6 +1293,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "81b358d3-1fdf-4fa8-b1e2-1b35e9eb7967",
+      "firstName": "Leonard",
+      "lastName": "Arifi",
+      "birthday": "2016-08-15",
+      "belt": "Gelb",
+      "beltSize": "240 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
