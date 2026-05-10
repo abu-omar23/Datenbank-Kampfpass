@@ -1495,7 +1495,7 @@
       "firstName": "Liana",
       "lastName": "Hess",
       "birthday": "2019-06-30",
-      "belt": "Weiß",
+      "belt": "Gelb",
       "beltSize": "220 cm",
       "notes": "",
       "plannedExam": false,
@@ -1509,7 +1509,14 @@
           "status": "ja"
         }
       ],
-      "exams": []
+      "exams": [
+        {
+          "id": "059481a1-4b42-42c0-a8c6-9def79bb3c9d",
+          "date": "2026-05-09",
+          "belt": "Gelb",
+          "note": ""
+        }
+      ]
     }
   ]
 }
