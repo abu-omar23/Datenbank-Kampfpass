@@ -593,7 +593,7 @@
       "firstName": "Artem",
       "lastName": "Nedorez",
       "birthday": "2015-09-21",
-      "belt": "Weiß",
+      "belt": "Gelb",
       "beltSize": "",
       "notes": "",
       "plannedExam": false,
@@ -615,7 +615,14 @@
           "status": "ja"
         }
       ],
-      "exams": []
+      "exams": [
+        {
+          "id": "07ebff64-818b-4e8d-8167-3bdf8b39737a",
+          "date": "2024-11-16",
+          "belt": "Gelb",
+          "note": ""
+        }
+      ]
     }
   ]
 }
