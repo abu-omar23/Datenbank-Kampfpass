@@ -935,7 +935,7 @@
       "firstName": "Giulia",
       "lastName": "Zotica",
       "birthday": "2011-05-31",
-      "belt": "Gelb",
+      "belt": "Orange",
       "beltSize": "280 cm",
       "notes": "",
       "plannedExam": false,
@@ -954,6 +954,12 @@
         }
       ],
       "exams": [
+        {
+          "id": "67694ddd-ec44-4b78-8814-b307fe928e6f",
+          "date": "2026-05-09",
+          "belt": "Orange",
+          "note": ""
+        },
         {
           "id": "886b5058-b9da-46ab-b729-701e812ea108",
           "date": "2025-12-20",
