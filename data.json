@@ -1517,6 +1517,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "7f9aaa4e-1e19-460f-86bc-6fdbe0a113e6",
+      "firstName": "Rayyan",
+      "lastName": "Arrassen",
+      "birthday": "2019-02-21",
+      "belt": "Weiß",
+      "beltSize": "240 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
