@@ -1,8 +1,31 @@
+const GURTE = [
+  "Weiß",
+  "Gelb",
+  "Gelb-Orange",
+  "Orange",
+  "Orange-Grün",
+  "Grün",
+  "Grün-Blau",
+  "Blau",
+  "Blau-Braun",
+  "Braun",
+  "Braun-Schwarz",
+  "Schwarz",
+  "1. Dan",
+  "2. Dan",
+  "3. Dan",
+  "4. Dan",
+  "5. Dan",
+  "6. Dan",
+  "7. Dan",
+  "8. Dan"
+];
+
 const studentsList = document.getElementById("studentsList");
 const searchInput = document.getElementById("searchInput");
 const beltFilter = document.getElementById("beltFilter");
 const planningFilter = document.getElementById("planningFilter");
-const statusText = document.getElementById("statusText");
+const statusText = document.getElementById("statusText") || document.getElementById("planningStatusText");
 
 const studentModal = document.getElementById("studentModal");
 const settingsModal = document.getElementById("settingsModal");
@@ -21,6 +44,7 @@ const stampFormArea = document.getElementById("stampFormArea");
 const stampList = document.getElementById("stampList");
 
 const planningList = document.getElementById("planningList");
+const planningTableBody = document.getElementById("planningTableBody");
 
 let data = {
   students: []
@@ -40,7 +64,9 @@ function getSettings() {
 }
 
 function setStatus(text) {
-  statusText.textContent = text;
+  if (statusText) {
+    statusText.textContent = text;
+  }
 }
 
 function openSettings() {
@@ -110,6 +136,10 @@ function normalizeData(loadedData) {
       beltSize: student.beltSize || "",
       notes: student.notes || "",
       plannedExam: Boolean(student.plannedExam),
+      planningPaid: Boolean(student.planningPaid),
+      planningPaymentMethod: student.planningPaymentMethod || "",
+      planningRegistrationSubmitted: Boolean(student.planningRegistrationSubmitted),
+      planningTargetBelt: student.planningTargetBelt || "",
       annualStamps: Array.isArray(student.annualStamps)
         ? student.annualStamps
         : oldStampToArray(student),
@@ -157,11 +187,13 @@ async function loadStudents() {
     data = normalizeData(JSON.parse(content));
 
     renderStudents();
+    renderPlanningTable();
 
     setStatus(`Verbunden · ${data.students.length} Schüler geladen`);
   } catch (error) {
     setStatus(error.message);
     renderStudents();
+    renderPlanningTable();
   }
 }
 
@@ -198,6 +230,7 @@ async function saveStudents() {
 
   setStatus("Gespeichert");
   renderStudents();
+  renderPlanningTable();
 }
 
 function makeId() {
@@ -209,6 +242,10 @@ function makeId() {
 }
 
 function calculateAge(birthday) {
+  if (!birthday) {
+    return null;
+  }
+
   const birthDate = new Date(birthday);
   const today = new Date();
 
@@ -284,42 +321,47 @@ function closeStudentModal() {
   studentModal.classList.add("hidden");
 }
 
-studentForm.addEventListener("submit", async function(event) {
-  event.preventDefault();
+if (studentForm) {
+  studentForm.addEventListener("submit", async function(event) {
+    event.preventDefault();
 
-  const studentId = currentStudentId || makeId();
+    const studentId = currentStudentId || makeId();
 
-  const studentData = {
-    id: studentId,
-    firstName: document.getElementById("firstName").value.trim(),
-    lastName: document.getElementById("lastName").value.trim(),
-    birthday: document.getElementById("birthday").value,
-    belt: document.getElementById("belt").value,
-    beltSize: document.getElementById("beltSize").value,
-    notes: document.getElementById("notes").value.trim(),
-    plannedExam: document.getElementById("plannedExam").checked,
-    annualStamps: [],
-    exams: []
-  };
+    const existingIndex = data.students.findIndex(student => student.id === studentId);
+    const oldStudent = existingIndex >= 0 ? data.students[existingIndex] : {};
 
-  const existingIndex = data.students.findIndex(student => student.id === studentId);
+    const studentData = {
+      id: studentId,
+      firstName: document.getElementById("firstName").value.trim(),
+      lastName: document.getElementById("lastName").value.trim(),
+      birthday: document.getElementById("birthday").value,
+      belt: document.getElementById("belt").value,
+      beltSize: document.getElementById("beltSize").value,
+      notes: document.getElementById("notes").value.trim(),
+      plannedExam: document.getElementById("plannedExam").checked,
+      planningPaid: Boolean(oldStudent.planningPaid),
+      planningPaymentMethod: oldStudent.planningPaymentMethod || "",
+      planningRegistrationSubmitted: Boolean(oldStudent.planningRegistrationSubmitted),
+      planningTargetBelt: oldStudent.planningTargetBelt || "",
+      annualStamps: oldStudent.annualStamps || [],
+      exams: oldStudent.exams || []
+    };
 
-  if (existingIndex >= 0) {
-    studentData.exams = data.students[existingIndex].exams || [];
-    studentData.annualStamps = data.students[existingIndex].annualStamps || [];
-    data.students[existingIndex] = studentData;
-  } else {
-    data.students.push(studentData);
-    currentStudentId = studentId;
-  }
+    if (existingIndex >= 0) {
+      data.students[existingIndex] = studentData;
+    } else {
+      data.students.push(studentData);
+      currentStudentId = studentId;
+    }
 
-  try {
-    await saveStudents();
-    closeStudentModal();
-  } catch (error) {
-    alert(error.message);
-  }
-});
+    try {
+      await saveStudents();
+      closeStudentModal();
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+}
 
 async function deleteCurrentStudent() {
   const student = getCurrentStudent();
@@ -467,6 +509,10 @@ async function deleteExam(examId) {
 }
 
 function renderExams() {
+  if (!examList) {
+    return;
+  }
+
   const student = getCurrentStudent();
 
   if (!student) {
@@ -581,6 +627,10 @@ async function deleteStamp(year) {
 }
 
 function renderStamps() {
+  if (!stampList) {
+    return;
+  }
+
   const student = getCurrentStudent();
 
   if (!student) {
@@ -613,7 +663,7 @@ function renderStamps() {
   }).join("");
 }
 
-/* Prüfungsplanung */
+/* Prüfungsplanung Auswahl */
 
 function openExamPlanning() {
   renderPlanningList();
@@ -625,6 +675,10 @@ function closeExamPlanning() {
 }
 
 function renderPlanningList() {
+  if (!planningList) {
+    return;
+  }
+
   const students = data.students.slice().sort((a, b) => {
     const nameA = `${a.lastName} ${a.firstName}`.toLowerCase();
     const nameB = `${b.lastName} ${b.firstName}`.toLowerCase();
@@ -673,9 +727,173 @@ async function savePlanning() {
   }
 }
 
+/* Eigene Prüfungsplanung Tabelle */
+
+function renderPlanningTable() {
+  if (!planningTableBody) {
+    return;
+  }
+
+  const plannedStudents = data.students
+    .filter(student => student.plannedExam)
+    .sort((a, b) => {
+      const nameA = `${a.lastName} ${a.firstName}`.toLowerCase();
+      const nameB = `${b.lastName} ${b.firstName}`.toLowerCase();
+      return nameA.localeCompare(nameB, "de");
+    });
+
+  if (plannedStudents.length === 0) {
+    planningTableBody.innerHTML = `
+      <tr>
+        <td colspan="9">Keine Schüler für die Prüfung eingeplant.</td>
+      </tr>
+    `;
+    return;
+  }
+
+  planningTableBody.innerHTML = plannedStudents.map(student => {
+    const age = calculateAge(student.birthday);
+    const targetBelt = student.planningTargetBelt || getNextBelt(student.belt, age);
+
+    return `
+      <tr data-student-id="${student.id}">
+        <td><strong>${escapeHtml(student.lastName)}, ${escapeHtml(student.firstName)}</strong></td>
+
+        <td>
+          <div class="belt-row">
+            <span class="belt-dot ${beltClass(student.belt)}"></span>
+            <span class="belt-text">${escapeHtml(student.belt)}</span>
+          </div>
+        </td>
+
+        <td>${age === null ? "-" : age}</td>
+
+        <td>${escapeHtml(student.beltSize || "-")}</td>
+
+        <td>
+          <select class="table-select" data-field="planningTargetBelt">
+            ${GURTE.map(belt => `<option value="${belt}" ${belt === targetBelt ? "selected" : ""}>${belt}</option>`).join("")}
+          </select>
+        </td>
+
+        <td>
+          <input class="table-checkbox" type="checkbox" data-field="planningPaid" ${student.planningPaid ? "checked" : ""}>
+        </td>
+
+        <td>
+          <select class="table-select" data-field="planningPaymentMethod">
+            <option value="" ${!student.planningPaymentMethod ? "selected" : ""}>-</option>
+            <option value="Bar" ${student.planningPaymentMethod === "Bar" ? "selected" : ""}>Bar</option>
+            <option value="Überweisung" ${student.planningPaymentMethod === "Überweisung" ? "selected" : ""}>Überweisung</option>
+          </select>
+        </td>
+
+        <td>
+          <input class="table-checkbox" type="checkbox" data-field="planningRegistrationSubmitted" ${student.planningRegistrationSubmitted ? "checked" : ""}>
+        </td>
+
+        <td>
+          <button class="danger-btn" onclick="removeStudentFromPlanning('${student.id}')">Entfernen</button>
+        </td>
+      </tr>
+    `;
+  }).join("");
+}
+
+async function savePlanningTable() {
+  if (!planningTableBody) {
+    return;
+  }
+
+  const rows = planningTableBody.querySelectorAll("tr[data-student-id]");
+
+  rows.forEach(row => {
+    const student = data.students.find(item => item.id === row.dataset.studentId);
+
+    if (!student) {
+      return;
+    }
+
+    const targetBelt = row.querySelector('[data-field="planningTargetBelt"]');
+    const paid = row.querySelector('[data-field="planningPaid"]');
+    const paymentMethod = row.querySelector('[data-field="planningPaymentMethod"]');
+    const registration = row.querySelector('[data-field="planningRegistrationSubmitted"]');
+
+    student.planningTargetBelt = targetBelt.value;
+    student.planningPaid = paid.checked;
+    student.planningPaymentMethod = paymentMethod.value;
+    student.planningRegistrationSubmitted = registration.checked;
+  });
+
+  try {
+    await saveStudents();
+    alert("Prüfungsplanung gespeichert.");
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
+async function removeStudentFromPlanning(studentId) {
+  const student = data.students.find(item => item.id === studentId);
+
+  if (!student) {
+    return;
+  }
+
+  const confirmed = confirm(`${student.firstName} ${student.lastName} aus der Prüfungsplanung entfernen?`);
+
+  if (!confirmed) {
+    return;
+  }
+
+  student.plannedExam = false;
+  student.planningPaid = false;
+  student.planningPaymentMethod = "";
+  student.planningRegistrationSubmitted = false;
+
+  try {
+    await saveStudents();
+    renderPlanningTable();
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
+function getNextBelt(currentBelt, age) {
+  const currentIndex = GURTE.indexOf(currentBelt);
+
+  if (currentIndex < 0 || currentIndex >= GURTE.length - 1) {
+    return currentBelt || "Weiß";
+  }
+
+  let nextIndex = currentIndex + 1;
+
+  if (age !== null && age >= 14) {
+    while (nextIndex < GURTE.length - 1 && isHalfBelt(GURTE[nextIndex])) {
+      nextIndex++;
+    }
+  }
+
+  return GURTE[nextIndex];
+}
+
+function isHalfBelt(belt) {
+  return [
+    "Gelb-Orange",
+    "Orange-Grün",
+    "Grün-Blau",
+    "Blau-Braun",
+    "Braun-Schwarz"
+  ].includes(belt);
+}
+
 /* Übersicht */
 
 function renderStudents() {
+  if (!studentsList) {
+    return;
+  }
+
   const search = searchInput.value.toLowerCase().trim();
   const selectedBelt = beltFilter.value;
   const selectedPlanning = planningFilter.value;
@@ -808,12 +1026,21 @@ function escapeHtml(text) {
     .replaceAll("'", "&#039;");
 }
 
-searchInput.addEventListener("input", renderStudents);
-beltFilter.addEventListener("change", renderStudents);
-planningFilter.addEventListener("change", renderStudents);
+if (searchInput) {
+  searchInput.addEventListener("input", renderStudents);
+}
+
+if (beltFilter) {
+  beltFilter.addEventListener("change", renderStudents);
+}
+
+if (planningFilter) {
+  planningFilter.addEventListener("change", renderStudents);
+}
 
 window.addEventListener("load", function() {
   renderStudents();
+  renderPlanningTable();
 
   const settings = getSettings();
 

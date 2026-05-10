@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prüfungsplanung</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="header">
+  <div>
+    <h1>Prüfungsplanung</h1>
+    <p>Tabelle aller ausgewählten Schüler</p>
+  </div>
+
+  <div class="header-actions">
+    <a class="button-link secondary-btn" href="index.html">Zur Übersicht</a>
+    <button class="secondary-btn" onclick="openSettings()">GitHub Verbindung</button>
+  </div>
+</header>
+
+<section class="status">
+  <span id="planningStatusText">Nicht verbunden</span>
+</section>
+
+<section class="table-actions">
+  <button class="primary-btn" onclick="savePlanningTable()">Tabelle speichern</button>
+  <button class="secondary-btn" onclick="loadStudents()">Neu laden</button>
+  <button class="secondary-btn" onclick="window.print()">Drucken</button>
+</section>
+
+<main class="table-page">
+  <div class="table-wrap">
+    <table class="planning-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Aktueller Gurt</th>
+          <th>Alter</th>
+          <th>Gürtellänge</th>
+          <th>Zielgurt</th>
+          <th>Bezahlt</th>
+          <th>Wie bezahlt?</th>
+          <th>Anmeldung abgegeben</th>
+          <th>Aktion</th>
+        </tr>
+      </thead>
+      <tbody id="planningTableBody">
+        <tr>
+          <td colspan="9">Lade Daten...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<div id="settingsModal" class="modal hidden">
+  <div class="modal-box small-modal">
+
+    <div class="modal-header">
+      <h2>GitHub Verbindung</h2>
+      <button class="close-btn" onclick="closeSettings()">×</button>
+    </div>
+
+    <label>
+      GitHub Benutzername
+      <input id="ownerInput" type="text" placeholder="deinname">
+    </label>
+
+    <label>
+      Repository Name
+      <input id="repoInput" type="text" placeholder="repository-name">
+    </label>
+
+    <label>
+      Branch
+      <input id="branchInput" type="text" value="main">
+    </label>
+
+    <label>
+      GitHub Token
+      <input id="tokenInput" type="password" placeholder="github_pat_...">
+    </label>
+
+    <p class="hint">
+      Der Token wird nur in diesem Browser gespeichert.
+    </p>
+
+    <div class="form-actions">
+      <button class="primary-btn" onclick="saveSettings()">Verbindung speichern</button>
+      <button class="secondary-btn" onclick="closeSettings()">Schließen</button>
+    </div>
+
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -142,13 +142,18 @@ main {
   margin-top: 9px;
 }
 
-button {
+button,
+.button-link {
   border: 0;
   border-radius: 11px;
   padding: 8px 12px;
   font-weight: 700;
   cursor: pointer;
   font-size: 13px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .primary-btn {
@@ -377,6 +382,70 @@ hr {
   grid-column: 1 / -1;
 }
 
+/* Tabelle Prüfungsplanung */
+
+.table-page {
+  padding: 8px 22px 32px;
+}
+
+.table-wrap {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  overflow: auto;
+}
+
+.planning-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 980px;
+}
+
+.planning-table th,
+.planning-table td {
+  border-bottom: 1px solid var(--border);
+  padding: 10px;
+  text-align: left;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.planning-table th {
+  background: #f8fafc;
+  font-weight: 800;
+  color: #374151;
+  position: sticky;
+  top: 0;
+}
+
+.planning-table tr:hover td {
+  background: #f9fafb;
+}
+
+.table-input,
+.table-select {
+  min-width: 120px;
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+
+.table-checkbox {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
+.table-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 16px 22px 8px;
+}
+
+/* Gürtel-Farben */
+
 .belt-white {
   background: #ffffff;
 }
@@ -423,6 +492,39 @@ hr {
 
 .belt-brown-black {
   background: linear-gradient(90deg, #92400e 50%, #111827 50%);
+}
+
+@media print {
+  .header,
+  .toolbar,
+  .status,
+  .table-actions {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+  }
+
+  .table-page {
+    padding: 0;
+  }
+
+  .table-wrap {
+    box-shadow: none;
+    border: 0;
+    overflow: visible;
+  }
+
+  .planning-table {
+    min-width: 0;
+  }
+
+  .planning-table th,
+  .planning-table td {
+    font-size: 11px;
+    padding: 5px;
+  }
 }
 
 @media (max-width: 900px) {
@@ -481,7 +583,16 @@ hr {
     grid-column: 2;
   }
 
-  button {
+  button,
+  .button-link {
     width: 100%;
+  }
+
+  .table-actions {
+    padding: 16px;
+  }
+
+  .table-page {
+    padding: 8px 16px 24px;
   }
 }
