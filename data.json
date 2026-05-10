@@ -1377,6 +1377,22 @@
           "note": "Marke fehlt im Pass 2026"
         }
       ]
+    },
+    {
+      "id": "155e3722-319b-4176-8c15-f8175018bb6d",
+      "firstName": "Klara",
+      "lastName": "Peschke",
+      "birthday": "2019-11-17",
+      "belt": "Weiß",
+      "beltSize": "220 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
