@@ -641,6 +641,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "b5f3cb7e-3440-425b-8ed0-37ff4e4b264d",
+      "firstName": "Noah",
+      "lastName": "Lorenz",
+      "birthday": "2015-07-16",
+      "belt": "Weiß",
+      "beltSize": "260 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
