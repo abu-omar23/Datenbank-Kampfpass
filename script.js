@@ -1241,6 +1241,20 @@ function beltOrder(belt) {
   const index = GURTE.indexOf(belt);
   return index === -1 ? 999 : index;
 }
+function hasCurrentStamp(student) {
+
+  const currentYear =
+    String(new Date().getFullYear());
+
+  return (student.annualStamps || []).some(stamp => {
+
+    return (
+      String(stamp.year) === currentYear &&
+      stamp.status === "ja"
+    );
+
+  });
+}
 
 window.addEventListener("load", function() {
   renderStudents();
