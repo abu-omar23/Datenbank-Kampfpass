@@ -533,6 +533,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "01df3d34-30b8-4aaf-b393-1c8151e0ac15",
+      "firstName": "Berken",
+      "lastName": "Temel",
+      "birthday": "2016-08-07",
+      "belt": "Orange-Grün",
+      "beltSize": "240 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
