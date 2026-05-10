@@ -1,93 +1,181 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Schülerverwaltung</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header class="app-header">
+<header class="header">
   <div>
     <h1>Schülerverwaltung</h1>
-    <p>Gürtelgrade und Prüfungsverlauf</p>
+    <p>Alle Schüler auf einen Blick</p>
+  </div>
+
+  <div class="header-buttons">
+    <button onclick="openAddModal()">Schüler hinzufügen</button>
+    <button onclick="openSettings()">GitHub Verbindung</button>
   </div>
 </header>
 
-<main class="layout">
+<section class="topbar">
 
-<section class="card">
-
-<h2>Schüler hinzufügen</h2>
-
-<form id="studentForm">
-
-<input type="hidden" id="studentId">
-
-<div class="two-cols">
-
-<label>
-Vorname
-<input id="firstName" required>
-</label>
-
-<label>
-Nachname
-<input id="lastName" required>
-</label>
-
-</div>
-
-<label>
-Geburtstag
-<input type="date" id="birthday">
-</label>
-
-<label>
-Aktueller Gürtelgrad
-<input id="belt">
-</label>
-
-<div class="two-cols">
-
-<label>
-Jahressichtmarke
-<select id="annualStamp">
-<option value="ja">Ja</option>
-<option value="nein">Nein</option>
-</select>
-</label>
-
-<label>
-Jahr
-<input type="number" id="annualStampYear">
-</label>
-
-</div>
-
-<label>
-Notizen
-<textarea id="notes"></textarea>
-</label>
-
-<button type="submit">Speichern</button>
-
-</form>
+  <input
+    id="searchInput"
+    type="search"
+    placeholder="Nach Schüler suchen..."
+  >
 
 </section>
 
-<section class="card">
+<main>
 
-<h2>Schülerliste</h2>
-
-<input id="searchInput" placeholder="Suchen">
-
-<div id="studentsList"></div>
-
-</section>
+  <div id="studentsList" class="students-grid"></div>
 
 </main>
+
+<!-- Schüler Modal -->
+
+<div id="studentModal" class="modal hidden">
+
+  <div class="modal-box">
+
+    <h2 id="modalTitle">Schüler hinzufügen</h2>
+
+    <form id="studentForm">
+
+      <input type="hidden" id="studentId">
+
+      <div class="two-cols">
+
+        <label>
+          Vorname
+          <input id="firstName" required>
+        </label>
+
+        <label>
+          Nachname
+          <input id="lastName" required>
+        </label>
+
+      </div>
+
+      <label>
+        Geburtstag
+        <input type="date" id="birthday">
+      </label>
+
+      <label>
+        Aktueller Gürtelgrad
+        <select id="belt">
+
+          <option>Weißgurt</option>
+          <option>Weiß-Gelb</option>
+          <option>Gelbgurt</option>
+          <option>Gelb-Orange</option>
+          <option>Orangegurt</option>
+          <option>Orange-Grün</option>
+          <option>Grüngurt</option>
+          <option>Blaugurt</option>
+          <option>Braungurt</option>
+          <option>Schwarzgurt</option>
+
+        </select>
+      </label>
+
+      <label>
+        Notizen
+        <textarea id="notes"></textarea>
+      </label>
+
+      <div class="modal-buttons">
+        <button type="submit">Speichern</button>
+        <button type="button" onclick="closeModal()">Abbrechen</button>
+      </div>
+
+    </form>
+
+    <hr>
+
+    <h3>Prüfungsverlauf</h3>
+
+    <div id="examList"></div>
+
+    <button onclick="addExam()">
+      Prüfung hinzufügen
+    </button>
+
+    <hr>
+
+    <h3>Jahressichtmarke</h3>
+
+    <div class="two-cols">
+
+      <label>
+        Vorhanden
+        <select id="annualStamp">
+          <option value="ja">Ja</option>
+          <option value="nein">Nein</option>
+        </select>
+      </label>
+
+      <label>
+        Jahr
+        <input
+          type="number"
+          id="annualStampYear"
+        >
+      </label>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Settings -->
+
+<div id="settingsModal" class="modal hidden">
+
+  <div class="modal-box">
+
+    <h2>GitHub Verbindung</h2>
+
+    <label>
+      GitHub Benutzername
+      <input id="ownerInput">
+    </label>
+
+    <label>
+      Repository Name
+      <input id="repoInput">
+    </label>
+
+    <label>
+      Branch
+      <input id="branchInput" value="main">
+    </label>
+
+    <label>
+      GitHub Token
+      <input id="tokenInput" type="password">
+    </label>
+
+    <div class="modal-buttons">
+      <button onclick="saveSettings()">
+        Speichern
+      </button>
+
+      <button onclick="closeSettings()">
+        Schließen
+      </button>
+    </div>
+
+  </div>
+
+</div>
 
 <script src="script.js"></script>
 
