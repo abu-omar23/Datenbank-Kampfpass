@@ -891,7 +891,7 @@
       "firstName": "Belal",
       "lastName": "Karimi",
       "birthday": "2016-10-08",
-      "belt": "Weiß",
+      "belt": "Gelb",
       "beltSize": "260 cm",
       "notes": "",
       "plannedExam": false,
@@ -909,7 +909,14 @@
           "status": "ja"
         }
       ],
-      "exams": []
+      "exams": [
+        {
+          "id": "3320b0df-1d15-4233-9f44-d5b3cb5ddb92",
+          "date": "2025-05-24",
+          "belt": "Gelb",
+          "note": ""
+        }
+      ]
     }
   ]
 }
