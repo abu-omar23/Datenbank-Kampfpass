@@ -601,3 +601,66 @@ hr {
 .euro-input {
   min-width: 95px;
 }
+.planning-table th {
+  text-align: center;
+  font-weight: 900;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+}
+
+.planning-table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.center-belt {
+  justify-content: center;
+}
+
+.student-cell {
+  min-width: 180px;
+}
+
+.big-value {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.status-column {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+
+.status-ok {
+  background: #dcfce7;
+  color: #166534;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.status-bad {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.table-input,
+.table-select {
+  text-align: center;
+  font-weight: 700;
+}
+
+.euro-input {
+  width: 90px;
+}
+
+.planning-table tr:hover td {
+  background: #f8fafc;
+}
