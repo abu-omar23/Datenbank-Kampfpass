@@ -1265,6 +1265,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "7880e41e-f0d7-4622-9cc4-4095df6af82d",
+      "firstName": "Arian",
+      "lastName": "Arifi",
+      "birthday": "2020-05-04",
+      "belt": "Weiß",
+      "beltSize": "220 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
