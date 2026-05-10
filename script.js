@@ -1162,6 +1162,86 @@ if (planningFilter) {
   planningFilter.addEventListener("change", renderStudents);
 }
 
+function exportPlanningExcel() {
+  savePlanningTableValuesFromDom();
+
+  const plannedStudents = data.students
+    .filter(student => student.plannedExam)
+    .sort((a, b) => {
+      const ageA = calculateAge(a.birthday);
+      const ageB = calculateAge(b.birthday);
+
+      const targetA = a.planningTargetBelt || getNextBelt(a.belt, ageA);
+      const targetB = b.planningTargetBelt || getNextBelt(b.belt, ageB);
+
+      return beltOrder(targetA) - beltOrder(targetB);
+    });
+
+  let csv = "Nachname;Vorname;Aktueller Gurt;Alter;Gürtellänge;Zielgurt;Bezahlt;Anmeldung\n";
+
+  plannedStudents.forEach(student => {
+    const age = calculateAge(student.birthday);
+    const target = student.planningTargetBelt || getNextBelt(student.belt, age);
+
+    csv +=
+      `"${student.lastName || ""}";` +
+      `"${student.firstName || ""}";` +
+      `"${student.belt || ""}";` +
+      `"${age || ""}";` +
+      `"${student.beltSize || ""}";` +
+      `"${target || ""}";` +
+      `"${student.planningPaidAmount || ""}";` +
+      `"${student.planningRegistrationType || ""}"\n`;
+  });
+
+  const blob = new Blob(["\uFEFF" + csv], {
+    type: "text/csv;charset=utf-8;"
+  });
+
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+
+  a.href = url;
+  a.download = "pruefungsplanung.csv";
+
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  window.URL.revokeObjectURL(url);
+}
+
+function savePlanningTableValuesFromDom() {
+  const tableBody = document.getElementById("planningTableBody");
+
+  if (!tableBody) {
+    return;
+  }
+
+  const rows = tableBody.querySelectorAll("tr[data-student-id]");
+
+  rows.forEach(row => {
+    const student = data.students.find(item => item.id === row.dataset.studentId);
+
+    if (!student) {
+      return;
+    }
+
+    const targetBelt = row.querySelector('[data-field="planningTargetBelt"]');
+    const paidAmount = row.querySelector('[data-field="planningPaidAmount"]');
+    const registrationType = row.querySelector('[data-field="planningRegistrationType"]');
+
+    if (targetBelt) student.planningTargetBelt = targetBelt.value;
+    if (paidAmount) student.planningPaidAmount = paidAmount.value.trim();
+    if (registrationType) student.planningRegistrationType = registrationType.value;
+  });
+}
+
+function beltOrder(belt) {
+  const index = GURTE.indexOf(belt);
+  return index === -1 ? 999 : index;
+}
+
 window.addEventListener("load", function() {
   renderStudents();
   renderPlanningTable();
