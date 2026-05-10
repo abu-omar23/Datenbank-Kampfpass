@@ -1405,6 +1405,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "f8f95f8f-e2c7-4a7c-a38e-da6d48e815bd",
+      "firstName": "Julius",
+      "lastName": "Pontow",
+      "birthday": "2012-11-24",
+      "belt": "Weiß",
+      "beltSize": "260 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
