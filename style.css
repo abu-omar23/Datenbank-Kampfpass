@@ -52,13 +52,14 @@ body {
 }
 
 .toolbar {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 220px 210px auto;
   gap: 12px;
   padding: 22px 28px 10px;
 }
 
-.toolbar input {
-  flex: 1;
+.toolbar input,
+.toolbar select {
   padding: 15px 16px;
   border: 1px solid var(--border);
   border-radius: 16px;
@@ -125,6 +126,17 @@ main {
 .student-info {
   color: var(--muted);
   font-size: 14px;
+  margin-top: 10px;
+}
+
+.planned-badge {
+  display: inline-block;
+  background: #dcfce7;
+  color: #166534;
+  border-radius: 999px;
+  padding: 5px 9px;
+  font-size: 12px;
+  font-weight: 800;
   margin-top: 10px;
 }
 
@@ -235,6 +247,8 @@ select {
 
 textarea {
   resize: vertical;
+  min-height: 52px;
+  max-height: 110px;
 }
 
 .two-columns {
@@ -250,16 +264,19 @@ textarea {
   margin-top: 8px;
 }
 
-.edit-only {
+.checkbox-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   background: #f8fafc;
   border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 15px;
-  margin-top: 10px;
+  padding: 12px;
+  border-radius: 14px;
 }
 
-.edit-only h3 {
-  margin: 0 0 12px;
+.checkbox-line input {
+  width: auto;
+  margin: 0;
 }
 
 .history-area {
@@ -325,6 +342,29 @@ hr {
   font-size: 14px;
 }
 
+.planning-list {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.planning-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 13px;
+}
+
+.planning-item input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+}
+
 .hint {
   color: var(--muted);
   line-height: 1.45;
@@ -380,6 +420,12 @@ hr {
   background: linear-gradient(90deg, #92400e 50%, #111827 50%);
 }
 
+@media (max-width: 900px) {
+  .toolbar {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 @media (max-width: 720px) {
   .header {
     flex-direction: column;
@@ -392,7 +438,7 @@ hr {
   }
 
   .toolbar {
-    flex-direction: column;
+    grid-template-columns: 1fr;
     padding: 18px;
   }
 
@@ -420,6 +466,14 @@ hr {
   .exam-item {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .planning-item {
+    grid-template-columns: auto 1fr;
+  }
+
+  .planning-item .belt-row {
+    grid-column: 2;
   }
 
   button {

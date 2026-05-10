@@ -16,12 +16,43 @@
 
   <div class="header-actions">
     <button class="primary-btn" onclick="openAddStudent()">+ Schüler hinzufügen</button>
+    <button class="secondary-btn" onclick="openExamPlanning()">Prüfungsplanung</button>
     <button class="secondary-btn" onclick="openSettings()">GitHub Verbindung</button>
   </div>
 </header>
 
 <section class="toolbar">
   <input id="searchInput" type="search" placeholder="Schüler suchen...">
+
+  <select id="beltFilter">
+    <option value="">Alle Gürtel</option>
+    <option value="Weiß">Weiß</option>
+    <option value="Gelb">Gelb</option>
+    <option value="Gelb-Orange">Gelb-Orange</option>
+    <option value="Orange">Orange</option>
+    <option value="Orange-Grün">Orange-Grün</option>
+    <option value="Grün">Grün</option>
+    <option value="Grün-Blau">Grün-Blau</option>
+    <option value="Blau">Blau</option>
+    <option value="Blau-Braun">Blau-Braun</option>
+    <option value="Braun">Braun</option>
+    <option value="Braun-Schwarz">Braun-Schwarz</option>
+    <option value="Schwarz">Schwarz</option>
+    <option value="1. Dan">1. Dan</option>
+    <option value="2. Dan">2. Dan</option>
+    <option value="3. Dan">3. Dan</option>
+    <option value="4. Dan">4. Dan</option>
+    <option value="5. Dan">5. Dan</option>
+    <option value="6. Dan">6. Dan</option>
+    <option value="7. Dan">7. Dan</option>
+    <option value="8. Dan">8. Dan</option>
+  </select>
+
+  <select id="planningFilter">
+    <option value="">Alle Schüler</option>
+    <option value="planned">Nur Prüfungsplanung</option>
+  </select>
+
   <button class="secondary-btn" onclick="loadStudents()">Neu laden</button>
 </section>
 
@@ -91,27 +122,13 @@
 
       <label>
         Notizen
-        <textarea id="notes" rows="4"></textarea>
+        <textarea id="notes" rows="2"></textarea>
       </label>
 
-      <div class="edit-only">
-        <h3>Jahressichtmarke</h3>
-
-        <div class="two-columns">
-          <label>
-            Vorhanden
-            <select id="annualStamp">
-              <option value="ja">Ja</option>
-              <option value="nein">Nein</option>
-            </select>
-          </label>
-
-          <label>
-            Jahr
-            <input id="annualStampYear" type="number" min="2000" max="2100" placeholder="2026">
-          </label>
-        </div>
-      </div>
+      <label class="checkbox-line">
+        <input id="plannedExam" type="checkbox">
+        Für nächste Prüfung einplanen
+      </label>
 
       <div class="form-actions">
         <button class="primary-btn" type="submit">Speichern</button>
@@ -120,7 +137,38 @@
       </div>
     </form>
 
-    <div id="historyArea" class="history-area hidden">
+    <div id="detailsArea" class="history-area hidden">
+      <hr>
+
+      <div class="section-title">
+        <h3>Jahressichtmarken</h3>
+        <button class="secondary-btn" onclick="openStampForm()">+ Sichtmarke</button>
+      </div>
+
+      <div id="stampFormArea" class="exam-form hidden">
+        <div class="two-columns">
+          <label>
+            Jahr
+            <input id="stampYear" type="number" min="2000" max="2100" placeholder="2026">
+          </label>
+
+          <label>
+            Vorhanden
+            <select id="stampStatus">
+              <option value="ja">Ja</option>
+              <option value="nein">Nein</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button class="primary-btn" type="button" onclick="saveStamp()">Sichtmarke speichern</button>
+          <button class="secondary-btn" type="button" onclick="closeStampForm()">Abbrechen</button>
+        </div>
+      </div>
+
+      <div id="stampList" class="exam-list"></div>
+
       <hr>
 
       <div class="section-title">
@@ -179,6 +227,28 @@
   </div>
 </div>
 
+<div id="planningModal" class="modal hidden">
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h2>Prüfungsplanung</h2>
+      <button class="close-btn" onclick="closeExamPlanning()">×</button>
+    </div>
+
+    <p class="hint">
+      Hake alle Schüler an, die bei der nächsten Prüfung mitmachen sollen.
+    </p>
+
+    <div id="planningList" class="planning-list"></div>
+
+    <div class="form-actions">
+      <button class="primary-btn" onclick="savePlanning()">Planung speichern</button>
+      <button class="secondary-btn" onclick="closeExamPlanning()">Schließen</button>
+    </div>
+
+  </div>
+</div>
+
 <div id="settingsModal" class="modal hidden">
   <div class="modal-box small-modal">
 
@@ -208,7 +278,7 @@
     </label>
 
     <p class="hint">
-      Der Token wird nur in diesem Browser gespeichert. Wenn du am Handy arbeitest, musst du ihn dort einmal eintragen.
+      Der Token wird nur in diesem Browser gespeichert. Auf dem Handy musst du ihn einmal dort eintragen.
     </p>
 
     <div class="form-actions">

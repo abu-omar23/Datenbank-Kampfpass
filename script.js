@@ -1,17 +1,26 @@
 const studentsList = document.getElementById("studentsList");
 const searchInput = document.getElementById("searchInput");
+const beltFilter = document.getElementById("beltFilter");
+const planningFilter = document.getElementById("planningFilter");
 const statusText = document.getElementById("statusText");
 
 const studentModal = document.getElementById("studentModal");
 const settingsModal = document.getElementById("settingsModal");
+const planningModal = document.getElementById("planningModal");
 
 const studentForm = document.getElementById("studentForm");
 const studentModalTitle = document.getElementById("studentModalTitle");
 const deleteStudentBtn = document.getElementById("deleteStudentBtn");
 
-const historyArea = document.getElementById("historyArea");
+const detailsArea = document.getElementById("detailsArea");
+
 const examFormArea = document.getElementById("examFormArea");
 const examList = document.getElementById("examList");
+
+const stampFormArea = document.getElementById("stampFormArea");
+const stampList = document.getElementById("stampList");
+
+const planningList = document.getElementById("planningList");
 
 let data = {
   students: []
@@ -99,13 +108,28 @@ function normalizeData(loadedData) {
       birthday: student.birthday || "",
       belt: student.belt || "Weiß",
       notes: student.notes || "",
-      annualStamp: student.annualStamp || "nein",
-      annualStampYear: student.annualStampYear || "",
+      plannedExam: Boolean(student.plannedExam),
+      annualStamps: Array.isArray(student.annualStamps)
+        ? student.annualStamps
+        : oldStampToArray(student),
       exams: Array.isArray(student.exams) ? student.exams : []
     };
   });
 
   return loadedData;
+}
+
+function oldStampToArray(student) {
+  if (student.annualStampYear) {
+    return [
+      {
+        year: String(student.annualStampYear),
+        status: student.annualStamp || "nein"
+      }
+    ];
+  }
+
+  return [];
 }
 
 async function loadStudents() {
@@ -196,13 +220,14 @@ function openAddStudent() {
 
   document.getElementById("studentId").value = "";
   document.getElementById("belt").value = "Weiß";
-  document.getElementById("annualStamp").value = "nein";
-  document.getElementById("annualStampYear").value = "";
+  document.getElementById("plannedExam").checked = false;
 
   deleteStudentBtn.classList.add("hidden");
-  historyArea.classList.add("hidden");
+  detailsArea.classList.add("hidden");
   examFormArea.classList.add("hidden");
+  stampFormArea.classList.add("hidden");
   examList.innerHTML = "";
+  stampList.innerHTML = "";
 
   studentModal.classList.remove("hidden");
 }
@@ -225,14 +250,15 @@ function openEditStudent(studentId) {
   document.getElementById("birthday").value = student.birthday;
   document.getElementById("belt").value = student.belt;
   document.getElementById("notes").value = student.notes;
-  document.getElementById("annualStamp").value = student.annualStamp;
-  document.getElementById("annualStampYear").value = student.annualStampYear;
+  document.getElementById("plannedExam").checked = Boolean(student.plannedExam);
 
   deleteStudentBtn.classList.remove("hidden");
-  historyArea.classList.remove("hidden");
+  detailsArea.classList.remove("hidden");
   examFormArea.classList.add("hidden");
+  stampFormArea.classList.add("hidden");
 
   renderExams();
+  renderStamps();
 
   studentModal.classList.remove("hidden");
 }
@@ -253,8 +279,8 @@ studentForm.addEventListener("submit", async function(event) {
     birthday: document.getElementById("birthday").value,
     belt: document.getElementById("belt").value,
     notes: document.getElementById("notes").value.trim(),
-    annualStamp: document.getElementById("annualStamp").value,
-    annualStampYear: document.getElementById("annualStampYear").value,
+    plannedExam: document.getElementById("plannedExam").checked,
+    annualStamps: [],
     exams: []
   };
 
@@ -262,6 +288,7 @@ studentForm.addEventListener("submit", async function(event) {
 
   if (existingIndex >= 0) {
     studentData.exams = data.students[existingIndex].exams || [];
+    studentData.annualStamps = data.students[existingIndex].annualStamps || [];
     data.students[existingIndex] = studentData;
   } else {
     data.students.push(studentData);
@@ -298,6 +325,8 @@ async function deleteCurrentStudent() {
     alert(error.message);
   }
 }
+
+/* Prüfungsverlauf */
 
 function openExamForm() {
   editingExamId = null;
@@ -402,7 +431,6 @@ async function deleteExam(examId) {
   }
 
   student.exams = student.exams.filter(item => item.id !== examId);
-
   student.exams.sort((a, b) => b.date.localeCompare(a.date));
 
   const newestExam = student.exams[0];
@@ -456,13 +484,192 @@ function renderExams() {
   }).join("");
 }
 
+/* Jahressichtmarken */
+
+function openStampForm() {
+  const year = new Date().getFullYear();
+
+  document.getElementById("stampYear").value = year;
+  document.getElementById("stampStatus").value = "ja";
+
+  stampFormArea.classList.remove("hidden");
+}
+
+function closeStampForm() {
+  stampFormArea.classList.add("hidden");
+}
+
+async function saveStamp() {
+  const student = getCurrentStudent();
+
+  if (!student) {
+    alert("Bitte Schüler zuerst speichern.");
+    return;
+  }
+
+  const year = String(document.getElementById("stampYear").value).trim();
+  const status = document.getElementById("stampStatus").value;
+
+  if (!year) {
+    alert("Bitte Jahr eintragen.");
+    return;
+  }
+
+  student.annualStamps = student.annualStamps || [];
+
+  const existingIndex = student.annualStamps.findIndex(item => String(item.year) === year);
+
+  if (existingIndex >= 0) {
+    student.annualStamps[existingIndex].status = status;
+  } else {
+    student.annualStamps.push({
+      year: year,
+      status: status
+    });
+  }
+
+  student.annualStamps.sort((a, b) => String(b.year).localeCompare(String(a.year)));
+
+  try {
+    await saveStudents();
+    renderStamps();
+    closeStampForm();
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
+async function deleteStamp(year) {
+  const student = getCurrentStudent();
+
+  if (!student) {
+    return;
+  }
+
+  const confirmed = confirm(`Sichtmarke ${year} löschen?`);
+
+  if (!confirmed) {
+    return;
+  }
+
+  student.annualStamps = (student.annualStamps || []).filter(item => String(item.year) !== String(year));
+
+  try {
+    await saveStudents();
+    renderStamps();
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
+function renderStamps() {
+  const student = getCurrentStudent();
+
+  if (!student) {
+    stampList.innerHTML = "";
+    return;
+  }
+
+  const stamps = (student.annualStamps || []).slice().sort((a, b) => String(b.year).localeCompare(String(a.year)));
+
+  if (stamps.length === 0) {
+    stampList.innerHTML = `<div class="empty-state">Noch keine Jahressichtmarken eingetragen.</div>`;
+    return;
+  }
+
+  stampList.innerHTML = stamps.map(stamp => {
+    const statusText = stamp.status === "ja" ? "Vorhanden" : "Fehlt";
+
+    return `
+      <div class="exam-item">
+        <div>
+          <strong>${escapeHtml(stamp.year)}</strong>
+          <div class="exam-date">${statusText}</div>
+        </div>
+
+        <div class="form-actions">
+          <button class="danger-btn" onclick="deleteStamp('${escapeHtml(stamp.year)}')">Löschen</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+/* Prüfungsplanung */
+
+function openExamPlanning() {
+  renderPlanningList();
+  planningModal.classList.remove("hidden");
+}
+
+function closeExamPlanning() {
+  planningModal.classList.add("hidden");
+}
+
+function renderPlanningList() {
+  const students = data.students.slice().sort((a, b) => {
+    const nameA = `${a.lastName} ${a.firstName}`.toLowerCase();
+    const nameB = `${b.lastName} ${b.firstName}`.toLowerCase();
+    return nameA.localeCompare(nameB, "de");
+  });
+
+  if (students.length === 0) {
+    planningList.innerHTML = `<div class="empty-state">Keine Schüler vorhanden.</div>`;
+    return;
+  }
+
+  planningList.innerHTML = students.map(student => {
+    return `
+      <label class="planning-item">
+        <input type="checkbox" data-planning-id="${student.id}" ${student.plannedExam ? "checked" : ""}>
+
+        <div>
+          <strong>${escapeHtml(student.firstName)} ${escapeHtml(student.lastName)}</strong>
+        </div>
+
+        <div class="belt-row">
+          <span class="belt-dot ${beltClass(student.belt)}"></span>
+          <span class="belt-text">${escapeHtml(student.belt)}</span>
+        </div>
+      </label>
+    `;
+  }).join("");
+}
+
+async function savePlanning() {
+  const checkboxes = planningList.querySelectorAll("input[data-planning-id]");
+
+  checkboxes.forEach(checkbox => {
+    const student = data.students.find(item => item.id === checkbox.dataset.planningId);
+
+    if (student) {
+      student.plannedExam = checkbox.checked;
+    }
+  });
+
+  try {
+    await saveStudents();
+    closeExamPlanning();
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
+/* Übersicht */
+
 function renderStudents() {
   const search = searchInput.value.toLowerCase().trim();
+  const selectedBelt = beltFilter.value;
+  const selectedPlanning = planningFilter.value;
 
   const students = data.students
     .filter(student => {
       const text = `${student.firstName} ${student.lastName} ${student.belt}`.toLowerCase();
-      return text.includes(search);
+      const matchesSearch = text.includes(search);
+      const matchesBelt = selectedBelt === "" || student.belt === selectedBelt;
+      const matchesPlanning = selectedPlanning === "" || student.plannedExam === true;
+
+      return matchesSearch && matchesBelt && matchesPlanning;
     })
     .sort((a, b) => {
       const nameA = `${a.lastName} ${a.firstName}`.toLowerCase();
@@ -476,6 +683,8 @@ function renderStudents() {
   }
 
   studentsList.innerHTML = students.map(student => {
+    const newestStamp = getNewestStamp(student);
+
     return `
       <div class="student-card" onclick="openEditStudent('${student.id}')">
         <div class="student-name">${escapeHtml(student.firstName)} ${escapeHtml(student.lastName)}</div>
@@ -490,11 +699,24 @@ function renderStudents() {
         </div>
 
         <div class="student-info">
-          Sichtmarke: ${student.annualStamp === "ja" ? "Ja" : "Nein"} ${student.annualStampYear || ""}
+          Sichtmarke: ${newestStamp}
         </div>
+
+        ${student.plannedExam ? `<div class="planned-badge">Für Prüfung eingeplant</div>` : ""}
       </div>
     `;
   }).join("");
+}
+
+function getNewestStamp(student) {
+  const stamps = (student.annualStamps || []).slice().sort((a, b) => String(b.year).localeCompare(String(a.year)));
+
+  if (stamps.length === 0) {
+    return "-";
+  }
+
+  const newest = stamps[0];
+  return `${newest.year}: ${newest.status === "ja" ? "Ja" : "Nein"}`;
 }
 
 function beltClass(belt) {
@@ -565,6 +787,8 @@ function escapeHtml(text) {
 }
 
 searchInput.addEventListener("input", renderStudents);
+beltFilter.addEventListener("change", renderStudents);
+planningFilter.addEventListener("change", renderStudents);
 
 window.addEventListener("load", function() {
   renderStudents();
