@@ -755,7 +755,7 @@
       "firstName": "Eleyna",
       "lastName": "Alhattab-Partar",
       "birthday": "2018-01-09",
-      "belt": "Weiß",
+      "belt": "Gelb",
       "beltSize": "",
       "notes": "",
       "plannedExam": false,
@@ -777,7 +777,14 @@
           "status": "ja"
         }
       ],
-      "exams": []
+      "exams": [
+        {
+          "id": "b83bd94a-ef24-447c-9096-cc954f62eb42",
+          "date": "2024-11-16",
+          "belt": "Gelb",
+          "note": ""
+        }
+      ]
     }
   ]
 }
