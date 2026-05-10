@@ -485,7 +485,7 @@
       "firstName": "Hassan",
       "lastName": "Nemr",
       "birthday": "2015-05-21",
-      "belt": "Orange",
+      "belt": "Orange-Grün",
       "beltSize": "260 cm",
       "notes": "",
       "plannedExam": false,
@@ -508,6 +508,12 @@
         }
       ],
       "exams": [
+        {
+          "id": "6a170b66-42c8-4676-82bf-0fc4e0be4798",
+          "date": "2025-12-26",
+          "belt": "Orange-Grün",
+          "note": ""
+        },
         {
           "id": "8555fc02-7bed-42f1-b213-9eceef7a722c",
           "date": "2025-05-24",
