@@ -967,6 +967,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "84e8209e-fe11-4d23-a44e-b7ccbdbcd480",
+      "firstName": "Zulfikar",
+      "lastName": "Nemr",
+      "birthday": "2018-01-23",
+      "belt": "Weiß",
+      "beltSize": "240 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
