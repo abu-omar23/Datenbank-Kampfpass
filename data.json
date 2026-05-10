@@ -5,10 +5,10 @@
       "firstName": "Halim",
       "lastName": "Brandt",
       "birthday": "2000-07-23",
-      "belt": "2. Dan",
+      "belt": "3. Dan",
       "beltSize": "300 cm",
       "notes": "",
-      "plannedExam": true,
+      "plannedExam": false,
       "planningTargetBelt": "",
       "planningRegistrationType": "",
       "planningPaidAmount": "",
@@ -20,6 +20,12 @@
         }
       ],
       "exams": [
+        {
+          "id": "f322843b-c58e-4018-8698-3157ec7577a5",
+          "date": "2026-05-10",
+          "belt": "3. Dan",
+          "note": "Prüfung bestanden"
+        },
         {
           "id": "31f2137b-99ed-4e2b-832b-bcc9b30706fc",
           "date": "2024-05-10",
