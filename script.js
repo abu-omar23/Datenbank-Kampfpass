@@ -1008,6 +1008,26 @@ function isHalfBelt(belt) {
   ].includes(belt);
 }
 
+
+async function togglePlanningFromOverview(event, studentId) {
+  event.stopPropagation();
+
+  const student = data.students.find(item => item.id === studentId);
+
+  if (!student) {
+    return;
+  }
+
+  student.plannedExam = event.target.checked;
+
+  try {
+    await saveStudents();
+  } catch (error) {
+    event.target.checked = !event.target.checked;
+    alert(error.message);
+  }
+}
+
 /* Übersicht */
 
 function renderStudents() {
@@ -1062,6 +1082,15 @@ function renderStudents() {
         <div class="student-info">
           Sichtmarke: ${newestStamp}
         </div>
+
+        <label class="overview-planning-check" onclick="event.stopPropagation()">
+          <input
+            type="checkbox"
+            ${student.plannedExam ? "checked" : ""}
+            onchange="togglePlanningFromOverview(event, '${student.id}')"
+          >
+          nächste Prüfung
+        </label>
 
         ${student.plannedExam ? `<div class="planned-badge">Für Prüfung eingeplant</div>` : ""}
       </div>
