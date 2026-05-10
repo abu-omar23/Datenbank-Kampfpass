@@ -586,3 +586,21 @@ hr {
     padding: 8px 16px 24px;
   }
 }
+
+
+/* BUTTON FIX */
+.table-actions {
+  position: relative;
+  z-index: 50;
+}
+
+.table-actions button,
+.table-actions .button-link,
+.header-actions button,
+.header-actions .button-link {
+  pointer-events: auto;
+}
+
+.modal.hidden {
+  pointer-events: none;
+}

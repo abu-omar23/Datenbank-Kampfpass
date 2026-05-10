@@ -1146,6 +1146,8 @@ function buildMaterialSummaryHtml(plannedStudents) {
 
 
 function exportPlanningExcel() {
+  try {
+
   savePlanningTableValuesFromDom();
 
   const now = new Date();
@@ -1275,6 +1277,11 @@ function exportPlanningExcel() {
   link.click();
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
+}
+  } catch (error) {
+    console.error("Excel Export Fehler:", error);
+    alert("Excel Export konnte nicht erstellt werden: " + error.message);
+  }
 }
 
 
@@ -1460,11 +1467,13 @@ window.addEventListener("load", function() {
     setStatus("Bitte GitHub Verbindung eintragen.");
     loadStudents();
   }
-  function hasCurrentStamp(student) {
+});
+
+
+function hasCurrentStamp(student) {
   const currentYear = String(new Date().getFullYear());
 
   return (student.annualStamps || []).some(stamp => {
     return String(stamp.year) === currentYear && stamp.status === "ja";
   });
 }
-});
