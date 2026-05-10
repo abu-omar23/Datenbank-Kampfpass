@@ -1209,6 +1209,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "d656a73e-368d-4b47-9c90-3afef64d4a04",
+      "firstName": "Djamel",
+      "lastName": "Ouro-Djeri",
+      "birthday": "",
+      "belt": "Weiß",
+      "beltSize": "300 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
