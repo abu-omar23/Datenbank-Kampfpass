@@ -99,7 +99,7 @@
       "firstName": "Aymen",
       "lastName": "Kohli",
       "birthday": "2011-11-15",
-      "belt": "Gelb",
+      "belt": "Gelb-Orange",
       "notes": "",
       "plannedExam": false,
       "annualStamps": [
@@ -121,6 +121,12 @@
         }
       ],
       "exams": [
+        {
+          "id": "296416c3-1b29-4b49-aeb9-42cd03785638",
+          "date": "2022-12-10",
+          "belt": "Gelb-Orange",
+          "note": ""
+        },
         {
           "id": "e7fdea0c-302f-4146-a067-5073ffcc2fe5",
           "date": "2022-05-28",
