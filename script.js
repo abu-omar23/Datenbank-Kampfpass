@@ -865,7 +865,7 @@ function renderPlanningTable() {
   if (plannedStudents.length === 0) {
     planningTableBody.innerHTML = `
       <tr>
-        <td colspan="11">Keine Schüler für die Prüfung eingeplant.</td>
+        <td colspan="10">Keine Schüler für die Prüfung eingeplant.</td>
       </tr>
     `;
     return;
@@ -874,7 +874,6 @@ function renderPlanningTable() {
   planningTableBody.innerHTML = plannedStudents.map(student => {
     const age = calculateAge(student.birthday);
     const targetBelt = student.planningTargetBelt || getNextBelt(student.belt, age);
-    const openAmount = getOpenAmount(student);
 
     return `
       <tr data-student-id="${student.id}">
@@ -927,10 +926,6 @@ function renderPlanningTable() {
             <option value="Bar" ${student.planningPaymentMethod === "Bar" ? "selected" : ""}>Bar</option>
             <option value="Überweisung" ${student.planningPaymentMethod === "Überweisung" ? "selected" : ""}>Überweisung</option>
           </select>
-        </td>
-
-        <td>
-          <span class="open-amount">${formatEuro(openAmount)}</span>
         </td>
 
         <td>
@@ -1165,7 +1160,6 @@ if (planningFilter) {
 }
 
 window.addEventListener("load", function() {
-  loadFeeSettingsIntoInputs();
   renderStudents();
   renderPlanningTable();
   loadStudents();

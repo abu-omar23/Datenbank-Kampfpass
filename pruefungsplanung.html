@@ -24,23 +24,6 @@
   <span id="planningStatusText">Nicht verbunden</span>
 </section>
 
-<section class="fee-box">
-  <div class="fee-grid">
-    <label>
-      Prüfungsgebühr
-      <input id="examFeeInput" type="number" min="0" step="0.01" placeholder="z. B. 25">
-    </label>
-
-    <label>
-      Jahressichtmarke
-      <input id="stampFeeInput" type="number" min="0" step="0.01" placeholder="z. B. 15">
-    </label>
-
-    <div class="fee-hint">
-      Offener Betrag = Prüfungsgebühr. Wenn die aktuelle Jahressichtmarke fehlt, wird die Jahressichtmarke dazu gerechnet.
-    </div>
-  </div>
-</section>
 
 <section class="table-actions">
   <button class="primary-btn" onclick="savePlanningTable()">Tabelle speichern</button>
@@ -63,13 +46,12 @@
           <th>Anmeldung</th>
           <th>Bezahlt in €</th>
           <th>Zahlungsart</th>
-          <th>Offen</th>
           <th>Aktion</th>
         </tr>
       </thead>
       <tbody id="planningTableBody">
         <tr>
-          <td colspan="11">Lade Daten...</td>
+          <td colspan="10">Lade Daten...</td>
         </tr>
       </tbody>
     </table>
