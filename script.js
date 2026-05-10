@@ -219,31 +219,56 @@ async function loadStudents() {
 async function saveStudents() {
   const settings = checkSettings();
 
-  if (!currentSha) {
-    await loadStudents();
+  async function getLatestSha() {
+    const response = await fetch(`${githubFileUrl()}?ref=${settings.branch}&cache=${Date.now()}`, {
+      headers: {
+        Authorization: `Bearer ${settings.token}`,
+        Accept: "application/vnd.github+json"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Aktuelle data.json konnte nicht geladen werden.");
+    }
+
+    const file = await response.json();
+    currentSha = file.sha;
+    return file.sha;
   }
 
-  const content = JSON.stringify(data, null, 2);
+  async function putFile(sha) {
+    const content = JSON.stringify(data, null, 2);
 
-  const response = await fetch(githubFileUrl(), {
-    method: "PUT",
-    headers: {
-      Authorization: `Bearer ${settings.token}`,
-      Accept: "application/vnd.github+json",
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      message: "Schülerdaten aktualisiert",
-      content: encodeBase64Unicode(content),
-      sha: currentSha,
-      branch: settings.branch
-    })
-  });
+    return fetch(githubFileUrl(), {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${settings.token}`,
+        Accept: "application/vnd.github+json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: "Schülerdaten aktualisiert",
+        content: encodeBase64Unicode(content),
+        sha: sha,
+        branch: settings.branch
+      })
+    });
+  }
+
+  // Immer zuerst den neuesten SHA holen, damit GitHub den Schreibvorgang akzeptiert.
+  let sha = await getLatestSha();
+  let response = await putFile(sha);
+
+  // Falls GitHub trotzdem einen Versionskonflikt meldet, einmal automatisch neu versuchen.
+  if (response.status === 409) {
+    sha = await getLatestSha();
+    response = await putFile(sha);
+  }
 
   if (!response.ok) {
     const errorText = await response.text();
     console.error("GitHub Speicherfehler:", errorText);
-    throw new Error("Speichern fehlgeschlagen. Prüfe Token, Repo und Contents: Read and write.");
+    throw new Error("Speichern fehlgeschlagen. Bitte GitHub Verbindung neu speichern und dann erneut versuchen.");
   }
 
   const result = await response.json();
@@ -253,6 +278,7 @@ async function saveStudents() {
   renderStudents();
   renderPlanningTable();
 }
+
 
 function makeId() {
   if (crypto.randomUUID) {
