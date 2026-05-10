@@ -1243,7 +1243,7 @@
       "firstName": "Hasan",
       "lastName": "Cubuk",
       "birthday": "2019-12-01",
-      "belt": "Weiß",
+      "belt": "Gelb",
       "beltSize": "240 cm",
       "notes": "",
       "plannedExam": false,
@@ -1257,7 +1257,14 @@
           "status": "ja"
         }
       ],
-      "exams": []
+      "exams": [
+        {
+          "id": "7bd15e25-77f6-4c67-9db2-5ddf1c32df86",
+          "date": "2026-05-09",
+          "belt": "Gelb",
+          "note": ""
+        }
+      ]
     }
   ]
 }
