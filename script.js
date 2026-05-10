@@ -1188,6 +1188,38 @@ if (planningFilter) {
   planningFilter.addEventListener("change", renderStudents);
 }
 
+function beltOrder(belt) {
+
+  const order = [
+    "Weiß",
+    "Gelb",
+    "Gelb-Orange",
+    "Orange",
+    "Orange-Grün",
+    "Grün",
+    "Grün-Blau",
+    "Blau",
+    "Blau-Braun",
+    "Braun",
+    "Braun-Schwarz",
+    "Schwarz",
+    "Dan 1",
+    "Dan 2",
+    "Dan 3",
+    "Dan 4",
+    "Dan 5",
+    "Dan 6",
+    "Dan 7",
+    "Dan 8"
+  ];
+
+  const index =
+    order.indexOf(belt);
+
+  return index === -1
+    ? 999
+    : index;
+}
 window.addEventListener("load", function() {
   renderStudents();
   renderPlanningTable();
