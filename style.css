@@ -608,7 +608,7 @@ hr {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  min-width: 1250px;
+  min-width: 1350px;
 }
 
 .planning-table th {
@@ -701,4 +701,47 @@ hr {
   border-radius: 9px;
   font-size: 18px;
   line-height: 1;
+}
+
+
+/* GEBÜHRENRECHNER */
+.fee-box {
+  padding: 8px 22px;
+}
+
+.fee-grid {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 14px;
+  display: grid;
+  grid-template-columns: 180px 180px 1fr;
+  gap: 12px;
+  align-items: end;
+}
+
+.fee-grid label {
+  margin-bottom: 0;
+}
+
+.fee-hint {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.open-amount {
+  font-weight: 900;
+  color: #111827;
+}
+
+@media (max-width: 720px) {
+  .fee-box {
+    padding: 8px 16px;
+  }
+
+  .fee-grid {
+    grid-template-columns: 1fr;
+  }
 }

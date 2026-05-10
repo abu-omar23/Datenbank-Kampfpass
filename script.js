@@ -776,6 +776,69 @@ async function savePlanning() {
 
 /* Eigene Prüfungsplanung Tabelle */
 
+
+function getExamFee() {
+  return Number(localStorage.getItem("exam_fee") || "0");
+}
+
+function getStampFee() {
+  return Number(localStorage.getItem("stamp_fee") || "0");
+}
+
+function saveFeeSettingsFromInputs() {
+  const examFeeInput = document.getElementById("examFeeInput");
+  const stampFeeInput = document.getElementById("stampFeeInput");
+
+  if (examFeeInput) {
+    localStorage.setItem("exam_fee", examFeeInput.value || "0");
+  }
+
+  if (stampFeeInput) {
+    localStorage.setItem("stamp_fee", stampFeeInput.value || "0");
+  }
+}
+
+function loadFeeSettingsIntoInputs() {
+  const examFeeInput = document.getElementById("examFeeInput");
+  const stampFeeInput = document.getElementById("stampFeeInput");
+
+  if (examFeeInput) {
+    examFeeInput.value = localStorage.getItem("exam_fee") || "";
+    examFeeInput.addEventListener("input", function() {
+      saveFeeSettingsFromInputs();
+      renderPlanningTable();
+    });
+  }
+
+  if (stampFeeInput) {
+    stampFeeInput.value = localStorage.getItem("stamp_fee") || "";
+    stampFeeInput.addEventListener("input", function() {
+      saveFeeSettingsFromInputs();
+      renderPlanningTable();
+    });
+  }
+}
+
+function getOpenAmount(student) {
+  const examFee = getExamFee();
+  const stampFee = getStampFee();
+
+  if (hasCurrentStamp(student)) {
+    return examFee;
+  }
+
+  return examFee + stampFee;
+}
+
+function formatEuro(value) {
+  const number = Number(value || 0);
+  return number.toLocaleString("de-DE", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }) + " €";
+}
+
+
 function renderPlanningTable() {
   if (!planningTableBody) {
     return;
@@ -802,7 +865,7 @@ function renderPlanningTable() {
   if (plannedStudents.length === 0) {
     planningTableBody.innerHTML = `
       <tr>
-        <td colspan="10">Keine Schüler für die Prüfung eingeplant.</td>
+        <td colspan="11">Keine Schüler für die Prüfung eingeplant.</td>
       </tr>
     `;
     return;
@@ -811,6 +874,7 @@ function renderPlanningTable() {
   planningTableBody.innerHTML = plannedStudents.map(student => {
     const age = calculateAge(student.birthday);
     const targetBelt = student.planningTargetBelt || getNextBelt(student.belt, age);
+    const openAmount = getOpenAmount(student);
 
     return `
       <tr data-student-id="${student.id}">
@@ -863,6 +927,10 @@ function renderPlanningTable() {
             <option value="Bar" ${student.planningPaymentMethod === "Bar" ? "selected" : ""}>Bar</option>
             <option value="Überweisung" ${student.planningPaymentMethod === "Überweisung" ? "selected" : ""}>Überweisung</option>
           </select>
+        </td>
+
+        <td>
+          <span class="open-amount">${formatEuro(openAmount)}</span>
         </td>
 
         <td>
@@ -920,13 +988,19 @@ function getNextBelt(currentBelt, age) {
 
   let nextIndex = currentIndex + 1;
 
-  if (age !== null && age >= 14) {
+  // Unter Blau: ab 14 Jahren keine halben Gürtel.
+  // Ab Blau: immer halbe Schritte, auch ab 14 Jahren.
+  if (age !== null && age >= 14 && !isBlueOrHigher(currentBelt)) {
     while (nextIndex < GURTE.length - 1 && isHalfBelt(GURTE[nextIndex])) {
       nextIndex++;
     }
   }
 
   return GURTE[nextIndex];
+}
+
+function isBlueOrHigher(belt) {
+  return beltOrder(belt) >= beltOrder("Blau");
 }
 
 function isHalfBelt(belt) {
@@ -937,203 +1011,6 @@ function isHalfBelt(belt) {
     "Blau-Braun",
     "Braun-Schwarz"
   ].includes(belt);
-}
-
-
-function beltOrder(belt) {
-  const index = GURTE.indexOf(belt);
-  return index === -1 ? 999 : index;
-}
-
-function exportPlanningExcel() {
-  savePlanningTableValuesFromDom();
-
-  const plannedStudents = data.students
-    .filter(student => student.plannedExam)
-    .sort((a, b) => {
-      const ageA = calculateAge(a.birthday);
-      const ageB = calculateAge(b.birthday);
-      const targetA = a.planningTargetBelt || getNextBelt(a.belt, ageA);
-      const targetB = b.planningTargetBelt || getNextBelt(b.belt, ageB);
-
-      const targetCompare = beltOrder(targetA) - beltOrder(targetB);
-      if (targetCompare !== 0) {
-        return targetCompare;
-      }
-
-      const nameA = `${a.lastName} ${a.firstName}`.toLowerCase();
-      const nameB = `${b.lastName} ${b.firstName}`.toLowerCase();
-      return nameA.localeCompare(nameB, "de");
-    });
-
-  const rowsHtml = plannedStudents.map(student => {
-    const age = calculateAge(student.birthday);
-    const targetBelt = student.planningTargetBelt || getNextBelt(student.belt, age);
-
-    return `
-      <tr>
-        <td><b>${escapeHtml(student.lastName)}, ${escapeHtml(student.firstName)}</b></td>
-        <td>${escapeHtml(student.belt || "")}</td>
-        <td>${escapeHtml(targetBelt || "")}</td>
-        <td>${age === null ? "" : age}</td>
-        <td>${escapeHtml(student.beltSize || "")}</td>
-        <td class="${getCurrentStampYears(student) !== "-" ? "neutral" : "bad"}">${escapeHtml(getCurrentStampYears(student))}</td>
-        <td>${escapeHtml(student.planningRegistrationType || "")}</td>
-        <td>${escapeHtml(student.planningPaidAmount || "")}</td>
-        <td>${escapeHtml(student.planningPaymentMethod || "")}</td>
-      </tr>
-    `;
-  }).join("");
-
-  const html = `
-    <html>
-      <head>
-        <meta charset="UTF-8">
-        <style>
-          table {
-            border-collapse: collapse;
-            font-family: Arial, sans-serif;
-            width: 100%;
-          }
-
-          th {
-            background: #f8fafc;
-            font-weight: 900;
-            text-align: center;
-            border: 1px solid #d1d5db;
-            padding: 8px;
-          }
-
-          td {
-            text-align: center;
-            border: 1px solid #d1d5db;
-            padding: 8px;
-          }
-
-          .bad {
-            background: #fee2e2;
-            color: #991b1b;
-            font-weight: 800;
-          }
-
-          .neutral {
-            background: #eef2ff;
-            color: #1e3a8a;
-            font-weight: 800;
-          }
-
-          .summary {
-            background: #f8fafc;
-            font-weight: 900;
-          }
-        </style>
-      </head>
-      <body>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Aktueller Gurt</th>
-              <th>Zielgurt</th>
-              <th>Alter</th>
-              <th>Gürtellänge</th>
-              <th>Jahressichtmarke</th>
-              <th>Anmeldung</th>
-              <th>Bezahlt in €</th>
-              <th>Zahlungsart</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rowsHtml || `<tr><td colspan="9">Keine Schüler für die Prüfung eingeplant.</td></tr>`}
-            <tr class="summary">
-              <td colspan="8">Gesamtzahl Prüflinge</td>
-              <td>${plannedStudents.length}</td>
-            </tr>
-          </tbody>
-        </table>
-      </body>
-    </html>
-  `;
-
-  const blob = new Blob(["\ufeff" + html], {
-    type: "application/vnd.ms-excel;charset=utf-8;"
-  });
-
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "pruefungsplanung-sortiert-nach-zielgurt.xls";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-}
-
-
-function savePlanningTableValuesFromDom() {
-  const tableBody = document.getElementById("planningTableBody");
-
-  if (!tableBody) {
-    return;
-  }
-
-  const rows = tableBody.querySelectorAll("tr[data-student-id]");
-
-  rows.forEach(row => {
-    const student = data.students.find(item => item.id === row.dataset.studentId);
-
-    if (!student) {
-      return;
-    }
-
-    const targetBelt = row.querySelector('[data-field="planningTargetBelt"]');
-    const registrationType = row.querySelector('[data-field="planningRegistrationType"]');
-    const paidAmount = row.querySelector('[data-field="planningPaidAmount"]');
-    const paymentMethod = row.querySelector('[data-field="planningPaymentMethod"]');
-
-    student.planningTargetBelt = targetBelt ? targetBelt.value : "";
-    student.planningRegistrationType = registrationType ? registrationType.value : "";
-    student.planningPaidAmount = paidAmount ? paidAmount.value.trim() : "";
-    student.planningPaymentMethod = paymentMethod ? paymentMethod.value : "";
-  });
-}
-
-
-
-function getCurrentStampYears(student) {
-  const currentYear = String(new Date().getFullYear());
-
-  const currentStamps = (student.annualStamps || [])
-    .filter(stamp => stamp.status === "ja" && String(stamp.year) === currentYear)
-    .map(stamp => String(stamp.year));
-
-  if (currentStamps.length > 0) {
-    return currentStamps.join(", ");
-  }
-
-  const allStamps = (student.annualStamps || [])
-    .filter(stamp => stamp.status === "ja")
-    .map(stamp => String(stamp.year))
-    .sort((a, b) => b.localeCompare(a));
-
-  return allStamps.length > 0 ? allStamps.join(", ") : "-";
-}
-
-function hasCurrentStamp(student) {
-  const currentYear = String(new Date().getFullYear());
-
-  return (student.annualStamps || []).some(stamp => {
-    return String(stamp.year) === currentYear && stamp.status === "ja";
-  });
-}
-
-function getCurrentStampText(student) {
-  return hasCurrentStamp(student) ? "Vorhanden" : "Fehlt";
-}
-
-function beltOrder(belt) {
-  const index = GURTE.indexOf(belt);
-  return index === -1 ? 999 : index;
 }
 
 /* Übersicht */
@@ -1288,6 +1165,7 @@ if (planningFilter) {
 }
 
 window.addEventListener("load", function() {
+  loadFeeSettingsIntoInputs();
   renderStudents();
   renderPlanningTable();
   loadStudents();
