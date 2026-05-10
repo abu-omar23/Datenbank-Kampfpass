@@ -782,44 +782,122 @@ function renderPlanningTable() {
     const age = calculateAge(student.birthday);
     const targetBelt = student.planningTargetBelt || getNextBelt(student.belt, age);
 
-    return `
-      <tr data-student-id="${student.id}">
-        <td><strong>${escapeHtml(student.lastName)}, ${escapeHtml(student.firstName)}</strong></td>
+   return `
+  <tr data-student-id="${student.id}">
 
-        <td>
-          <div class="belt-row">
-            <span class="belt-dot ${beltClass(student.belt)}"></span>
-            <span class="belt-text">${escapeHtml(student.belt)}</span>
-          </div>
-        </td>
+    <td class="student-cell">
+      <strong>
+        ${escapeHtml(student.lastName)},
+        ${escapeHtml(student.firstName)}
+      </strong>
+    </td>
 
-        <td>${age === null ? "-" : age}</td>
+    <td>
+      <div class="belt-row center-belt">
+        <span class="belt-dot ${beltClass(student.belt)}"></span>
 
-        <td>${escapeHtml(student.beltSize || "-")}</td>
+        <span class="belt-text">
+          ${escapeHtml(student.belt)}
+        </span>
+      </div>
+    </td>
 
-        <td>
-          <select class="table-select" data-field="planningTargetBelt">
-            ${GURTE.map(belt => `<option value="${belt}" ${belt === targetBelt ? "selected" : ""}>${belt}</option>`).join("")}
-          </select>
-        </td>
+    <td>
+      <select
+        class="table-select"
+        data-field="planningTargetBelt"
+      >
+        ${GURTE.map(belt => `
+          <option
+            value="${belt}"
+            ${belt === targetBelt ? "selected" : ""}
+          >
+            ${belt}
+          </option>
+        `).join("")}
+      </select>
+    </td>
 
-        <td>
-          <input class="table-input euro-input" type="text" data-field="planningPaidAmount" value="${escapeHtml(student.planningPaidAmount || "")}" placeholder="z. B. 25 €">
-        </td>
+    <td class="big-value">
+      ${age === null ? "-" : age}
+    </td>
 
-        <td>
-          <select class="table-select" data-field="planningRegistrationType">
-            <option value="" ${!student.planningRegistrationType ? "selected" : ""}>-</option>
-            <option value="mündlich" ${student.planningRegistrationType === "mündlich" ? "selected" : ""}>mündlich</option>
-            <option value="Zettel" ${student.planningRegistrationType === "Zettel" ? "selected" : ""}>Zettel</option>
-          </select>
-        </td>
+    <td class="big-value">
+      ${escapeHtml(student.beltSize || "-")}
+    </td>
 
-        <td>
-          <button class="danger-btn" onclick="removeStudentFromPlanning('${student.id}')">Entfernen</button>
-        </td>
-      </tr>
-    `;
+    <td>
+      <span class="${
+        hasCurrentStamp(student)
+          ? "status-ok"
+          : "status-bad"
+      }">
+        ${
+          hasCurrentStamp(student)
+            ? "Vorhanden"
+            : "Fehlt"
+        }
+      </span>
+    </td>
+
+    <td>
+      <select
+        class="table-select"
+        data-field="planningRegistrationType"
+      >
+        <option
+          value=""
+          ${!student.planningRegistrationType ? "selected" : ""}
+        >
+          -
+        </option>
+
+        <option
+          value="mündlich"
+          ${student.planningRegistrationType === "mündlich" ? "selected" : ""}
+        >
+          mündlich
+        </option>
+
+        <option
+          value="Zettel"
+          ${student.planningRegistrationType === "Zettel" ? "selected" : ""}
+        >
+          Zettel
+        </option>
+      </select>
+    </td>
+
+    <td>
+      <input
+        class="table-input euro-input"
+        type="text"
+        data-field="planningPaidAmount"
+        value="${escapeHtml(student.planningPaidAmount || "")}"
+        placeholder="25 €"
+      >
+    </td>
+
+    <td>
+      <div class="status-column">
+
+        ${
+          student.planningPaidAmount
+            ? `<span class="status-ok">Bezahlt</span>`
+            : `<span class="status-bad">Offen</span>`
+        }
+
+        ${
+          student.planningRegistrationType
+            ? `<span class="status-ok">Angemeldet</span>`
+            : `<span class="status-bad">Keine Anmeldung</span>`
+        }
+
+      </div>
+    </td>
+
+  </tr>
+`;
   }).join("");
 }
 
