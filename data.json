@@ -1545,6 +1545,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "1fe7c888-35f7-45b2-96e6-bc990db1bab7",
+      "firstName": "Benjamin",
+      "lastName": "Garro",
+      "birthday": "2012-08-28",
+      "belt": "Weiß",
+      "beltSize": "280 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
