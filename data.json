@@ -42,7 +42,7 @@
       "belt": "Blau",
       "beltSize": "260 cm",
       "notes": "",
-      "plannedExam": true,
+      "plannedExam": false,
       "planningTargetBelt": "Blau-Braun",
       "planningRegistrationType": "",
       "planningPaidAmount": "",
