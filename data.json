@@ -1149,7 +1149,7 @@
       "firstName": "Miran",
       "lastName": "Almaz",
       "birthday": "2014-01-21",
-      "belt": "Weiß",
+      "belt": "Gelb",
       "beltSize": "300 cm",
       "notes": "",
       "plannedExam": false,
@@ -1167,7 +1167,14 @@
           "status": "ja"
         }
       ],
-      "exams": []
+      "exams": [
+        {
+          "id": "641322a7-2469-484f-ae0a-4f42952769de",
+          "date": "2025-12-20",
+          "belt": "Gelb",
+          "note": ""
+        }
+      ]
     }
   ]
 }
