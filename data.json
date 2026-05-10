@@ -1143,6 +1143,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "4330a61e-d3cf-4e28-a433-a97a8b64d4b8",
+      "firstName": "Miran",
+      "lastName": "Almaz",
+      "birthday": "2014-01-21",
+      "belt": "Weiß",
+      "beltSize": "300 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
