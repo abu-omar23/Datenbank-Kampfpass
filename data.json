@@ -647,7 +647,7 @@
       "firstName": "Noah",
       "lastName": "Lorenz",
       "birthday": "2015-07-16",
-      "belt": "Weiß",
+      "belt": "Gelb",
       "beltSize": "260 cm",
       "notes": "",
       "plannedExam": false,
@@ -669,7 +669,14 @@
           "status": "ja"
         }
       ],
-      "exams": []
+      "exams": [
+        {
+          "id": "5ff2c690-e489-4d91-904b-55cf33ec8cb4",
+          "date": "2024-11-16",
+          "belt": "Gelb",
+          "note": ""
+        }
+      ]
     }
   ]
 }
