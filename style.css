@@ -22,8 +22,6 @@ body {
   color: var(--text);
 }
 
-/* HEADER */
-
 .header {
   background: var(--card);
   border-bottom: 1px solid var(--border);
@@ -54,8 +52,6 @@ body {
   flex-wrap: wrap;
 }
 
-/* TOOLBAR */
-
 .toolbar {
   display: grid;
   grid-template-columns: 1fr 210px 210px auto;
@@ -78,8 +74,6 @@ body {
   font-size: 13px;
 }
 
-/* MAIN */
-
 main {
   padding: 8px 22px 24px;
 }
@@ -89,8 +83,6 @@ main {
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 14px;
 }
-
-/* STUDENT CARD */
 
 .student-card {
   background: var(--card);
@@ -119,8 +111,6 @@ main {
   margin-top: 7px;
 }
 
-/* BELT */
-
 .belt-row {
   display: flex;
   align-items: center;
@@ -141,8 +131,6 @@ main {
   font-size: 14px;
 }
 
-/* BADGE */
-
 .planned-badge {
   display: inline-block;
   background: #dcfce7;
@@ -153,8 +141,6 @@ main {
   font-weight: 800;
   margin-top: 9px;
 }
-
-/* BUTTONS */
 
 button {
   border: 0;
@@ -191,8 +177,6 @@ button {
   line-height: 1;
   padding: 7px 11px;
 }
-
-/* MODAL */
 
 .modal {
   position: fixed;
@@ -235,8 +219,6 @@ button {
   margin: 0;
   font-size: 24px;
 }
-
-/* FORMS */
 
 label {
   display: block;
@@ -291,8 +273,6 @@ textarea {
   margin: 0;
 }
 
-/* DETAILS */
-
 .history-area {
   margin-top: 10px;
 }
@@ -323,8 +303,6 @@ hr {
   padding: 12px;
   margin-bottom: 12px;
 }
-
-/* LISTS */
 
 .exam-list {
   display: grid;
@@ -360,8 +338,6 @@ hr {
   font-size: 13px;
 }
 
-/* PLANUNG */
-
 .planning-list {
   display: grid;
   gap: 8px;
@@ -385,8 +361,6 @@ hr {
   margin: 0;
 }
 
-/* TEXT */
-
 .hint {
   color: var(--muted);
   line-height: 1.4;
@@ -402,8 +376,6 @@ hr {
   text-align: center;
   grid-column: 1 / -1;
 }
-
-/* BELT COLORS */
 
 .belt-white {
   background: #ffffff;
@@ -453,8 +425,6 @@ hr {
   background: linear-gradient(90deg, #92400e 50%, #111827 50%);
 }
 
-/* MOBILE */
-
 @media (max-width: 900px) {
   .toolbar {
     grid-template-columns: 1fr 1fr;
@@ -462,7 +432,6 @@ hr {
 }
 
 @media (max-width: 720px) {
-
   .header {
     flex-direction: column;
     align-items: stretch;

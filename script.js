@@ -107,6 +107,7 @@ function normalizeData(loadedData) {
       lastName: student.lastName || "",
       birthday: student.birthday || "",
       belt: student.belt || "Weiß",
+      beltSize: student.beltSize || "",
       notes: student.notes || "",
       plannedExam: Boolean(student.plannedExam),
       annualStamps: Array.isArray(student.annualStamps)
@@ -207,6 +208,20 @@ function makeId() {
   return String(Date.now()) + String(Math.floor(Math.random() * 100000));
 }
 
+function calculateAge(birthday) {
+  const birthDate = new Date(birthday);
+  const today = new Date();
+
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+
+  return age;
+}
+
 function getCurrentStudent() {
   return data.students.find(student => student.id === currentStudentId);
 }
@@ -220,6 +235,7 @@ function openAddStudent() {
 
   document.getElementById("studentId").value = "";
   document.getElementById("belt").value = "Weiß";
+  document.getElementById("beltSize").value = "";
   document.getElementById("plannedExam").checked = false;
 
   deleteStudentBtn.classList.add("hidden");
@@ -249,6 +265,7 @@ function openEditStudent(studentId) {
   document.getElementById("lastName").value = student.lastName;
   document.getElementById("birthday").value = student.birthday;
   document.getElementById("belt").value = student.belt;
+  document.getElementById("beltSize").value = student.beltSize || "";
   document.getElementById("notes").value = student.notes;
   document.getElementById("plannedExam").checked = Boolean(student.plannedExam);
 
@@ -278,6 +295,7 @@ studentForm.addEventListener("submit", async function(event) {
     lastName: document.getElementById("lastName").value.trim(),
     birthday: document.getElementById("birthday").value,
     belt: document.getElementById("belt").value,
+    beltSize: document.getElementById("beltSize").value,
     notes: document.getElementById("notes").value.trim(),
     plannedExam: document.getElementById("plannedExam").checked,
     annualStamps: [],
@@ -664,7 +682,7 @@ function renderStudents() {
 
   const students = data.students
     .filter(student => {
-      const text = `${student.firstName} ${student.lastName} ${student.belt}`.toLowerCase();
+      const text = `${student.firstName} ${student.lastName} ${student.belt} ${student.beltSize || ""}`.toLowerCase();
       const matchesSearch = text.includes(search);
       const matchesBelt = selectedBelt === "" || student.belt === selectedBelt;
       const matchesPlanning = selectedPlanning === "" || student.plannedExam === true;
@@ -695,7 +713,11 @@ function renderStudents() {
         </div>
 
         <div class="student-info">
-          Geburtstag: ${student.birthday ? formatDate(student.birthday) : "-"}
+          Alter: ${student.birthday ? calculateAge(student.birthday) + " Jahre" : "-"}
+        </div>
+
+        <div class="student-info">
+          Gürtellänge: ${student.beltSize || "-"}
         </div>
 
         <div class="student-info">
