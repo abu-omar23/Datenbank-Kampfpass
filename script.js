@@ -1460,4 +1460,11 @@ window.addEventListener("load", function() {
     setStatus("Bitte GitHub Verbindung eintragen.");
     loadStudents();
   }
+  function hasCurrentStamp(student) {
+  const currentYear = String(new Date().getFullYear());
+
+  return (student.annualStamps || []).some(stamp => {
+    return String(stamp.year) === currentYear && stamp.status === "ja";
+  });
+}
 });
