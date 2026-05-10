@@ -187,7 +187,12 @@
       "planningRegistrationType": "",
       "planningPaymentMethod": "",
       "planningTargetBelt": "",
-      "annualStamps": [],
+      "annualStamps": [
+        {
+          "year": "2023",
+          "status": "ja"
+        }
+      ],
       "exams": []
     }
   ]
