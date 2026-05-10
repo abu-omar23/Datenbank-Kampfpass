@@ -1433,6 +1433,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "b3319f44-6d35-4799-8414-ca6cdffe6ccf",
+      "firstName": "Jan",
+      "lastName": "Pontow",
+      "birthday": "2017-08-12",
+      "belt": "Weiß",
+      "beltSize": "260 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
