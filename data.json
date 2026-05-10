@@ -8,10 +8,10 @@
       "belt": "1. Dan",
       "beltSize": "300 cm",
       "notes": "",
-      "plannedExam": true,
-      "planningPaidAmount": "75",
-      "planningRegistrationType": "Zettel",
-      "planningPaymentMethod": "Bar",
+      "plannedExam": false,
+      "planningPaidAmount": "",
+      "planningRegistrationType": "",
+      "planningPaymentMethod": "",
       "planningTargetBelt": "2. Dan",
       "annualStamps": [
         {
