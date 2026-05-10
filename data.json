@@ -803,6 +803,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "f344f2b4-273c-41a1-a72f-f6a6f70c6000",
+      "firstName": "Adem",
+      "lastName": "Chihani",
+      "birthday": "2011-01-23",
+      "belt": "Weiß",
+      "beltSize": "300 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
