@@ -165,31 +165,50 @@ function oldStampToArray(student) {
 
 async function loadStudents() {
   try {
-    const settings = checkSettings();
+    const settings = getSettings();
 
-    setStatus("Verbinde mit GitHub...");
+    setStatus("Lade Schülerdaten...");
 
-    const response = await fetch(`${githubFileUrl()}?ref=${settings.branch}`, {
-      headers: {
-        Authorization: `Bearer ${settings.token}`,
-        Accept: "application/vnd.github+json"
+    // 1. Wenn GitHub-Daten vorhanden sind, über GitHub API laden.
+    if (settings.owner && settings.repo && settings.branch && settings.token) {
+      const response = await fetch(`${githubFileUrl()}?ref=${settings.branch}`, {
+        headers: {
+          Authorization: `Bearer ${settings.token}`,
+          Accept: "application/vnd.github+json"
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error("GitHub API konnte data.json nicht laden. Prüfe Benutzername, Repo, Branch und Token.");
       }
-    });
 
-    if (!response.ok) {
-      throw new Error("data.json konnte nicht geladen werden. Prüfe GitHub Benutzername, Repo, Branch und Token.");
+      const file = await response.json();
+      currentSha = file.sha;
+
+      const content = decodeBase64Unicode(file.content);
+      data = normalizeData(JSON.parse(content));
+
+      renderStudents();
+      renderPlanningTable();
+
+      setStatus(`Verbunden · ${data.students.length} Schüler geladen`);
+      return;
     }
 
-    const file = await response.json();
-    currentSha = file.sha;
+    // 2. Ohne Token: data.json normal von GitHub Pages / lokal laden.
+    // Anzeigen funktioniert dadurch auch auf der Prüfungsplanungsseite.
+    const response = await fetch("data.json?cache=" + Date.now());
 
-    const content = decodeBase64Unicode(file.content);
-    data = normalizeData(JSON.parse(content));
+    if (!response.ok) {
+      throw new Error("data.json konnte nicht geladen werden.");
+    }
+
+    data = normalizeData(await response.json());
 
     renderStudents();
     renderPlanningTable();
 
-    setStatus(`Verbunden · ${data.students.length} Schüler geladen`);
+    setStatus(`${data.students.length} Schüler geladen · Nur Lesen, kein GitHub Token gespeichert`);
   } catch (error) {
     setStatus(error.message);
     renderStudents();
@@ -1041,12 +1060,5 @@ if (planningFilter) {
 window.addEventListener("load", function() {
   renderStudents();
   renderPlanningTable();
-
-  const settings = getSettings();
-
-  if (settings.owner && settings.repo && settings.token) {
-    loadStudents();
-  } else {
-    setStatus("Bitte GitHub Verbindung eintragen.");
-  }
+  loadStudents();
 });
