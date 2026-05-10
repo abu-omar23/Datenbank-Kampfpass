@@ -377,6 +377,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "5d895926-b5e4-4b32-83fa-23903139c772",
+      "firstName": "Roman",
+      "lastName": "Schröder",
+      "birthday": "2011-09-25",
+      "belt": "Grün",
+      "beltSize": "",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
