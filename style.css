@@ -22,6 +22,8 @@ body {
   color: var(--text);
 }
 
+/* HEADER */
+
 .header {
   background: var(--card);
   border-bottom: 1px solid var(--border);
@@ -52,6 +54,8 @@ body {
   flex-wrap: wrap;
 }
 
+/* TOOLBAR */
+
 .toolbar {
   display: grid;
   grid-template-columns: 1fr 210px 210px auto;
@@ -77,6 +81,8 @@ body {
 main {
   padding: 8px 22px 24px;
 }
+
+/* SCHÜLER KARTEN */
 
 .students-grid {
   display: grid;
@@ -118,6 +124,10 @@ main {
   margin-bottom: 7px;
 }
 
+.center-belt {
+  justify-content: center;
+}
+
 .belt-dot {
   width: 15px;
   height: 15px;
@@ -141,6 +151,8 @@ main {
   font-weight: 800;
   margin-top: 9px;
 }
+
+/* BUTTONS */
 
 button,
 .button-link {
@@ -183,6 +195,8 @@ button,
   padding: 7px 11px;
 }
 
+/* MODALS */
+
 .modal {
   position: fixed;
   inset: 0;
@@ -224,6 +238,8 @@ button,
   margin: 0;
   font-size: 24px;
 }
+
+/* FORM */
 
 label {
   display: block;
@@ -277,6 +293,8 @@ textarea {
   width: auto;
   margin: 0;
 }
+
+/* HISTORY */
 
 .history-area {
   margin-top: 10px;
@@ -343,6 +361,8 @@ hr {
   font-size: 13px;
 }
 
+/* PLANNING */
+
 .planning-list {
   display: grid;
   gap: 8px;
@@ -382,7 +402,7 @@ hr {
   grid-column: 1 / -1;
 }
 
-/* Tabelle Prüfungsplanung */
+/* TABELLE */
 
 .table-page {
   padding: 8px 22px 32px;
@@ -399,42 +419,71 @@ hr {
 .planning-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 980px;
-}
-
-.planning-table th,
-.planning-table td {
-  border-bottom: 1px solid var(--border);
-  padding: 10px;
-  text-align: left;
-  font-size: 14px;
-  vertical-align: middle;
+  min-width: 1100px;
 }
 
 .planning-table th {
   background: #f8fafc;
-  font-weight: 800;
-  color: #374151;
-  position: sticky;
-  top: 0;
+  font-weight: 900;
+  text-align: center;
+  font-size: 14px;
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.planning-table td {
+  text-align: center;
+  vertical-align: middle;
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
 }
 
 .planning-table tr:hover td {
-  background: #f9fafb;
+  background: #f8fafc;
+}
+
+.student-cell {
+  min-width: 180px;
+}
+
+.big-value {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.status-column {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+
+.status-ok {
+  background: #dcfce7;
+  color: #166534;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.status-bad {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
 }
 
 .table-input,
 .table-select {
-  min-width: 120px;
-  margin: 0;
-  padding: 8px 10px;
-  border-radius: 10px;
+  text-align: center;
+  font-weight: 700;
 }
 
-.table-checkbox {
-  width: 18px;
-  height: 18px;
-  margin: 0;
+.euro-input {
+  width: 90px;
 }
 
 .table-actions {
@@ -444,7 +493,7 @@ hr {
   padding: 16px 22px 8px;
 }
 
-/* Gürtel-Farben */
+/* GÜRTEL */
 
 .belt-white {
   background: #ffffff;
@@ -494,7 +543,10 @@ hr {
   background: linear-gradient(90deg, #92400e 50%, #111827 50%);
 }
 
+/* PRINT */
+
 @media print {
+
   .header,
   .toolbar,
   .status,
@@ -527,13 +579,17 @@ hr {
   }
 }
 
+/* MOBILE */
+
 @media (max-width: 900px) {
+
   .toolbar {
     grid-template-columns: 1fr 1fr;
   }
 }
 
 @media (max-width: 720px) {
+
   .header {
     flex-direction: column;
     align-items: stretch;
@@ -595,72 +651,4 @@ hr {
   .table-page {
     padding: 8px 16px 24px;
   }
-}
-
-
-.euro-input {
-  min-width: 95px;
-}
-.planning-table th {
-  text-align: center;
-  font-weight: 900;
-  font-size: 14px;
-  letter-spacing: 0.3px;
-}
-
-.planning-table td {
-  text-align: center;
-  vertical-align: middle;
-}
-
-.center-belt {
-  justify-content: center;
-}
-
-.student-cell {
-  min-width: 180px;
-}
-
-.big-value {
-  font-weight: 700;
-  font-size: 15px;
-}
-
-.status-column {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  align-items: center;
-}
-
-.status-ok {
-  background: #dcfce7;
-  color: #166534;
-  padding: 5px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.status-bad {
-  background: #fee2e2;
-  color: #991b1b;
-  padding: 5px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.table-input,
-.table-select {
-  text-align: center;
-  font-weight: 700;
-}
-
-.euro-input {
-  width: 90px;
-}
-
-.planning-table tr:hover td {
-  background: #f8fafc;
 }
