@@ -9,10 +9,10 @@
       "beltSize": "300 cm",
       "notes": "",
       "plannedExam": true,
-      "planningTargetBelt": "",
-      "planningRegistrationType": "",
-      "planningPaidAmount": "",
-      "planningPaymentMethod": "",
+      "planningTargetBelt": "3. Dan",
+      "planningRegistrationType": "Zettel",
+      "planningPaidAmount": "75",
+      "planningPaymentMethod": "Bar",
       "annualStamps": [
         {
           "year": "2024",
@@ -1275,10 +1275,10 @@
       "beltSize": "220 cm",
       "notes": "",
       "plannedExam": true,
-      "planningTargetBelt": "",
-      "planningRegistrationType": "",
-      "planningPaidAmount": "",
-      "planningPaymentMethod": "",
+      "planningTargetBelt": "Gelb-Orange",
+      "planningRegistrationType": "mündlich",
+      "planningPaidAmount": "75",
+      "planningPaymentMethod": "Bar",
       "annualStamps": [
         {
           "year": "2026",
