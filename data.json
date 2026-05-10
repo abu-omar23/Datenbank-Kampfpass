@@ -841,6 +841,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "1786a712-df6e-4397-8419-78c31f19408f",
+      "firstName": "Herdem",
+      "lastName": "Gerekli",
+      "birthday": "2019-01-28",
+      "belt": "Weiß",
+      "beltSize": "260 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
