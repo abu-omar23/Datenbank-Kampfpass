@@ -241,7 +241,9 @@ async function saveStudents() {
   });
 
   if (!response.ok) {
-    throw new Error("Speichern fehlgeschlagen. Prüfe, ob dein Token Schreibrechte für Contents hat.");
+    const errorText = await response.text();
+    console.error("GitHub Speicherfehler:", errorText);
+    throw new Error("Speichern fehlgeschlagen. Prüfe Token, Repo und Contents: Read and write.");
   }
 
   const result = await response.json();
@@ -848,33 +850,10 @@ function renderPlanningTable() {
 async function savePlanningTable() {
   savePlanningTableValuesFromDom();
 
-  if (!planningTableBody) {
-    return;
-  }
-
-  const rows = planningTableBody.querySelectorAll("tr[data-student-id]");
-
-  rows.forEach(row => {
-    const student = data.students.find(item => item.id === row.dataset.studentId);
-
-    if (!student) {
-      return;
-    }
-
-    const targetBelt = row.querySelector('[data-field="planningTargetBelt"]');
-    const paidAmount = row.querySelector('[data-field="planningPaidAmount"]');
-    const registrationType = row.querySelector('[data-field="planningRegistrationType"]');
-    const paymentMethod = row.querySelector('[data-field="planningPaymentMethod"]');
-
-    student.planningTargetBelt = targetBelt.value;
-    student.planningPaidAmount = paidAmount.value.trim();
-    student.planningRegistrationType = registrationType.value;
-    student.planningPaymentMethod = paymentMethod.value;
-  });
-
   try {
     await saveStudents();
     alert("Prüfungsplanung gespeichert.");
+    await loadStudents();
   } catch (error) {
     alert(error.message);
   }
@@ -1066,11 +1045,13 @@ function exportPlanningExcel() {
 
 
 function savePlanningTableValuesFromDom() {
-  if (!planningTableBody) {
+  const tableBody = document.getElementById("planningTableBody");
+
+  if (!tableBody) {
     return;
   }
 
-  const rows = planningTableBody.querySelectorAll("tr[data-student-id]");
+  const rows = tableBody.querySelectorAll("tr[data-student-id]");
 
   rows.forEach(row => {
     const student = data.students.find(item => item.id === row.dataset.studentId);
@@ -1080,25 +1061,14 @@ function savePlanningTableValuesFromDom() {
     }
 
     const targetBelt = row.querySelector('[data-field="planningTargetBelt"]');
-    const paidAmount = row.querySelector('[data-field="planningPaidAmount"]');
     const registrationType = row.querySelector('[data-field="planningRegistrationType"]');
+    const paidAmount = row.querySelector('[data-field="planningPaidAmount"]');
     const paymentMethod = row.querySelector('[data-field="planningPaymentMethod"]');
 
-    if (targetBelt) {
-      student.planningTargetBelt = targetBelt.value;
-    }
-
-    if (paidAmount) {
-      student.planningPaidAmount = paidAmount.value.trim();
-    }
-
-    if (registrationType) {
-      student.planningRegistrationType = registrationType.value;
-    }
-
-    if (paymentMethod) {
-      student.planningPaymentMethod = paymentMethod.value;
-    }
+    student.planningTargetBelt = targetBelt ? targetBelt.value : "";
+    student.planningRegistrationType = registrationType ? registrationType.value : "";
+    student.planningPaidAmount = paidAmount ? paidAmount.value.trim() : "";
+    student.planningPaymentMethod = paymentMethod ? paymentMethod.value : "";
   });
 }
 
