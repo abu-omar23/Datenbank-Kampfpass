@@ -2433,15 +2433,16 @@ function exportCurrentStampsExcel() {
     const rows = [
       [`Jahressichtmarken ${currentYear}`],
       [],
-      ["Nachname", "Vorname", "Jahressichtmarke"]
+      ["Nachname", "Vorname", "Geburtsdatum", "Jahressichtmarke"]
     ];
 
     studentsWithCurrentStamp.forEach(student => {
       rows.push([
         student.lastName || "",
         student.firstName || "",
+        formatDate(student.birthday || ""),
         currentYear
-      ]);
+]);
     });
 
     rows.push([]);
@@ -2451,24 +2452,24 @@ function exportCurrentStampsExcel() {
     const ws = XLSX.utils.aoa_to_sheet(rows);
 
     ws["!merges"] = [
-      { s: { r: 0, c: 0 }, e: { r: 0, c: 2 } }
+      { s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }
     ];
 
     ws["!cols"] = [
       { wch: 22 },
-      { wch: 22 },
-      { wch: 20 }
+      { wch: 20 },
+      { wch: 18 }
     ];
 
-    applyRangeStyle(ws, "A1:C1", xlsxCellStyle("title"));
-    applyRangeStyle(ws, "A3:C3", xlsxCellStyle("header"));
+    applyRangeStyle(ws, "A1:D1", xlsxCellStyle("title"));
+    applyRangeStyle(ws, "A3:D3", xlsxCellStyle("header"));
 
     if (studentsWithCurrentStamp.length > 0) {
-      applyRangeStyle(ws, `A4:C${3 + studentsWithCurrentStamp.length}`, xlsxCellStyle("normal"));
+      applyRangeStyle(ws, `A4:D${3 + studentsWithCurrentStamp.length}`, xlsxCellStyle("normal"));
     }
 
     const summaryRow = rows.length;
-    applyRangeStyle(ws, `A${summaryRow}:C${summaryRow}`, xlsxCellStyle("summary"));
+    applyRangeStyle(ws, `A${summaryRow}:D${summaryRow}`, xlsxCellStyle("summary"));
 
     XLSX.utils.book_append_sheet(wb, ws, "Jahressichtmarken");
 
