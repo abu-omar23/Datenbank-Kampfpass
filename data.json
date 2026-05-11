@@ -912,7 +912,7 @@
       "belt": "Orange",
       "beltSize": "260 cm",
       "notes": "",
-      "plannedExam": true,
+      "plannedExam": false,
       "planningTargetBelt": "Orange-Grün",
       "planningRegistrationType": "mündlich",
       "planningPaidAmount": "75",
