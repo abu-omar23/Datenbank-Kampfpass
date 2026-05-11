@@ -994,7 +994,7 @@
       "belt": "Orange",
       "beltSize": "240 cm",
       "notes": "",
-      "plannedExam": true,
+      "plannedExam": false,
       "planningTargetBelt": "Orange-Grün",
       "planningRegistrationType": "Zettel",
       "planningPaidAmount": "40",
