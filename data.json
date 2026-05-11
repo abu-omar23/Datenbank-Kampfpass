@@ -1619,7 +1619,7 @@
       "firstName": "Bianca",
       "lastName": "Âlexandru",
       "birthday": "2009-05-26",
-      "belt": "Weiß",
+      "belt": "Gelb",
       "beltSize": "280 cm",
       "notes": "",
       "plannedExam": false,
@@ -1637,7 +1637,14 @@
           "status": "ja"
         }
       ],
-      "exams": []
+      "exams": [
+        {
+          "id": "c9f4eb74-0d94-46c5-8052-2cef275d490b",
+          "date": "2025-12-20",
+          "belt": "Gelb",
+          "note": ""
+        }
+      ]
     }
   ]
 }
