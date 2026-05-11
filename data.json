@@ -1613,6 +1613,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "d1967b47-8183-4d32-80b7-a0b1eeb0c3b4",
+      "firstName": "Bianca",
+      "lastName": "Âlexandru",
+      "birthday": "2009-05-26",
+      "belt": "Weiß",
+      "beltSize": "280 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
