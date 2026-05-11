@@ -1645,6 +1645,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "b09c01d8-111a-4f80-9628-f1e877f4b53f",
+      "firstName": "Kevin",
+      "lastName": "Cebuc",
+      "birthday": "2017-08-23",
+      "belt": "Weiß",
+      "beltSize": "260 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
