@@ -1277,6 +1277,90 @@ function getExcelStyle() {
   `;
 }
 
+
+function xlsxCellStyle(type) {
+  const base = {
+    alignment: {
+      horizontal: "center",
+      vertical: "center",
+      wrapText: true
+    },
+    border: {
+      top: { style: "thin", color: { rgb: "000000" } },
+      bottom: { style: "thin", color: { rgb: "000000" } },
+      left: { style: "thin", color: { rgb: "000000" } },
+      right: { style: "thin", color: { rgb: "000000" } }
+    }
+  };
+
+  if (type === "title") {
+    return {
+      font: { bold: true, sz: 18, color: { rgb: "111827" } },
+      alignment: { horizontal: "center", vertical: "center" }
+    };
+  }
+
+  if (type === "header") {
+    return {
+      ...base,
+      fill: { fgColor: { rgb: "E5E7EB" } },
+      font: { bold: true, color: { rgb: "000000" } }
+    };
+  }
+
+  if (type === "summary") {
+    return {
+      ...base,
+      fill: { fgColor: { rgb: "F3F4F6" } },
+      font: { bold: true, color: { rgb: "000000" } }
+    };
+  }
+
+  if (type === "ok") {
+    return {
+      ...base,
+      fill: { fgColor: { rgb: "DCFCE7" } },
+      font: { bold: true, color: { rgb: "166534" } }
+    };
+  }
+
+  if (type === "bad") {
+    return {
+      ...base,
+      fill: { fgColor: { rgb: "FEE2E2" } },
+      font: { bold: true, color: { rgb: "991B1B" } }
+    };
+  }
+
+  return base;
+}
+
+function applyRangeStyle(ws, range, style) {
+  const decoded = XLSX.utils.decode_range(range);
+
+  for (let row = decoded.s.r; row <= decoded.e.r; row++) {
+    for (let col = decoded.s.c; col <= decoded.e.c; col++) {
+      const address = XLSX.utils.encode_cell({ r: row, c: col });
+
+      if (!ws[address]) {
+        ws[address] = { t: "s", v: "" };
+      }
+
+      ws[address].s = style;
+    }
+  }
+}
+
+function downloadWorkbookXlsx(workbook, fileName) {
+  if (typeof XLSX === "undefined") {
+    alert("Excel-Bibliothek konnte nicht geladen werden. Bitte Internetverbindung prüfen und Seite neu laden.");
+    return;
+  }
+
+  XLSX.writeFile(workbook, fileName);
+}
+
+
 function exportExamListExcel() {
   try {
     savePlanningTableValuesFromDom();
@@ -2055,4 +2139,342 @@ function hasCurrentStamp(student) {
   return (student.annualStamps || []).some(stamp => {
     return String(stamp.year) === currentYear && stamp.status === "ja";
   });
+}
+
+
+
+function exportExamListExcel() {
+  try {
+    savePlanningTableValuesFromDom();
+
+    if (typeof XLSX === "undefined") {
+      alert("Excel-Bibliothek konnte nicht geladen werden. Bitte Seite neu laden.");
+      return;
+    }
+
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const year = now.getFullYear();
+
+    const plannedStudents = getPlannedStudentsForExport();
+
+    const rows = [
+      [`Gürtelprüfung Prüfungsliste (${month}.${year})`],
+      [],
+      [
+        "Nachname",
+        "Vorname",
+        "Aktueller Gurt",
+        "Zielgurt",
+        "Alter",
+        "Gürtellänge",
+        "Jahressichtmarke",
+        "Anmeldung",
+        "Bezahlt in €",
+        "Zahlungsart"
+      ]
+    ];
+
+    plannedStudents.forEach(student => {
+      const age = calculateAge(student.birthday);
+      const targetBelt = student.planningTargetBelt || getNextBelt(student.belt, age);
+
+      rows.push([
+        student.lastName || "",
+        student.firstName || "",
+        student.belt || "",
+        targetBelt || "",
+        age === null ? "" : age,
+        student.beltSize || "",
+        getCurrentStampYears(student),
+        student.planningRegistrationType || "",
+        student.planningPaidAmount || "",
+        student.planningPaymentMethod || ""
+      ]);
+    });
+
+    rows.push([]);
+    rows.push(["Gesamtzahl Prüflinge", plannedStudents.length]);
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+
+    ws["!merges"] = [
+      { s: { r: 0, c: 0 }, e: { r: 0, c: 9 } }
+    ];
+
+    ws["!cols"] = [
+      { wch: 18 },
+      { wch: 18 },
+      { wch: 16 },
+      { wch: 16 },
+      { wch: 8 },
+      { wch: 14 },
+      { wch: 18 },
+      { wch: 14 },
+      { wch: 14 },
+      { wch: 16 }
+    ];
+
+    ws["!rows"] = [
+      { hpt: 28 },
+      { hpt: 8 },
+      { hpt: 22 }
+    ];
+
+    applyRangeStyle(ws, "A1:J1", xlsxCellStyle("title"));
+    applyRangeStyle(ws, "A3:J3", xlsxCellStyle("header"));
+
+    const firstDataRow = 4;
+    const lastDataRow = 3 + plannedStudents.length;
+
+    if (plannedStudents.length > 0) {
+      applyRangeStyle(ws, `A${firstDataRow}:J${lastDataRow}`, xlsxCellStyle("normal"));
+
+      plannedStudents.forEach((student, index) => {
+        const excelRow = firstDataRow + index;
+        const stampText = getCurrentStampYears(student);
+        ws[`G${excelRow}`].s = xlsxCellStyle(stampText === "-" ? "bad" : "ok");
+        ws[`D${excelRow}`].s = {
+          ...xlsxCellStyle("normal"),
+          font: { bold: true }
+        };
+      });
+    }
+
+    const summaryRow = rows.length;
+    applyRangeStyle(ws, `A${summaryRow}:J${summaryRow}`, xlsxCellStyle("summary"));
+
+    XLSX.utils.book_append_sheet(wb, ws, "Prüfungsliste");
+
+    downloadWorkbookXlsx(wb, `Gürtelprüfung Prüfungsliste (${month}.${year}).xlsx`);
+  } catch (error) {
+    console.error(error);
+    alert("Excel Export Fehler: " + error.message);
+  }
+}
+
+function exportMaterialExcel() {
+  try {
+    savePlanningTableValuesFromDom();
+
+    if (typeof XLSX === "undefined") {
+      alert("Excel-Bibliothek konnte nicht geladen werden. Bitte Seite neu laden.");
+      return;
+    }
+
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const year = now.getFullYear();
+
+    const plannedStudents = getPlannedStudentsForExport();
+
+    const sizes = Array.from(new Set(
+      plannedStudents
+        .map(student => String(student.beltSize || "").trim())
+        .filter(Boolean)
+    )).sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+
+    const targetBelts = Array.from(new Set(
+      plannedStudents.map(student => {
+        const age = calculateAge(student.birthday);
+        return student.planningTargetBelt || getNextBelt(student.belt, age);
+      })
+    )).sort((a, b) => beltOrder(a) - beltOrder(b));
+
+    const rows = [];
+
+    rows.push([`Materialbestellung Gürtelprüfung (${month}.${year})`]);
+    rows.push([]);
+    rows.push(["Gürtelbestellung nach Zielgurt und Größe"]);
+    rows.push(["Zielgurt", ...sizes, "Gesamt"]);
+
+    let beltTotal = 0;
+
+    targetBelts.forEach(targetBelt => {
+      let rowTotal = 0;
+
+      const counts = sizes.map(size => {
+        const count = plannedStudents.filter(student => {
+          const age = calculateAge(student.birthday);
+          const target = student.planningTargetBelt || getNextBelt(student.belt, age);
+
+          return target === targetBelt &&
+            String(student.beltSize || "").trim() === size;
+        }).length;
+
+        rowTotal += count;
+        beltTotal += count;
+
+        return count || "";
+      });
+
+      rows.push([targetBelt, ...counts, rowTotal]);
+    });
+
+    const sizeTotals = sizes.map(size => {
+      const count = plannedStudents.filter(student =>
+        String(student.beltSize || "").trim() === size
+      ).length;
+
+      return count || "";
+    });
+
+    rows.push(["Summe", ...sizeTotals, beltTotal]);
+
+    rows.push([]);
+    rows.push(["Medaillen / Aufkleber"]);
+    rows.push(["Farbe / Zielgurt", "Anzahl"]);
+
+    targetBelts.forEach(targetBelt => {
+      const count = plannedStudents.filter(student => {
+        const age = calculateAge(student.birthday);
+        const target = student.planningTargetBelt || getNextBelt(student.belt, age);
+
+        return target === targetBelt;
+      }).length;
+
+      rows.push([targetBelt, count]);
+    });
+
+    rows.push(["Gesamt", plannedStudents.length]);
+
+    rows.push([]);
+    rows.push(["Zusatzmaterial"]);
+    rows.push(["Material", "Anzahl"]);
+
+    const missingStamps = plannedStudents.filter(student => !hasCurrentStamp(student)).length;
+
+    rows.push(["Urkunden", plannedStudents.length]);
+    rows.push(["Medaillen / Aufkleber", plannedStudents.length]);
+    rows.push(["Jahressichtmarken aktuelles Jahr", missingStamps]);
+    rows.push(["Pässe", "manuell prüfen"]);
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+
+    const maxCols = Math.max(4, sizes.length + 2);
+
+    ws["!merges"] = [
+      { s: { r: 0, c: 0 }, e: { r: 0, c: maxCols - 1 } },
+      { s: { r: 2, c: 0 }, e: { r: 2, c: maxCols - 1 } }
+    ];
+
+    ws["!cols"] = Array.from({ length: maxCols }, (_, index) => {
+      if (index === 0) return { wch: 26 };
+      return { wch: 14 };
+    });
+
+    applyRangeStyle(ws, `A1:${XLSX.utils.encode_col(maxCols - 1)}1`, xlsxCellStyle("title"));
+    applyRangeStyle(ws, `A3:${XLSX.utils.encode_col(maxCols - 1)}3`, xlsxCellStyle("title"));
+
+    const beltHeaderRow = 4;
+    applyRangeStyle(ws, `A${beltHeaderRow}:${XLSX.utils.encode_col(sizes.length + 1)}${beltHeaderRow}`, xlsxCellStyle("header"));
+
+    const beltStartRow = 5;
+    const beltEndRow = beltStartRow + targetBelts.length;
+    if (targetBelts.length > 0) {
+      applyRangeStyle(ws, `A${beltStartRow}:${XLSX.utils.encode_col(sizes.length + 1)}${beltEndRow}`, xlsxCellStyle("normal"));
+    }
+    applyRangeStyle(ws, `A${beltEndRow}:${XLSX.utils.encode_col(sizes.length + 1)}${beltEndRow}`, xlsxCellStyle("summary"));
+
+    const medalTitleRow = beltEndRow + 2;
+    const medalHeaderRow = medalTitleRow + 1;
+    const medalStartRow = medalHeaderRow + 1;
+    const medalEndRow = medalStartRow + targetBelts.length;
+
+    applyRangeStyle(ws, `A${medalTitleRow}:B${medalTitleRow}`, xlsxCellStyle("title"));
+    applyRangeStyle(ws, `A${medalHeaderRow}:B${medalHeaderRow}`, xlsxCellStyle("header"));
+    applyRangeStyle(ws, `A${medalStartRow}:B${medalEndRow}`, xlsxCellStyle("normal"));
+    applyRangeStyle(ws, `A${medalEndRow}:B${medalEndRow}`, xlsxCellStyle("summary"));
+
+    const summaryTitleRow = medalEndRow + 2;
+    const summaryHeaderRow = summaryTitleRow + 1;
+    const summaryStartRow = summaryHeaderRow + 1;
+    const summaryEndRow = summaryStartRow + 3;
+
+    applyRangeStyle(ws, `A${summaryTitleRow}:B${summaryTitleRow}`, xlsxCellStyle("title"));
+    applyRangeStyle(ws, `A${summaryHeaderRow}:B${summaryHeaderRow}`, xlsxCellStyle("header"));
+    applyRangeStyle(ws, `A${summaryStartRow}:B${summaryEndRow}`, xlsxCellStyle("normal"));
+
+    XLSX.utils.book_append_sheet(wb, ws, "Material");
+
+    downloadWorkbookXlsx(wb, `Gürtelprüfung Material (${month}.${year}).xlsx`);
+  } catch (error) {
+    console.error(error);
+    alert("Excel Export Fehler: " + error.message);
+  }
+}
+
+
+
+
+function exportCurrentStampsExcel() {
+  try {
+    if (typeof XLSX === "undefined") {
+      alert("Excel-Bibliothek konnte nicht geladen werden. Bitte Seite neu laden.");
+      return;
+    }
+
+    const currentYear = String(new Date().getFullYear());
+
+    const studentsWithCurrentStamp = data.students
+      .filter(student => {
+        return (student.annualStamps || []).some(stamp => {
+          return String(stamp.year) === currentYear && stamp.status === "ja";
+        });
+      })
+      .sort((a, b) => {
+        const nameA = `${a.lastName} ${a.firstName}`.toLowerCase();
+        const nameB = `${b.lastName} ${b.firstName}`.toLowerCase();
+        return nameA.localeCompare(nameB, "de");
+      });
+
+    const rows = [
+      [`Jahressichtmarken ${currentYear}`],
+      [],
+      ["Nachname", "Vorname", "Jahressichtmarke"]
+    ];
+
+    studentsWithCurrentStamp.forEach(student => {
+      rows.push([
+        student.lastName || "",
+        student.firstName || "",
+        currentYear
+      ]);
+    });
+
+    rows.push([]);
+    rows.push(["Gesamt", studentsWithCurrentStamp.length]);
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+
+    ws["!merges"] = [
+      { s: { r: 0, c: 0 }, e: { r: 0, c: 2 } }
+    ];
+
+    ws["!cols"] = [
+      { wch: 22 },
+      { wch: 22 },
+      { wch: 20 }
+    ];
+
+    applyRangeStyle(ws, "A1:C1", xlsxCellStyle("title"));
+    applyRangeStyle(ws, "A3:C3", xlsxCellStyle("header"));
+
+    if (studentsWithCurrentStamp.length > 0) {
+      applyRangeStyle(ws, `A4:C${3 + studentsWithCurrentStamp.length}`, xlsxCellStyle("normal"));
+    }
+
+    const summaryRow = rows.length;
+    applyRangeStyle(ws, `A${summaryRow}:C${summaryRow}`, xlsxCellStyle("summary"));
+
+    XLSX.utils.book_append_sheet(wb, ws, "Jahressichtmarken");
+
+    XLSX.writeFile(wb, `Jahressichtmarken ${currentYear}.xlsx`);
+  } catch (error) {
+    console.error(error);
+    alert("Excel Export Fehler: " + error.message);
+  }
 }
