@@ -1829,6 +1829,22 @@
       "planningPaymentMethod": "",
       "annualStamps": [],
       "exams": []
+    },
+    {
+      "id": "bd643fa3-ee57-4c5e-b62c-d83b957f0e13",
+      "firstName": "Ferid",
+      "lastName": "Boukhari",
+      "birthday": "2013-09-02",
+      "belt": "Orange-Grün",
+      "beltSize": "280 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
