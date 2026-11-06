@@ -1685,6 +1685,22 @@
       "planningPaymentMethod": "",
       "annualStamps": [],
       "exams": []
+    },
+    {
+      "id": "b9e4b039-f548-4d2d-84cc-783cabeecc2a",
+      "firstName": "Denis",
+      "lastName": "Mirvic",
+      "birthday": "2010-09-19",
+      "belt": "Blau",
+      "beltSize": "300 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
