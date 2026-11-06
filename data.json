@@ -1765,6 +1765,22 @@
       "planningPaymentMethod": "",
       "annualStamps": [],
       "exams": []
+    },
+    {
+      "id": "05d3164c-1c28-4d19-91c6-d54ee9e8f6b8",
+      "firstName": "Ajan",
+      "lastName": "Uka",
+      "birthday": "2013-07-11",
+      "belt": "Gelb",
+      "beltSize": "320 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
