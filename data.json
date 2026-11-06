@@ -1701,6 +1701,22 @@
       "planningPaymentMethod": "",
       "annualStamps": [],
       "exams": []
+    },
+    {
+      "id": "68dd2d9f-022d-4caf-94f6-72af5e4dfbc9",
+      "firstName": "Luisa",
+      "lastName": "Stadtmüller",
+      "birthday": "2009-04-16",
+      "belt": "Gelb",
+      "beltSize": "",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
