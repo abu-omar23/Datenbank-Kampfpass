@@ -1733,6 +1733,22 @@
       "planningPaymentMethod": "",
       "annualStamps": [],
       "exams": []
+    },
+    {
+      "id": "0e6f3cda-a8b6-4e3d-901a-ae383f3f9555",
+      "firstName": "Thomas",
+      "lastName": "Garro",
+      "birthday": "2014-10-09",
+      "belt": "Gelb",
+      "beltSize": "280 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
