@@ -1813,6 +1813,22 @@
       "planningPaymentMethod": "",
       "annualStamps": [],
       "exams": []
+    },
+    {
+      "id": "c0817211-10ba-4a57-bcb4-0289935d7b0f",
+      "firstName": "Stephan",
+      "lastName": "Ostertag",
+      "birthday": "1967-07-04",
+      "belt": "Orange",
+      "beltSize": "300 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
