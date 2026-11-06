@@ -1717,6 +1717,22 @@
       "planningPaymentMethod": "",
       "annualStamps": [],
       "exams": []
+    },
+    {
+      "id": "7ecd8849-eb54-450a-81ea-78de60ad41ed",
+      "firstName": "Danny Ali",
+      "lastName": "Mohammad",
+      "birthday": "2009-03-23",
+      "belt": "Grün",
+      "beltSize": "300 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
