@@ -1749,6 +1749,22 @@
       "planningPaymentMethod": "",
       "annualStamps": [],
       "exams": []
+    },
+    {
+      "id": "883f4b38-9c3e-478b-83e4-56123b686595",
+      "firstName": "Noel",
+      "lastName": "Schiemenz",
+      "birthday": "2014-10-20",
+      "belt": "Gelb",
+      "beltSize": "260 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
