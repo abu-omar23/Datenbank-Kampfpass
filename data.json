@@ -1781,6 +1781,22 @@
       "planningPaymentMethod": "",
       "annualStamps": [],
       "exams": []
+    },
+    {
+      "id": "7ef4af8c-55ea-4dce-b8a6-e0f3894e8dec",
+      "firstName": "Ali",
+      "lastName": "Mohammadi",
+      "birthday": "2015-03-07",
+      "belt": "Orange-Grün",
+      "beltSize": "280 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
