@@ -1669,6 +1669,22 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "58d567b2-54bc-4901-9ce5-84dca49385f6",
+      "firstName": "Emir",
+      "lastName": "Akarsu",
+      "birthday": "2012-12-24",
+      "belt": "Blau",
+      "beltSize": "300 cm",
+      "notes": "",
+      "plannedExam": false,
+      "planningTargetBelt": "",
+      "planningRegistrationType": "",
+      "planningPaidAmount": "",
+      "planningPaymentMethod": "",
+      "annualStamps": [],
+      "exams": []
     }
   ]
 }
